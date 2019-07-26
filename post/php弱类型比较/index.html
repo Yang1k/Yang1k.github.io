@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="php弱类型"/>
+  <meta name="twitter:description" content="php弱类型比较在ctf平台上很常见，这次总结了一下。但感觉还是不全，以后遇到再补吧。。
+
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>php弱类型 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        php弱类型
+                    </h1>
+                    <h2 class="headline">
+                    Nov 8, 2017 09:55
+                    · 184 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/php">PHP</a>
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#php弱类型">php弱类型</a>
+<ul>
+<li><a href="#精华">精华</a></li>
+<li><a href="#概述">概述</a></li>
+<li><a href="#原理">原理</a></li>
+<li><a href="#示例1-利用转为数字后相等的漏洞">示例1:利用转为数字后相等的漏洞</a></li>
+<li><a href="#示例2-strcmp函数漏洞">示例2：strcmp函数漏洞</a></li>
+</ul></li>
+<li><a href="#遇到的弱类型比较函数">遇到的弱类型比较函数</a>
+<ul>
+<li><a href="#strcmp">strcmp()</a></li>
+<li><a href="#md5">md5()</a></li>
+<li><a href="#array-search">array_search()</a></li>
+<li><a href="#is-array">is_array()</a></li>
+<li><a href="#preg-match和preg-match-all">preg_match和preg_match_all</a></li>
+</ul></li>
+<li><a href="#小技巧">小技巧</a>
+<ul>
+<li><a href="#数组">数组</a></li>
+<li><a href="#科学计数法">科学计数法</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>php弱类型比较在ctf平台上很常见，这次总结了一下。但感觉还是不全，以后遇到再补吧。。</p>
+
+<!-- more -->
+
+<h2 id="php弱类型">php弱类型</h2>
+
+<h3 id="精华">精华</h3>
+
+<p>0==任何字符串</p>
+
+<h3 id="概述">概述</h3>
+
+<p>php就是一门弱类型语言。弱类型就是不需要声明变量的类型，php会根据变量的值自动把变量转换为正确的数据类型。强类型的编辑语言在使用变量前必须声明变量的数据类型。</p>
+
+<h3 id="原理">原理</h3>
+
+<ul>
+<li>php中有两种比较的符号\==和===
+
+<ul>
+<li>===在进行比较的时候会先判断两种字符串的类型是否相等，再比较。</li>
+<li>== 在进行比较的时候，会先将字符串的类型转换为相同，再比较。</li>
+</ul></li>
+</ul>
+
+<p>比如在拿数字和字符串比较的时候，字符串就会被转换为数字类型，然后进行比较。</p>
+
+<p>例：</p>
+
+<pre><code>1 &lt;?php
+2 var_dump(&quot;admin&quot;==0);  //true
+3 var_dump(&quot;1admin&quot;==1); //true
+4 var_dump(&quot;admin1&quot;==1) //false
+5 var_dump(&quot;admin1&quot;==0) //true
+6 var_dump(&quot;0e123456&quot;==&quot;0e4456789&quot;); //true 
+7 ?&gt;
+</code></pre>
+
+<p>然而，php是如何将一个字符串转化为数值的呢，我们继续查看php手册</p>
+
+<p>当一个字符串被当作一个数值来取值，其结果和类型如下：如果该字符串没有包含 ‘.’，’e’ 或 ‘E’ 并且其数字值在整型的范围之内（由 PHP_INT_MAX 所定义），该字符串将被当成 integer 来取值。其它所有情况下都被作为 float 来取值。该字符串的开始部分决定了它的值。如果该字符串以合法的数值开始，则使用该数值。否则其值为 0（零）。合法数值由可选的正负号，后面跟着一个或多个数字（可能有小数点），再跟着可选的指数部分。指数部分由 ‘e’ 或 ‘E’ 后面跟着一个或多个数字构成。</p>
+
+<p>总结</p>
+
+<pre><code>如果一个字符串为 “合法数字+e+合法数字”类型，将会解释为科学计数法的浮点数
+如果一个字符串为 “合法数字+ 不可解释为合法数字的字符串”类型，将会被转换为该合法数字的值，后面的字符串将会被丢弃
+如果一个字符串为“不可解释为合法数字的字符串+任意”类型，则被转换为0！ 为0…为0
+
+</code></pre>
+
+<h3 id="示例1-利用转为数字后相等的漏洞">示例1:利用转为数字后相等的漏洞</h3>
+
+<pre><code>&lt;?php
+       if (isset($_GET['v1']) &amp;&amp; isset($_GET['v2'])) {
+           $logined = true;
+        $v1 = $_GET['v1'];
+        $v2 = $_GET['v2'];
+
+        if (!ctype_alpha($v1)) {$logined = false;}
+        if (!is_numeric($v2) ) {$logined = false;}
+        if (md5($v1) != md5($v2)) {$logined = false;}
+
+        if ($logined){
+
+            // continuue to do other things
+        } else {
+            echo &quot;login failed&quot;
+        }
+    }
+?
+</code></pre>
+
+<h3 id="示例2-strcmp函数漏洞">示例2：strcmp函数漏洞</h3>
+
+<p>定义</p>
+
+<pre><code>int strcmp ( string $str1 , string $str2 )
+参数 str1第一个字符串。str2第二个字符串。如果 str1 小于 str2 返回 &lt; 0； 如果 str1 大于 str2 返回 &gt; 0；如果两者相等，返回 0。
+</code></pre>
+
+<p>源码</p>
+
+<pre><code>&lt;?php
+$password=&quot;*&quot;;
+$a = array();
+    if (strcmp($a, $password) == 0) {
+        echo &quot;Right!!!login success&quot;;
+        exit();
+    } else {
+        echo &quot;Wrong password..&quot;;
+}
+?&gt;
+结果输出 Right!!!login success。
+</code></pre>
+
+<p>参考（<a href="http://www.freebuf.com/articles/web/129607.html）">http://www.freebuf.com/articles/web/129607.html）</a></p>
+
+<h2 id="遇到的弱类型比较函数">遇到的弱类型比较函数</h2>
+
+<h3 id="strcmp">strcmp()</h3>
+
+<p>strcmp() 函数比较一个数组和一个字符串的时候会返回NULL。</p>
+
+<h3 id="md5">md5()</h3>
+
+<p>md5()比较0e开头的字符串都相等</p>
+
+<h3 id="array-search">array_search()</h3>
+
+<p>array_search()在没有选择第三个参数时，是一个弱类型比较， 0==任意字符串</p>
+
+<h3 id="is-array">is_array()</h3>
+
+<p>is_array()和 array_search()函数的问题是一样的</p>
+
+<h3 id="preg-match和preg-match-all">preg_match和preg_match_all</h3>
+
+<p>preg_match 和preg_match_all 函数的参数如果是数组的话则返回false，这样就可以绕过正则的过滤。</p>
+
+<h2 id="小技巧">小技巧</h2>
+
+<h3 id="数组">数组</h3>
+
+<p>许多处理字符串的函数如果函数接收到的参数是数组的话，会返回NULL。例如strcmp,strlen,md5等，但是preg_match和preg_match_all函数的参数如果是数组的话则返回false，这样就可以绕过正则的过滤。</p>
+
+<h3 id="科学计数法">科学计数法</h3>
+
+<p>9e9</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fphp%25E5%25BC%25B1%25E7%25B1%25BB%25E5%259E%258B%25E6%25AF%2594%25E8%25BE%2583%2f - php%e5%bc%b1%e7%b1%bb%e5%9e%8b "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

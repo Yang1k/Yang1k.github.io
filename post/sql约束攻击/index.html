@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="SQL约束攻击"/>
+  <meta name="twitter:description" content="感觉最终的效果和万能密码的差不多。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>SQL约束攻击 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        SQL约束攻击
+                    </h1>
+                    <h2 class="headline">
+                    Dec 20, 2017 09:54
+                    · 107 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/php">PHP</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#利用条件">利用条件</a></li>
+<li><a href="#产生背景">产生背景</a></li>
+<li><a href="#漏洞原理">漏洞原理</a></li>
+<li><a href="#防御手法">防御手法</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>感觉最终的效果和万能密码的差不多。
+<!-- more --></p>
+
+<h2 id="简介">简介</h2>
+
+<p>sql约束攻击也是针对数据库的攻击，它的作用类似于万能密码，可以实现登录任意账号，但是原理不同。</p>
+
+<h2 id="利用条件">利用条件</h2>
+
+<ul>
+<li>注册时可以输入任意长度或者大于数据库字段限制的长度的用户名。</li>
+</ul>
+
+<h2 id="产生背景">产生背景</h2>
+
+<p>假设后台处理用户注册的代码如下</p>
+
+<pre><code>&lt;?php
+//此处省略的是连接数据的代码
+$username = mysql_real_escape_string($_GET['username']);
+$password = mysql_real_escape_string($_GET['password']);
+$query = &quot;SELECT * FROM users WHERE username='$username'&quot;;
+$res = mysql_query($query, $database);
+if($res) {
+  if(mysql_num_rows($res) &gt; 0) {
+    // 用户名已存在
+  }
+  else {
+    // 将用户数据插入数据库
+    $query = &quot;INSERT INTO users(username, password) VALUES ('$username','$password')&quot;;
+    mysql_query($query);
+  }
+</code></pre>
+
+<p>后台处理用户登录的代码如下</p>
+
+<pre><code>//此处省略的是连接数据的代码
+$username = mysql_real_escape_string($_GET['username']);
+$password = mysql_real_escape_string($_GET['password']);
+$query = &quot;SELECT * FROM users WHERE username='$username' and password='$password'&quot;;
+$res = mysql_query($query);
+if($res){
+    if(mysql_num_rows($res)&gt;0){
+        echo &quot;成功登陆&quot;
+    }else{
+        echo &quot;登录失败&quot;；
+    }
+}
+</code></pre>
+
+<p>可以看到这两段代码都对传入的数据做了转义，万能密码肯定是不行的。但是这样就没有办法了？这里就可以用到sql约束攻击。</p>
+
+<h2 id="漏洞原理">漏洞原理</h2>
+
+<p>在mysql的select语句中，下面两条语句是相同的</p>
+
+<pre><code>select * from user where username='username';
+
+select * from user where username='username    ';
+
+亲测有效
+</code></pre>
+
+<p>原因就是在SQL中执行字符串处理时，字符串末尾的空格符将会被删除。</p>
+
+<p>在创建数据表的时候会用varchar(30)来限制存入数据的数据长度，如果数据长度大于30，那么大于30的部分就会被丢弃，最终存入数据库的就是原本数据的前30位。</p>
+
+<p>假如用户的用户名为admin，那么我们注册一个名字大于30并且前几位等于admin的用户。例：</p>
+
+<pre><code>admin                                                              1
+</code></pre>
+
+<p>注意要在最后添加一个字符，不然注册的时候会提示用户名已存在。</p>
+
+<p>那么最终存入数据库的用户名就是admin加上一串空格。</p>
+
+<p>现在再去登录admin用户，输入自己注册时的密码，就可以成功登录了。登陆后搜索该用户名的SELECT查询都将返回第一个数据记录，也就是原始用户的数据记录。这样的话，攻击者就能够以原始用户身份登录。</p>
+
+<h2 id="防御手法">防御手法</h2>
+
+<p>限制用户注册的用户名长度。</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fsql%25E7%25BA%25A6%25E6%259D%259F%25E6%2594%25BB%25E5%2587%25BB%2f - SQL%e7%ba%a6%e6%9d%9f%e6%94%bb%e5%87%bb "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

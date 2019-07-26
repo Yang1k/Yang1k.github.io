@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="between and 利用"/>
+  <meta name="twitter:description" content=".
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>between and 利用 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        between and 利用
+                    </h1>
+                    <h2 class="headline">
+                    Sep 4, 2018 09:54
+                    · 631 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#between-and-操作符"><code>between and</code> 操作符</a></li>
+<li><a href="#在盲注中应用">在盲注中应用</a>
+<ul>
+<li><a href="#1-配合截取函数使用">1. 配合截取函数使用</a></li>
+<li><a href="#2-截取函数被过滤">2. 截取函数被过滤</a></li>
+<li><a href="#3-单引号被过滤">3. 单引号被过滤</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>.
+<!-- more --></p>
+
+<blockquote>
+<p>安全客链接 <a href="https://www.anquanke.com/post/id/158674">https://www.anquanke.com/post/id/158674</a></p>
+
+<h2 id="between-and-操作符"><code>between and</code> 操作符</h2>
+
+<p>操作符 BETWEEN &hellip; AND 会选取介于两个值之间的数据范围。这些值可以是数值、文本或者日期。
+<code>between and</code>有数据比较功能</p>
+
+<pre><code>exp1 between min and max
+
+如果exp1的结果处于min和max之间,`between and`就返回`1`,反之返回`0`.
+</code></pre>
+</blockquote>
+
+<p>示例</p>
+
+<pre><code>mysql&gt; select * from user;
++----+----------+----------------------------------+-------------------+
+| id | username | password                         | email             |
++----+----------+----------------------------------+-------------------+
+|  1 | a        | 0cc175b9c0f1b6a831c399e269772661 | 456456664@qq.com |
+|  2 | aa       | 4124bc0a9335c27f086f24ba207a4912 | 456456664@qq.com |
+|  3 | admin    | 26fff50e6f9c6ca38e181c65c1531eca | 456456664@qq.com |
+|  4 | add      | 0cc175b9c0f1b6a831c399e269772661 | 456456664@qq.com |
++----+----------+----------------------------------+-------------------+
+mysql&gt; select * from user where id between 1 and 2;
++----+----------+----------------------------------+-------------------+
+| id | username | password                         | email             |
++----+----------+----------------------------------+-------------------+
+|  1 | a        | 0cc175b9c0f1b6a831c399e269772661 | 456456664@qq.com |
+|  2 | aa       | 4124bc0a9335c27f086f24ba207a4912 | 456456664@qq.com |
++----+----------+----------------------------------+-------------------+
+</code></pre>
+
+<p>大多数数据库都支持<code>between and</code>操作,但是对于边界的处理有所不同,在mysql中,<code>between and</code> 是包含边界的,在数学中也就是<code>[min,max]</code></p>
+
+<h2 id="在盲注中应用">在盲注中应用</h2>
+
+<p><code>between and</code>可以用来在过滤了<code>=</code>,<code>like</code>, <code>regexp</code>,<code>&gt;</code>,<code>&lt;</code>的情况下使用.</p>
+
+<pre><code>mysql&gt; select database();
++------------+
+| database() |
++------------+
+| test       |
++------------+
+1 row in set (0.00 sec)
+
+</code></pre>
+
+<h3 id="1-配合截取函数使用">1. 配合截取函数使用</h3>
+
+<pre><code>mysql&gt; select mid(database(),1,1) between 'a' and 'a' ;
++-----------------------------------------+
+| mid(database(),1,1) between 'a' and 'a' |
++-----------------------------------------+
+|                                       0 |
++-----------------------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select mid(database(),1,1) between 't' and 't' ;
++-----------------------------------------+
+| mid(database(),1,1) between 't' and 't' |
++-----------------------------------------+
+|                                       1 |
++-----------------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
+
+<h3 id="2-截取函数被过滤">2. 截取函数被过滤</h3>
+
+<p>表达式</p>
+
+<pre><code>select exp between min and max 
+</code></pre>
+
+<p>在截取字符函数被过滤的时候,设置<code>min</code>和 <code>max</code>的方式有所改变.</p>
+
+<p>测试1</p>
+
+<pre><code>mysql&gt; select 'b' between 'a' and 'c';
++-------------------------+
+| 'b' between 'a' and 'c' |
++-------------------------+
+|                       1 |
++-------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select 'b' between 'a' and 'b';
++-------------------------+
+| 'b' between 'a' and 'b' |
++-------------------------+
+|                       1 |
++-------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select 'b' between 'b' and 'c';
++-------------------------+
+| 'b' between 'b' and 'c' |
++-------------------------+
+|                       1 |
++-------------------------+
+1 row in set (0.00 sec)
+
+</code></pre>
+
+<p>测试2</p>
+
+<pre><code>mysql&gt; select 'bcd' between 'a' and 'c';
++---------------------------+
+| 'bcd' between 'a' and 'c' |
++---------------------------+
+|                         1 |
++---------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select 'bcd' between 'a' and 'b';
++---------------------------+
+| 'bcd' between 'a' and 'b' |
++---------------------------+
+|                         0 |
++---------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select 'bcd' between 'b' and 'c';
++---------------------------+
+| 'bcd' between 'b' and 'c' |
++---------------------------+
+|                         1 |
++---------------------------+
+1 row in set (0.00 sec)
+
+</code></pre>
+
+<p>由测试可知,当<code>exp</code>为单个字符时三种区间返回值都是<code>1</code>,但是当<code>exp</code>为字符串时,当区间为<code>a-b</code>时,返回值为<code>0</code>.区间为<code>a-c</code>或者<code>b-c</code>时,返回值为<code>1</code>.</p>
+
+<p>也就是在进行字符串比较时,只会包含一边的值,也就是<code>[b,c)</code>.</p>
+
+<p>所以在实际利用时,就要注意区间的范围.</p>
+
+<p>实际测试</p>
+
+<pre><code>mysql&gt; select database() between 'a' and 'z';
++--------------------------------+
+| database() between 'a' and 'z' |
++--------------------------------+
+|                              1 |
++--------------------------------+
+1 row in set (0.05 sec)
+...
+mysql&gt; select database() between 't' and 'z';
++--------------------------------+
+| database() between 't' and 'z' |
++--------------------------------+
+|                              1 |
++--------------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select database() between 'u' and 'z';
++--------------------------------+
+| database() between 'u' and 'z' |
++--------------------------------+
+|                              0 |
++--------------------------------+
+1 row in set (0.00 sec)
+
+</code></pre>
+
+<p>由结果可知,第一个字符为<code>t</code></p>
+
+<p>第二个字符</p>
+
+<pre><code>mysql&gt; select database() between 'ta' and 'tz'
++----------------------------------+
+| database() between 'ta' and 'tz' |
++----------------------------------+
+|                                1 |
++----------------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select database() between 'te' and 'tz';
++----------------------------------+
+| database() between 'te' and 'tz' |
++----------------------------------+
+|                                1 |
++----------------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select database() between 'tf' and 'tz';
++----------------------------------+
+| database() between 'tf' and 'tz' |
++----------------------------------+
+|                                0 |
++----------------------------------+
+1 row in set (0.00 sec)
+
+</code></pre>
+
+<p>剩下的以此类推.最终为<code>test</code>.</p>
+
+<h3 id="3-单引号被过滤">3. 单引号被过滤</h3>
+
+<p><code>between and</code>还支持16进制,所以可以用16进制,来绕过单引号的过滤.</p>
+
+<p>测试</p>
+
+<pre><code>mysql&gt; select database() between 0x61 and 0x7a; //select database() between 'a' and 'z';
++----------------------------------+
+| database() between 0x61 and 0x7a |
++----------------------------------+
+|                                1 |
++----------------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select database() between 0x74 and 0x7a; //select database() between 't' and 'z';
++----------------------------------+
+| database() between 0x74 and 0x7a |
++----------------------------------+
+|                                1 |
++----------------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select database() between 0x75 and 0x7a; //select database() between 'u' and 'z';
++----------------------------------+
+| database() between 0x75 and 0x7a |
++----------------------------------+
+|                                0 |
++----------------------------------+
+1 row in set (0.00 sec)
+
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fbetween-and%2f - between%20and%20%e5%88%a9%e7%94%a8 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

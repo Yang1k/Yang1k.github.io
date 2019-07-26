@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>渗透 on Yang1k</title>
+    <link>http://yang1k.github.io/tags/%E6%B8%97%E9%80%8F/</link>
+    <description>Recent content in 渗透 on Yang1k</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 12 Jun 2018 09:54:35 +0000</lastBuildDate>
+    
+	<atom:link href="http://yang1k.github.io/tags/%E6%B8%97%E9%80%8F/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>phpwind复现</title>
+      <link>http://yang1k.github.io/post/7phpwind-get%E5%9E%8Bcsrf%E4%BB%BB%E6%84%8F%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</link>
+      <pubDate>Tue, 12 Jun 2018 09:54:35 +0000</pubDate>
+      
+      <guid>http://yang1k.github.io/post/7phpwind-get%E5%9E%8Bcsrf%E4%BB%BB%E6%84%8F%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</guid>
+      <description>&lt;p&gt;.
+&lt;!-- more --&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>贷乐高注入复现</title>
+      <link>http://yang1k.github.io/post/6%E8%B4%B7%E4%B9%90%E9%AB%98%E6%B3%A8%E5%85%A5/</link>
+      <pubDate>Mon, 11 Jun 2018 09:54:35 +0000</pubDate>
+      
+      <guid>http://yang1k.github.io/post/6%E8%B4%B7%E4%B9%90%E9%AB%98%E6%B3%A8%E5%85%A5/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;这篇文章主要介绍了一种绕过waf的思路技巧。在于拓展思维。由于没有找到源码，所以就记录一下这个思路技巧。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;!-- more --&gt;</description>
+    </item>
+    
+    <item>
+      <title>齐博sql注入复现</title>
+      <link>http://yang1k.github.io/post/4%E9%BD%90%E5%8D%9Asql%E6%B3%A8%E5%85%A5/</link>
+      <pubDate>Wed, 06 Jun 2018 09:54:35 +0000</pubDate>
+      
+      <guid>http://yang1k.github.io/post/4%E9%BD%90%E5%8D%9Asql%E6%B3%A8%E5%85%A5/</guid>
+      <description>&lt;p&gt;.
+&lt;!-- more --&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>变量覆盖导致的sql注入</title>
+      <link>http://yang1k.github.io/post/3%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84sql%E6%B3%A8%E5%85%A5/</link>
+      <pubDate>Wed, 30 May 2018 09:54:35 +0000</pubDate>
+      
+      <guid>http://yang1k.github.io/post/3%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84sql%E6%B3%A8%E5%85%A5/</guid>
+      <description>&lt;p&gt;.
+&lt;!-- more --&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>redis未授权登录漏洞</title>
+      <link>http://yang1k.github.io/post/2redis%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E/</link>
+      <pubDate>Sun, 20 May 2018 09:54:35 +0000</pubDate>
+      
+      <guid>http://yang1k.github.io/post/2redis%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E/</guid>
+      <description>&lt;p&gt;.
+&lt;!-- more --&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

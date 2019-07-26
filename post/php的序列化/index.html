@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="php的序列化与反序列化"/>
+  <meta name="twitter:description" content="序列化有利于数据的传输和存储，比如说需要将一个对象或者数组存储到数据库，如果是直接将对象或数组存储到数据库，是不能实现的。所以就需要将对象或数组进行序列化操作，使其变为一个字符串，这样就可以很方便的存储到数据库。从数据库取出来的是时候只要将其进行反序列化操作就可以将其还原为原来的样子。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>php的序列化与反序列化 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        php的序列化与反序列化
+                    </h1>
+                    <h2 class="headline">
+                    Nov 7, 2017 09:50
+                    · 58 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/php">PHP</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#定义">定义</a></li>
+<li><a href="#作用">作用</a></li>
+<li><a href="#相关函数">相关函数</a></li>
+<li><a href="#示例">示例</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>序列化有利于数据的传输和存储，比如说需要将一个对象或者数组存储到数据库，如果是直接将对象或数组存储到数据库，是不能实现的。所以就需要将对象或数组进行序列化操作，使其变为一个字符串，这样就可以很方便的存储到数据库。从数据库取出来的是时候只要将其进行反序列化操作就可以将其还原为原来的样子。
+<!-- more --></p>
+
+<h3 id="定义">定义</h3>
+
+<p>把复杂的数据类型压缩到一个字符串中</p>
+
+<h3 id="作用">作用</h3>
+
+<p>序列化有利于数据的传输和存储，比如说需要将一个对象或者数组存储到数据库，如果是直接将对象或数组存储到数据库，是不能实现的。所以就需要将对象或数组进行序列化操作，使其变为一个字符串，这样就可以很方便的存储到数据库。从数据库取出来的是时候只要将其进行反序列化操作就可以将其还原为原来的样子。</p>
+
+<h3 id="相关函数">相关函数</h3>
+
+<p>serialize() 把变量和它们的值编码成文本形式</p>
+
+<p>unserialize() 恢复原先变量</p>
+
+<h3 id="示例">示例</h3>
+
+<ul>
+<li><p>源代码</p>
+
+<pre><code>&lt;?php 
+$a = array(&quot;yang&quot;=&gt;haha,&quot;yy&quot;=&gt;hehe);
+echo &quot;&lt;pre&gt;&quot;;
+print_r($a);
+echo &quot;&lt;/pre&gt;&quot;;
+echo &quot;&lt;br&gt;&quot;;
+    
+$a = serialize($a);//序列化
+echo &quot;$a&quot;;
+    
+$a = unserialize($a);//反序列化
+echo &quot;&lt;br&gt;&quot;;
+var_dump($a);
+?&gt;
+</code></pre></li>
+
+<li><p>输出</p>
+
+<pre><code>//不做处理输出
+Array
+(
+[yang] =&gt; haha
+[yy] =&gt; hehe
+)
+
+//执行序列化函数后输出
+a:2:{s:4:&quot;yang&quot;;s:4:&quot;haha&quot;;s:2:&quot;yy&quot;;s:4:&quot;hehe&quot;;}
+
+//执行反序列化函数后输出
+array(2) { [&quot;yang&quot;]=&gt; string(4) &quot;haha&quot; [&quot;yy&quot;]=&gt; string(4) &quot;hehe&quot; }
+</code></pre></li>
+</ul>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fphp%25E7%259A%2584%25E5%25BA%258F%25E5%2588%2597%25E5%258C%2596%2f - php%e7%9a%84%e5%ba%8f%e5%88%97%e5%8c%96%e4%b8%8e%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

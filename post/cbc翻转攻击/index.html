@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="初识Padding Oracle Attack"/>
+  <meta name="twitter:description" content="Lctf见到了这种攻击方式，学习学习。。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>初识Padding Oracle Attack &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        初识Padding Oracle Attack
+                    </h1>
+                    <h2 class="headline">
+                    Nov 22, 2017 23:54
+                    · 113 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#cbc加密原理">CBC加密原理</a></li>
+<li><a href="#加密过程">加密过程</a></li>
+<li><a href="#解密过程">解密过程</a></li>
+<li><a href="#攻击条件">攻击条件</a></li>
+<li><a href="#攻击手法">攻击手法</a></li>
+<li><a href="#注意">注意</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>Lctf见到了这种攻击方式，学习学习。。
+<!-- more --></p>
+
+<h3 id="简介">简介</h3>
+
+<p>Padding Oracle Attack是一种针对CBC模式分组加密算法的攻击，可以自己构造密钥，去构造出任意的明文。</p>
+
+<h3 id="cbc加密原理">CBC加密原理</h3>
+
+<p>在密码学中，分组加密（Block cipher），又称分块加密或块密码，是一种对称密钥算法。它将明文分成多个等长的模块（block），使用确定的算法和对称密钥对每组分别加密解密，block的大小常见的有64bit、128bit、256bit等。在分组加密的CBC模式中，每个明文块先与前一个密文块进行异或后，再进行加密。加密过程大致如下图所示：</p>
+
+<p><img src="http://p0j0hyu3s.bkt.clouddn.com/01.jpg" alt="Markdown" /></p>
+
+<p>在这个过程中，如果最后一个分组的消息长度没有达到block的大小，则需要填充一些字节，被称为padding。以16个字节一个block为例，如果明文是I_am_Bob，长度为八个字节，则剩下的八个字节被填充了0x08，0x08，0x08，0x08，0x08，0x08，0x08，0x08这八个相同的字节，每个字节的值等于需要填充的字节长度。</p>
+
+<p>网上的师傅提到如果最后的一个分组的字节数刚好是每个block的字节数，那么在填充一整个分组，即：如果每个分组是8个bit，最后一个分组也是8bit，那么再填充8个0x00，具体原理没有看懂。算法如下</p>
+
+<pre><code>add = length - (count % length)
+plaintext = plaintext + ('\0' * add) #填充
+</code></pre>
+
+<p>以aes-128-cbc加密模式为例，加密I_am_Bob的过程大致如下：</p>
+
+<p><img src="http://p0j0hyu3s.bkt.clouddn.com/02.jpg" alt="Markdown" /></p>
+
+<p>解密过程</p>
+
+<p><img src="http://p0j0hyu3s.bkt.clouddn.com/03.jpg" alt="Markdown" /></p>
+
+<h3 id="加密过程">加密过程</h3>
+
+<ul>
+<li>首先将明文分成每X位一组，位数不足的是用特殊字符填充！！！！！！！
+X常见的为16位，也有32位
+这里要注意，CBC的填充规则（有PKCS5和PKCS7，区别这里使用的是PKCS7 图解如下）是缺少N位，就用 N 个 &lsquo;\xN&rsquo;填充，如缺少10位则用 10 个 &lsquo;\x10&rsquo;填充</li>
+<li>然后生成初始向量IV(这里的初始向量如果未特定给出则随机生成)和密钥</li>
+<li>将初始向量与第一组明文异或生成密文A</li>
+<li>用密钥加密密文A 得到密文A_1</li>
+<li>重复3 将密文A_1与第二组明文异或生成密文B</li>
+<li>重复4 用密钥加密密文B_1</li>
+<li>重复3-6 直到最后一组明文</li>
+<li>将IV和加密后的密文拼接在一起，得到最终的密文(也可以不拼接)</li>
+</ul>
+
+<h3 id="解密过程">解密过程</h3>
+
+<ul>
+<li>首先从最终的密文中提取出IV (IV为加密时指定的X位) //如果加密时没有加入IV则不用提取</li>
+<li>将密文分组</li>
+<li>使用密钥对第一组密文解密得到密文A，然后用IV进行异或得到第一组明文</li>
+<li>使用密钥对第二组密文解密得到密文B，然后用A与B进行异或得到第二组明文</li>
+<li>重复3-4 直到最后一组密文</li>
+</ul>
+
+<h3 id="攻击条件">攻击条件</h3>
+
+<p>1.异或用的向量（IV）可控</p>
+
+<p>2.padding oracle异常错误反馈到了页面，</p>
+
+<p>padding只能为</p>
+
+<pre><code>data 0x01 或
+data 0x02 0x02 或
+data 0x03 0x03 0x03 或
+data 0x04 0x04 0x04 0x04 或
+data 0x05 0x05 0x05 0x05 0x05 或
+......
+</code></pre>
+
+<p>如果出现data 0x05 0x05，那解密之后的检验就会出现错误，因为padding的位数和padding内容不一致
+如果这个服务没有catch这个错误的话那么程序就会中途报错退出，表现为，如http服务的status code为500</p>
+
+<h3 id="攻击手法">攻击手法</h3>
+
+<p>由于秘钥（key）可控，
+- 假设明文填充的字节是0x01，然后我们可以构造key，在==0x00到0xFF==中只有一个值和密文异或后是0x01，这样就可以爆破出密文的最后一位
+- 接下来就可以继续推测倒数第二位，这时需要假设明文填充的字节是0x02 0x02，
+- 这时候还要根据上一步推测出的密文的最后一位和明文的最后一位0x02去异或去得到key的最后一位。
+- 以此类推可以推测出密文的其他内容</p>
+
+<ul>
+<li>但是在解密第二组及其以后的组的时候有一个注意的地方，经过aes解密之后的middle要异或的不再是IV了，而是前一组密文！！</li>
+</ul>
+
+<h3 id="注意">注意</h3>
+
+<ul>
+<li>首先记得查看加密的初始IV是多少位，再根据这个位数将密文分组！按组爆破！</li>
+<li>其次是IV是每爆破出一位最好都要重新根据middle生成爆破位后面的位数</li>
+</ul>
+
+<h3 id="参考链接">参考链接</h3>
+
+<p><a href="http://www.jianshu.com/p/ad8bdd87e131">http://www.jianshu.com/p/ad8bdd87e131</a></p>
+
+<p><a href="http://f1sh.site/2017/08/04/%E5%88%9D%E5%AD%A6padding-oracle-attack/">http://f1sh.site/2017/08/04/%E5%88%9D%E5%AD%A6padding-oracle-attack/</a></p>
+
+<p><a href="http://www.blogsir.com.cn/safe/498.html">http://www.blogsir.com.cn/safe/498.html</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fcbc%25E7%25BF%25BB%25E8%25BD%25AC%25E6%2594%25BB%25E5%2587%25BB%2f - %e5%88%9d%e8%af%86Padding%20Oracle%20Attack "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

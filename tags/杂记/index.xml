@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>杂记 on Yang1k</title>
+    <link>http://yang1k.github.io/tags/%E6%9D%82%E8%AE%B0/</link>
+    <description>Recent content in 杂记 on Yang1k</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    
+	<atom:link href="http://yang1k.github.io/tags/%E6%9D%82%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>博客诞生记</title>
+      <link>http://yang1k.github.io/post/%E5%8D%9A%E5%AE%A2%E8%AF%9E%E7%94%9F%E8%AE%B0/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://yang1k.github.io/post/%E5%8D%9A%E5%AE%A2%E8%AF%9E%E7%94%9F%E8%AE%B0/</guid>
+      <description>&lt;h2 id=&#34;序&#34;&gt;序&lt;/h2&gt;
+
+&lt;p&gt;搭博客的想法被搁置了很久，主要是害怕以后服务器更换之类的迁移博客很麻烦。但是今天发现可以将博客搭建在github上，就来尝试一把。毕竟大网站不会说倒就倒。哈哈&lt;/p&gt;
+
+&lt;!-- more --&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

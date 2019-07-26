@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="flask入门"/>
+  <meta name="twitter:description" content="入门笔记。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>flask入门 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        flask入门
+                    </h1>
+                    <h2 class="headline">
+                    Oct 21, 2018 09:54
+                    · 1167 words
+                    · 6 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/python">python</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#flask学习">flask学习</a>
+<ul>
+<li><a href="#安装flask的运行环境">安装flask的运行环境</a></li>
+<li><a href="#运行环境">运行环境</a></li>
+<li><a href="#路由">路由</a></li>
+<li><a href="#debug-模式">debug，模式</a></li>
+<li><a href="#唯一-url-重定向行为">唯一 URL / 重定向行为</a></li>
+<li><a href="#使用配置文件">使用配置文件</a></li>
+<li><a href="#传参">传参</a></li>
+<li><a href="#根据函数名生成对应的url">根据函数名生成对应的url</a></li>
+<li><a href="#页面跳转">页面跳转</a></li>
+<li><a href="#flask渲染jinja2模板和传参-html模板使用">Flask渲染Jinja2模板和传参(html模板使用)</a></li>
+<li><a href="#简单的if语句的实现">简单的if语句的实现</a></li>
+<li><a href="#for循环">for循环</a>
+<ul>
+<li><a href="#字典的遍历">字典的遍历</a></li>
+<li><a href="#列表的遍历">列表的遍历</a></li>
+<li><a href="#简单的小示例">简单的小示例</a></li>
+</ul></li>
+<li><a href="#过滤器">过滤器</a>
+<ul>
+<li><a href="#常用的过滤器">常用的过滤器</a></li>
+</ul></li>
+<li><a href="#flask的继承">flask的继承</a></li>
+<li><a href="#flask的继承之block">flask的继承之block</a></li>
+<li><a href="#url链接">url链接</a></li>
+<li><a href="#加载静态文件">加载静态文件</a></li>
+<li><a href="#flask-sqlalchemy的介绍与安装">Flask-SQLAlchemy的介绍与安装</a></li>
+<li><a href="#session的使用">session的使用</a></li>
+<li><a href="#传参-1">传参</a></li>
+<li><a href="#g对象">g对象</a></li>
+<li><a href="#钩子函数">钩子函数</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>入门笔记。
+<!-- more --></p>
+
+<blockquote>
+<p>2018-10-21 开始
+&gt; 2018-11-1结束</p>
+</blockquote>
+
+<h2 id="flask学习">flask学习</h2>
+
+<!-- TOC -->
+
+<ul>
+<li><a href="#flask学习">flask学习</a></li>
+<li><a href="#安装flask的运行环境">安装flask的运行环境</a></li>
+<li><a href="#运行环境">运行环境</a></li>
+<li><a href="#路由">路由</a></li>
+<li><a href="#debug模式">debug，模式</a></li>
+<li><a href="#唯一-url--重定向行为">唯一 URL / 重定向行为</a></li>
+<li><a href="#使用配置文件">使用配置文件</a></li>
+<li><a href="#传参">传参</a></li>
+<li><a href="#根据函数名生成对应的url">根据函数名生成对应的url</a></li>
+<li><a href="#页面跳转">页面跳转</a></li>
+<li><a href="#flask渲染jinja2模板和传参html模板使用">Flask渲染Jinja2模板和传参(html模板使用)</a></li>
+<li><a href="#简单的if语句的实现">简单的if语句的实现</a></li>
+<li><a href="#for循环">for循环</a></li>
+<li><a href="#字典的遍历">字典的遍历</a></li>
+<li><a href="#列表的遍历">列表的遍历</a></li>
+<li><a href="#简单的小示例">简单的小示例</a></li>
+<li><a href="#过滤器">过滤器</a></li>
+<li><a href="#常用的过滤器">常用的过滤器</a></li>
+<li><a href="#flask的继承">flask的继承</a></li>
+<li><a href="#flask的继承之block">flask的继承之block</a></li>
+<li><a href="#url链接">url链接</a></li>
+<li><a href="#加载静态文件">加载静态文件</a></li>
+<li><a href="#flask-sqlalchemy的介绍与安装">Flask-SQLAlchemy的介绍与安装</a></li>
+<li><a href="#session的使用">session的使用</a></li>
+<li><a href="#传参-1">传参</a></li>
+<li><a href="#g对象">g对象</a></li>
+<li><a href="#钩子函数">钩子函数</a></li>
+</ul>
+
+<!-- /TOC -->
+
+<h3 id="安装flask的运行环境">安装flask的运行环境</h3>
+
+<p>0x01  安装virtualenv</p>
+
+<pre><code class="language-sh">sudo apt-get install python-virtualenv
+</code></pre>
+
+<p>virtualenv 安装完毕后，你可以立即打开 shell 然后创建你自己的环境。我通常创建一个项目文件夹，并在其下创建一个 venv 文件夹</p>
+
+<pre><code class="language-sh">➜ Yang mkdir demo
+➜ Yang cd demo
+➜ demo ls
+➜ demo virtualenv venv
+</code></pre>
+
+<p>0x02 安装flask</p>
+
+<pre><code>pip install flask
+</code></pre>
+
+<p>0x03 配置mysql</p>
+
+<p>需要安装 <code>mysql-python</code>.</p>
+
+<p>在执行 <code>(venv) ➜ flask pip install mysql-python</code>时报错</p>
+
+<pre><code class="language-sh">Command &quot;python setup.py egg_info&quot; failed with error code 1 in /tmp/pip-install-RFPXoe/mysql-python/
+
+</code></pre>
+
+<p>原因是没有安装相关依赖。
+ubuntu下解决办法</p>
+
+<pre><code>(venv) ➜ sudo apt-get install libmysqlclient-dev
+(venv) ➜ sudo apt-get install python-dev
+
+
+</code></pre>
+
+<p>安装时要注意，要在<code>venv环境下安装</code>即在执行<code>. venv/bin/active</code>的目录下</p>
+
+<p><a href="http://docs.jinkan.org/docs/flask/installation.html#virtualenv">flask手册</a></p>
+
+<h3 id="运行环境">运行环境</h3>
+
+<pre><code>. venv/bin/activate
+</code></pre>
+
+<h3 id="路由">路由</h3>
+
+<pre><code class="language-python">
+@app.route('/')
+def hello_word():
+return 'hello word'
+@app.route('/index')
+def index():
+return &quot;this is index page!&quot;
+if __name__ == '__main__': # 如果当前这个文件是作为入口程序运行的话，就会执行`app.run`。
+app.run()
+</code></pre>
+
+<p>利用route装饰器将函数与路径绑定，这个route装饰器的作用就是做一个url与视图函数的映射。 即访问<code>127.0.0.1:5000、/</code>便执行<code>hello_word</code>函数</p>
+
+<h3 id="debug-模式">debug，模式</h3>
+
+<p>开启debug模式</p>
+
+<pre><code class="language-python">app.run(debug=True)
+
+</code></pre>
+
+<p>作用1</p>
+
+<pre><code>将报错信息输出到页面
+
+</code></pre>
+
+<p>作用2</p>
+
+<pre><code>
+开启debug的文件内容如果被改动，就会自行重启服务器，也就是重新加载，不用在去重新运行`python 1.py`
+
+</code></pre>
+
+<h3 id="唯一-url-重定向行为">唯一 URL / 重定向行为</h3>
+
+<p>使用route设置路径的时候最好带上斜线，原因如下</p>
+
+<p>例1：</p>
+
+<pre><code class="language-python">@app.route('/index')
+def index():
+return &quot;this is index page!&quot;
+
+# http://127.0.0.1:5000/index/ 会报错 404 not found
+# http://127.0.0.1:5000/index
+</code></pre>
+
+<p>例2：</p>
+
+<pre><code class="language-python">@app.route('/index/')
+def index():
+return &quot;this is index page!&quot;
+
+# http://127.0.0.1:5000/index/
+# http://127.0.0.1:5000/index 会重定向到 /index/
+</code></pre>
+
+<h3 id="使用配置文件">使用配置文件</h3>
+
+<p>在项目根目录新建<code>config.py</code></p>
+
+<p>在主函数文件导入config.py，并且配置到<code>app</code>中，</p>
+
+<pre><code class="language-python">import config
+app.config.from_object(config)
+</code></pre>
+
+<p>config.py</p>
+
+<pre><code class="language-python">#encoding: utf-8
+import os
+
+DEBUG = True
+
+SECRET_KEY = os.urandom(24)
+
+</code></pre>
+
+<p><strong><em>config中的变量要大写，不然不起作用。</em></strong></p>
+
+<h3 id="传参">传参</h3>
+
+<p>示例</p>
+
+<pre><code class="language-python">@app.route('/id/&lt;int:id&gt;')
+def show(id):
+return 'this is you id %s' % id
+# http://127.0.0.1:5000/id/1
+# 输出 this is you id 1
+
+</code></pre>
+
+<h3 id="根据函数名生成对应的url">根据函数名生成对应的url</h3>
+
+<pre><code class="language-python">from flask import Flask,url_for
+app = Flask(__name__)
+@app.route('/')
+def index(): pass
+@app.route('/login')
+def login(): pass
+@app.route('/test_name/&lt;username&gt;')
+def profile(username): pass
+
+with app.test_request_context():
+print url_for('index')
+print url_for('login')
+print url_for('login',next='123',ne='sa')
+print url_for('profile',username='yang',nexe='1')
+</code></pre>
+
+<p>作用
+重定向和跳转页面的时候使用该函数</p>
+
+<h3 id="页面跳转">页面跳转</h3>
+
+<pre><code class="language-python">#encoding: utf-8
+from flask import Flask,url_for,redirect
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+# return redirect('/login/')
+return redirect(url_for('login'))
+return 'this is index page'
+
+@app.route('/login/')
+def login():
+return 'this is login pa1ge'
+
+if __name__ == '__main__':
+app.run(debug=True)
+</code></pre>
+
+<h3 id="flask渲染jinja2模板和传参-html模板使用">Flask渲染Jinja2模板和传参(html模板使用)</h3>
+
+<p>flask的渲染方法有<code>render_template</code>和<code>render_template_string</code>两种。</p>
+
+<p>模板的使用需要 导入<code>render_template</code>和<code>render_template_string</code> 模块。</p>
+
+<p>调用示例</p>
+
+<pre><code>
+# return render_template('demo.html')
+# return render_template_string('&lt;script&gt;alert(1);&lt;/script&gt;')
+
+</code></pre>
+
+<p>主要看一下 <code>render_template</code>的使用
+1. render_template
+同目录下新建<code>templates</code>文件夹。（刚开始少写了一个<code>s</code>，运行的时候一直报500.）</p>
+
+<p><code>templates</code>文件夹下存放html文件。目录结构如下</p>
+
+<pre><code>templates/
+demo.html
+sec_html/
+demo1.html
+1.py
+</code></pre>
+
+<p>1.py</p>
+
+<pre><code class="language-python">#encoding: utf-8
+from flask import Flask,request
+from flask import render_template
+app = Flask(__name__)
+
+
+@app.route('/html/')
+def html_page():
+# 两种传入HTML文件参数的方式
+# return render_template('demo.html',username='yang',password='1234')
+content = {
+'username' : 'yang',
+'password' : '1234',
+'array':{
+'yang': 'yam',
+'Yang1k' : 'Yang1k'
+}
+}
+return render_template('demo.html',**content)
+
+</code></pre>
+
+<p>demo.html</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;my name is &amp;#123;&amp;#123;username&amp;#125;&amp;#125; and my password is &amp;#123;&amp;#123;password&amp;#125;&amp;#125;&lt;/h1&gt;
+&lt;h1&gt;my name is &amp;#123;&amp;#123;array.yang&amp;#125;&amp;#125; and my password is &amp;#123;&amp;#123;array['Yang1k']&amp;#125;&amp;#125;&lt;/h1&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+
+<h3 id="简单的if语句的实现">简单的if语句的实现</h3>
+
+<p>1.py</p>
+
+<pre><code class="language-python">@app.route('/login_res/&lt;int:is_login&gt;')
+def is_login(is_login):
+print url_for('is_login',is_login='1')
+content={
+'username' : 'yang',
+'age': 18
+}
+if is_login == 1:
+return render_template('demo.html',**content)
+else:
+return render_template('demo.html')
+
+</code></pre>
+
+<p>demo.html</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;{% if username and age&gt;17%}&lt;/h1&gt;
+&lt;h4&gt;my name is &amp;#123;&amp;#123;username&amp;#125;&amp;#125;&lt;/h4&gt;
+&lt;h4&gt;my age is &amp;#123;&amp;#123;age&amp;#125;&amp;#125;&lt;/h4&gt;
+{%else%}
+&lt;h4&gt;么有信息&lt;/h4&gt;
+{% endif %}
+&lt;/body&gt;
+&lt;/html&gt;
+
+
+</code></pre>
+
+<p>url <code>http://127.0.0.1:5000/login_res/0</code></p>
+
+<h3 id="for循环">for循环</h3>
+
+<h4 id="字典的遍历">字典的遍历</h4>
+
+<p>1.py</p>
+
+<pre><code class="language-python">@app.route('/for')
+def for_1():
+user = {
+&quot;username&quot;:&quot;yang&quot;,
+&quot;age&quot;:&quot;11&quot;
+}
+# for k,v in user.items():
+# print k
+# print v
+return render_template(&quot;demo.html&quot;,user=user)
+</code></pre>
+
+<p>遍历的时候还可以使用<code>keys()</code>和<code>values()</code>函数。不是只有<code>items()</code>函数</p>
+
+<p>demo.html</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+{% for k,v in user.items()%}
+&lt;h5&gt;&amp;#123;&amp;#123;k&amp;#125;&amp;#125; is &amp;#123;&amp;#123;v&amp;#125;&amp;#125;&lt;/h5&gt;
+
+{% endfor%}
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+
+<h4 id="列表的遍历">列表的遍历</h4>
+
+<p>1.py</p>
+
+<pre><code class="language-python">
+@app.route('/list')
+def for_list():
+user = ['yang','Yang1k']
+for x in user:
+print x
+return render_template('demo.html',user=user)
+</code></pre>
+
+<p>demo.html</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+{% for x in user %}
+&lt;h4&gt;name : &amp;#123;&amp;#123;x&amp;#125;&amp;#125;&lt;/h4&gt;
+{% endfor %}
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h4 id="简单的小示例">简单的小示例</h4>
+
+<p>1.py</p>
+
+<pre><code class="language-python">
+@app.route('/books')
+def books():
+information = [
+{
+'name' : u'西游记',
+'price' : '45',
+'number' : '777'
+},
+{
+'name' : u'三国演义',
+'price' : '46',
+'number' : '888'
+},
+{
+'name' : u'水浒传',
+'price' : '47',
+'number' : '999'
+},
+{
+'name' : u'红楼梦',
+'price' : '48',
+'number' : '1000'
+}
+]
+# for book in information:
+# print book['name']
+return render_template(&quot;demo.html&quot;,xinxi=information)
+# return '1'
+
+</code></pre>
+
+<p>demo.html</p>
+
+<pre><code class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+
+&lt;table border=&quot;1px&quot;&gt;
+&lt;tr&gt;
+&lt;td&gt;书名&lt;/td&gt;
+&lt;td&gt;钱&lt;/td&gt;
+&lt;td&gt;页&lt;/td&gt;
+&lt;/tr&gt;
+{% for book in xinxi%}
+&lt;tr&gt;
+&lt;td&gt;&amp;#123;&amp;#123;book['name']&amp;#125;&amp;#125;&lt;/td&gt;
+&lt;td&gt;&amp;#123;&amp;#123;book['price']&amp;#125;&amp;#125;&lt;/td&gt;
+&lt;td&gt;&amp;#123;&amp;#123;book.number&amp;#125;&amp;#125;&lt;/td&gt;
+&lt;/tr&gt;
+{% endfor%}
+&lt;/table&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+
+<h3 id="过滤器">过滤器</h3>
+
+<ul>
+<li>default</li>
+<li>length</li>
+</ul>
+
+<p>default - 如果变量的值为空，则取default设置的值。</p>
+
+<p>demo.html</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+
+&amp;#123;&amp;#123;a|default('qweqwe')&amp;#125;&amp;#125;
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+
+<ul>
+<li>length</li>
+</ul>
+
+<p>1.py</p>
+
+<pre><code class="language-python">
+
+@app.route('/guolv')
+def index_1():
+comment = [
+{
+'user' : 'yang',
+'pass' : '123'
+},
+{
+'user' : 'Yang1k',
+'pass' : '456'
+}
+]
+return render_template('demo.html',comment=comment)
+
+</code></pre>
+
+<p>demo.html</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+
+数量：&amp;#123;&amp;#123;comment|length&amp;#125;&amp;#125;
+
+{% for comment in comment%}
+&lt;li&gt;&amp;#123;&amp;#123;comment.user&amp;#125;&amp;#125;&lt;/li&gt;
+&lt;li&gt;&amp;#123;&amp;#123;comment.pass&amp;#125;&amp;#125;&lt;/li&gt;
+{% endfor %}
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+
+<p>输出结果</p>
+
+<pre><code>数量：2
+yang
+123
+Yang1k
+456
+
+</code></pre>
+
+<h4 id="常用的过滤器">常用的过滤器</h4>
+
+<pre><code>abs(value)：返回一个数值的绝对值。示例：-1|abs
+escape(value)或e：转义字符，会将&lt;、&gt;等符号转义成HTML中的符号。显例：content|escape或content|e。
+first(value)：返回一个序列的第一个元素。示例：names|first
+format(value,arags,*kwargs)：格式化字符串。比如：&amp;#123;&amp;#123; &quot;%s&quot; - &quot;%s&quot;|format('Hello?',&quot;Foo!&quot;) &amp;#125;&amp;#125;将输出：Helloo? - Foo!
+last(value)：返回一个序列的最后一个元素。示例：names|last。
+length(value)：返回一个序列或者字典的长度。示例：names|length。
+join(value,d=u”)：将一个序列用d这个参数的值拼接成字符串。
+safe(value)：如果开启了全局转义，那么safe过滤器会将变量关掉转义。示例：content_html|safe。
+int(value)：将值转换为int类型。
+float(value)：将值转换为float类型。
+lower(value)：将字符串转换为小写。
+upper(value)：将字符串转换为小写。
+replace(value,old,new)： 替换将old替换为new的字符串。
+truncate(value,length=255,killwords=False)：截取length长度的字符串。
+striptags(value)：删除字符串中所有的HTML标签，如果出现多个空格，将替换成一个空格。
+trim：截取字符串前面和后面的空白字符
+string(value)：将变量转换成字符串。
+wordcount(s)：计算一个长字符串中单词的个数。
+
+</code></pre>
+
+<h3 id="flask的继承">flask的继承</h3>
+
+<p>这里的继承和php的include是一个意思的。</p>
+
+<p>具体写法</p>
+
+<p>1.py</p>
+
+<pre><code class="language-python">@app.route('/user_login/')
+def user_login():
+return render_template('login.html')
+
+</code></pre>
+
+<p>login.html</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot; /&gt;
+&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+&lt;title&gt;Page Title&lt;/title&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;main.css&quot; /&gt;
+&lt;script src=&quot;main.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+{% extends 'base.html' %} &lt;!-- 继承的写法 --&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+
+<p>同目录下新建base.html，这个文件就存放着公用的代码</p>
+
+<p>base.html</p>
+
+<pre><code class="language-html">&lt;style&gt;
+.nav{
+background-color: #3a3a3a;
+height: 65px;
+}
+ul{
+overflow: hidden;
+}
+ul li{
+float: left;
+list-style: none;
+padding: 0 10px;
+line-height: 65px;
+}
+ul li a{
+color: #ffffff;
+}
+
+&lt;/style&gt;
+
+&lt;div class=&quot;nav&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#&quot;&gt;首页&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#&quot;&gt;发布问答&lt;/a&gt;&lt;/li&gt;
+
+&lt;/ul&gt;
+&lt;/div&gt;
+
+</code></pre>
+
+<h3 id="flask的继承之block">flask的继承之block</h3>
+
+<p>先写一下block的作用，extends是继承了整个base.html文件里的所有的公用代码，但是如果还想在生成的子页面中添加一些自定义的代码呢,看代码</p>
+
+<p>base.html（公用代码）</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;style&gt;
+.nav{
+background-color: #3a3a3a;
+height: 65px;
+}
+ul{
+overflow: hidden;
+}
+ul li{
+float: left;
+list-style: none;
+padding: 0 10px;
+line-height: 65px;
+}
+ul li a{
+color: #ffffff;
+}
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div class=&quot;nav&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#&quot;&gt;首页&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#&quot;&gt;发布问答&lt;/a&gt;&lt;/li&gt;
+
+&lt;/ul&gt;
+&lt;/div&gt;
+
+{% block main%}
+{% endblock %}
+
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>index.html</p>
+
+<pre><code class="language-html">{% extends 'base.html'%}
+
+{% block main%}
+&lt;h1&gt;this is hello page&lt;/h1&gt;
+{% endblock %}
+</code></pre>
+
+<p>login.html</p>
+
+<pre><code class="language-html">{% extends 'base.html' %}
+{% block main%}
+&lt;h1&gt;this is login page!&lt;/h1&gt;
+{% endblock%}
+
+</code></pre>
+
+<p>这里如果不使用<code>block</code>，直接在index.html , login.html中写html代码的话，页面是无法正常显示html代码的。所以要在<code>base.html</code>中添加一个模板，然后在子文件中使用<code>block</code>来继承模板，然后再在<code>block</code>中写html代码。
+<code>blockl</code>就相当于占位符的作用。</p>
+
+<h3 id="url链接">url链接</h3>
+
+<p>使用 <code>url_for()</code>函数可以反转生成url。</p>
+
+<h3 id="加载静态文件">加载静态文件</h3>
+
+<ol>
+<li>语法 <code>url_for('static',filename='路径')</code></li>
+<li>静态文件 ，flask会自动从<code>static</code>文件夹开始寻找，所以不需要再写<code>static</code>这个路径</li>
+<li>可以加载css文件，js文件，还有image图片</li>
+<li>要把静态文件放在<code>static</code>目录下
+直接在html中写就可以。</li>
+</ol>
+
+<p>示例（加载图片）
+index.html</p>
+
+<pre><code>&lt;img src=&quot;&amp;#123;&amp;#123; url_for('static',filename='7.jpg')&amp;#125;&amp;#125;&quot; alt=&quot;&quot;&gt;
+
+</code></pre>
+
+<p>1.py</p>
+
+<pre><code class="language-python">@app.route('/css/')
+def css():
+return render_template('index.html')
+
+</code></pre>
+
+<h3 id="flask-sqlalchemy的介绍与安装">Flask-SQLAlchemy的介绍与安装</h3>
+
+<ol>
+<li>ORM： Object Relationship Mapping(模型关系映射)</li>
+<li>flask-sqlalchemy是一套ORM框架</li>
+<li>ORM的好处，可以让我们操作数据库跟操作对象一样简单，很方便。一个表就抽象成一个类，一条数据就抽象成该类的一个对象。</li>
+<li>安装<code>Flask-SQLAlchemy</code>： <code>pip install flask-sqlalchemy</code></li>
+</ol>
+
+<h3 id="session的使用">session的使用</h3>
+
+<p>需要导入session模块的</p>
+
+<pre><code class="language-python">from flask import session
+app.config['SECRET_KEY'] = os.urandom(24)
+
+#设置session
+@app.route('/sess/')
+def hi():
+session['name'] = 'Yang'
+return 'hello word'
+
+# 读取session
+@app.route('/get/')
+def get():
+return session.get('name')
+
+# 删除session其中的一个
+@app.route('/delete/')
+def delete():
+print session.get('name')
+session.pop('name')
+print session.get('name')
+return 'sussec'
+
+# 清除session中的所用变量
+@app.route('/clear/')
+def clear():
+print session.get('name')
+session.clear()
+print session.get('name')
+return 'sussec'
+
+# 设置session过期时间
+
+@app.route('/sess/')
+def hi():
+session['name'] = 'Yang'
+# 默认是flase，会话结束后session就过期。设置是True后，过期时间为30天
+session.permanent = True
+return 'hello word'
+
+</code></pre>
+
+<p>尝试将<code>session.permanent = True</code>设置到config里，但是不行。那就哪里用到了，就在哪里设置吧。</p>
+
+<h3 id="传参-1">传参</h3>
+
+<ol>
+<li><p>获取get传参</p>
+
+<pre><code class="language-python">
+@app.route('/get/')
+def re_get():
+# 获取get参数
+a = request.args.get('id')
+return a
+
+</code></pre></li>
+
+<li><p>post传参</p>
+
+<pre><code class="language-python">
+# 如果不写明`methods`的话，post请求将不被允许
+@app.route('/login/',methods=['get','POST'])
+def login():
+# 区分大小写
+if request.method == 'GET':
+return render_template('login.html')
+else:
+# 获取post传参的值
+username = request.form.get('username')
+password = request.form.get('password')
+return '%s %s'%(username,password)
+
+</code></pre></li>
+</ol>
+
+<h3 id="g对象">g对象</h3>
+
+<p>使用示例</p>
+
+<pre><code>
+''' g对象 '''
+from flask import g
+from utils import login_log
+@app.route('/login/',methods=['GET','POST'])
+def login():
+if request.method == 'GET':
+return render_template('login.html')
+else:
+username = request.form.get('username')
+password = request.form.get('password')
+g.username = username
+login_log()
+if username == 'yang' and password == 'qwe':
+return u'登录成功'
+else:
+return u'账号密码错误！'
+
+</code></pre>
+
+<p>在根目录新建<code>untils.py</code>，内容如下</p>
+
+<pre><code class="language-python">#encoding: utf-8
+from flask import g
+
+def login_log():
+print u'%s 登录成功'%(g.username)
+
+</code></pre>
+
+<p>g对象就是一个全局数组一样。
+g：global
+1. g对象是专门用来保存用户的数据的。
+2. g对象在一次请求中的所有的代码的地方，都是可以使用的。</p>
+
+<h3 id="钩子函数">钩子函数</h3>
+
+<ol>
+<li>before_request
+before_request：在请求之前执行的</li>
+</ol>
+
+<p>这个函数只是一个装饰器，可以让代码在视图函数执行之前执行。</p>
+
+<p>简单示例</p>
+
+<pre><code class="language-python">@app.before_request
+def before():
+if session.get('username'):
+g.username = session.get('username')
+
+
+</code></pre>
+
+<ol>
+<li>上下文处理器</li>
+</ol>
+
+<p>1.py</p>
+
+<pre><code class="language-python">上下文处理器
+@app.context_processor
+def my_context():
+return {'username':'yang'}
+
+@app.route('/content/')
+def content():
+return render_template('index.html',username='yang')
+# 在使用了上下文处理器后，下面这种渲染方法也是ok的。
+
+return render_template('index.html')
+</code></pre>
+
+<p>index.html</p>
+
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot; /&gt;
+&lt;title&gt;Page Title&lt;/title&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;main.css&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&amp;#123;&amp;#123;username&amp;#125;&amp;#125;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+
+<p>在渲染模板的时候需要在渲染函数中设置<code>username</code>变量，才可以在index.html中显示出username，但是如果使用上下文处理器，他会自动注册username变量，使其在所有模板中均可使用。</p>
+
+<p>这个可以用到判断是否有用户登录，如果用户登录的话，就将用户名赋值给username，这样所有的模板文件都可以使用username变量了。</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fflask%25E5%25AD%25A6%25E4%25B9%25A0%2f - flask%e5%85%a5%e9%97%a8 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

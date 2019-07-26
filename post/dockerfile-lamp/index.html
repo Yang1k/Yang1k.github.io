@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="dockerfile-&gt;LAMP"/>
+  <meta name="twitter:description" content="简述
+
+dockerfiel可以说是一个用来生成指定image的脚本,可以很方便的迁移,生成新的image.
+
+这里记录一下使用时踩的坑点.
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>dockerfile-&gt;LAMP &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        dockerfile-&gt;LAMP
+                    </h1>
+                    <h2 class="headline">
+                    Aug 12, 2018 09:54
+                    · 354 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/linux">Linux</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#简述">简述</a></li>
+<li><a href="#常用指令">常用指令</a></li>
+<li><a href="#静默安装mysql">静默安装mysql</a>
+<ul>
+<li><a href="#起因">起因</a></li>
+<li><a href="#编写">编写</a></li>
+</ul></li>
+<li><a href="#cmd使用问题">CMD使用问题</a>
+<ul>
+<li><a href="#解决办法">解决办法</a></li>
+</ul></li>
+<li><a href="#搭建lamp的dockerfile">搭建LAMP的dockerfile</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="简述">简述</h2>
+
+<p>dockerfiel可以说是一个用来生成指定image的脚本,可以很方便的迁移,生成新的image.</p>
+
+<p>这里记录一下使用时踩的坑点.
+<!-- more --></p>
+
+<h2 id="常用指令">常用指令</h2>
+
+<ol>
+<li>FROM</li>
+</ol>
+
+<p>指定生成的image的基础镜像</p>
+
+<p>示例</p>
+
+<pre><code>FORM ubuntu:16.04
+</code></pre>
+
+<p>基础镜像可以在<a href="https://store.docker.com/">Docker store</a>里找.</p>
+
+<ol>
+<li>RUN
+用来执行命令行命令</li>
+</ol>
+
+<p>语法</p>
+
+<pre><code>//shell格式
+RUN &lt;命令&gt;
+
+//exec格式
+RUN [&quot;可执行文件&quot;, &quot;参数1&quot;, &quot;参数2&quot;]
+
+</code></pre>
+
+<p>具体示例</p>
+
+<pre><code>RUN apt-get update &amp;&amp; \
+    apt-get install -y apache2 software-properties-common &amp;&amp; \
+    LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php &amp;&amp; \
+
+</code></pre>
+
+<p>需要注意的是 最好不要将要执行的命令一条条<code>RUN</code>.推荐写法是使用<code>&amp;&amp;</code>连接命令.</p>
+
+<ol>
+<li>COPY</li>
+</ol>
+
+<p>拷贝文件到镜像中</p>
+
+<p>语法</p>
+
+<pre><code>COPY  &lt;源路径&gt; &lt;目标路径&gt;
+
+or
+
+COPY [&quot;&lt;源路径1&gt;&quot;,&quot;&lt;目标路径&gt;&quot;]
+
+</code></pre>
+
+<p>示例</p>
+
+<p>将 www目录下的文件copy到容器的/var/www/html目录下(此时dockerfile文件和www目录在同一目录下)</p>
+
+<pre><code>COPY ./web1 /var/www/html
+
+</code></pre>
+
+<ol>
+<li>CMD</li>
+</ol>
+
+<p>和RUN命令相似,</p>
+
+<p>语法</p>
+
+<pre><code>shell 格式：CMD &lt;命令&gt;
+exec 格式：CMD [&quot;可执行文件&quot;, &quot;参数1&quot;, &quot;参数2&quot;...]
+参数列表格式：CMD [&quot;参数1&quot;, &quot;参数2&quot;]。
+
+</code></pre>
+
+<p>示例</p>
+
+<pre><code>CMD [&quot;sh&quot;,&quot;1.sh&quot;]
+</code></pre>
+
+<p>详细语法指令<a href="https://yeasy.gitbooks.io/docker_practice/image/dockerfile/">在这里</a>,</p>
+
+<h2 id="静默安装mysql">静默安装mysql</h2>
+
+<h3 id="起因">起因</h3>
+
+<p>网上有很多的搭建<code>apache+mysql</code>的dockerfile文章,但是没找到<code>apache+mysql+php</code>的.所以自己写一个.</p>
+
+<h3 id="编写">编写</h3>
+
+<p><code>apache+php</code>的很好写,但是在编写<code>mysql</code>的时候出现了问题.网上的很多都是编译安装的mysql,而我用的apt安装.</p>
+
+<p>在apt安装的过程中需要我们自己设置mysql的用户密码.然而build dockerfile的时候,我们并不能与之交互.</p>
+
+<p>所以要想办法在不用我们设置密码的情况下安装mysql.</p>
+
+<p>方法如下</p>
+
+<pre><code>echo 'mysql-server-5.7 mysql-server/root_password password your_password' | sudo debconf-set-selections
+echo 'mysql-server-5.7 mysql-server/root_password_again password your_password' | sudo debconf-set-selections
+apt-get install -y mysql-server
+apt-get install -y mysql-client
+</code></pre>
+
+<h2 id="cmd使用问题">CMD使用问题</h2>
+
+<p>在写完dockerfile之后,在最后用了CMD来执行写的shell脚本.shell脚本如下</p>
+
+<p>1.sh</p>
+
+<pre><code>#!/bin/bash
+
+service apache2 start
+service mysql start
+mysql -uroot -proot -e 'source /web1.sql'
+rm -rf /var/www/html/index.html
+</code></pre>
+
+<p>构造镜像</p>
+
+<pre><code>docker build -t web123 .
+
+</code></pre>
+
+<p>然后启动image</p>
+
+<pre><code>docker run -dit web123
+</code></pre>
+
+<p>然后查看容器,发现并没有启动起来,状态是<code>Exited</code>.然后又试了很多次,发现只要dockerfile里有<code>CMD</code>指令,容器就run不起来.</p>
+
+<p>一番折腾后找到原因.</p>
+
+<pre><code>Docker 不是虚拟机，容器中的应用都应该以前台执行，而不是像虚拟机、物理机里面那样，用 upstart/systemd 去启动后台服务，容器内没有后台服务的概念。所以在执行玩cmd命令后就直接退出了.
+</code></pre>
+
+<h3 id="解决办法">解决办法</h3>
+
+<p>在1.sh后添加如下内容</p>
+
+<pre><code>while true
+do
+ sleep 1
+done
+</code></pre>
+
+<p>添加一个死循环后,命令就不会被退出.
+最终的的 <code>1.sh</code>如下</p>
+
+<pre><code>#!/bin/bash
+
+service apache2 start
+service mysql start
+mysql -uroot -proot -e 'source /web1.sql'
+rm -rf /var/www/html/index.html
+while true
+do
+ sleep 1
+done
+
+
+</code></pre>
+
+<h2 id="搭建lamp的dockerfile">搭建LAMP的dockerfile</h2>
+
+<p>dockerfile</p>
+
+<pre><code>#===========================
+# 标准镜像，只支持ubuntu和centos
+#===========================
+FROM ubuntu:16.04
+
+MAINTAINER Yang
+
+
+  
+#============
+# 安装apache2 php软件等
+#============
+RUN apt-get update &amp;&amp; \
+    apt-get install -y apache2 software-properties-common &amp;&amp; \
+    LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php &amp;&amp; \
+    apt-get update &amp;&amp; \
+    apt-get install -y \
+	libapache2-mod-php5.6 \
+	php5.6 \
+	php5.6-cli \
+	php5.6-curl \
+	php5.6-dev \
+	php5.6-gd \
+	php5.6-imap \
+	php5.6-mbstring \
+	php5.6-mcrypt \
+	php5.6-mysql \
+	php5.6-pgsql \
+	php5.6-pspell \
+	php5.6-xml \
+	php5.6-xmlrpc \
+	php-apcu \
+	php-memcached \
+	php-pear \
+	php-redis \
+    &amp;&amp; apt-get clean \
+    &amp;&amp; rm -fr /var/lib/apt/lists/*
+
+#============
+# 安装mysql
+#============
+RUN apt-get update &amp;&amp; \
+	echo 'mysql-server-5.7 mysql-server/root_password password root' |  debconf-set-selections &amp;&amp; \
+	echo 'mysql-server-5.7 mysql-server/root_password_again password root' | debconf-set-selections &amp;&amp; \
+	apt-get -y install mysql-server &amp;&amp; \
+	apt-get -y install mysql-client &amp;&amp; \
+	apt-get clean &amp;&amp; \
+	rm -fr /var/lib/apt/lists/*
+
+#============
+# 拷贝文件
+#============
+
+COPY ./web1 /var/www/html
+COPY ./web1.sql /web1.sql
+COPY ./1.sh /1.sh
+RUN chmod 755 -R /1.sh
+CMD [&quot;sh&quot;,&quot;1.sh&quot;]
+
+</code></pre>
+
+<p>1.sh</p>
+
+<pre><code>
+#!/bin/bash
+
+service apache2 start
+service mysql start
+mysql -uroot -proot -e 'source /web1.sql'
+rm -rf /var/www/html/index.html
+while true
+do
+ sleep 1
+done
+
+
+</code></pre>
+
+<blockquote>
+<p>参考链接</p>
+</blockquote>
+
+<p><a href="https://blog.csdn.net/fickyou/article/details/50960444">https://blog.csdn.net/fickyou/article/details/50960444</a></p>
+
+<p><a href="http://xiaorui.cc/2015/01/09/%E9%80%9A%E8%BF%87%E4%BF%A1%E5%8F%B7%E8%A7%A3%E5%86%B3docker%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8%E5%90%8Eexited%E9%80%80%E5%87%BA%E7%9A%84%E9%97%AE%E9%A2%98/">http://xiaorui.cc/2015/01/09/%E9%80%9A%E8%BF%87%E4%BF%A1%E5%8F%B7%E8%A7%A3%E5%86%B3docker%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8%E5%90%8Eexited%E9%80%80%E5%87%BA%E7%9A%84%E9%97%AE%E9%A2%98/</a></p>
+
+<p><a href="https://codeday.me/bug/20170928/78022.html">https://codeday.me/bug/20170928/78022.html</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fdockerfile-lamp%2f - dockerfile-%3eLAMP "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

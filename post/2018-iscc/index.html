@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="2018-ISCC"/>
+  <meta name="twitter:description" content="前记
+
+记得第一次参加ISCC线上的时候，做的还是一脸懵逼，今年第二次做的时候感觉就不一样了，不知道是题目的难度变了，还是啥原因(233)。做的时候可以感觉得到很多都是原题，考察的点也很基础，这次碰见的两个有关密码的web题，之前自己都总结过，但是但是换系统的时候忘备份了！！！！心痛，刚好这次两个都碰见了，刚好做一下。然后再记录一下。
+
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>2018-ISCC &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        2018-ISCC
+                    </h1>
+                    <h2 class="headline">
+                    May 7, 2018 10:54
+                    · 246 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#前记">前记</a></li>
+<li><a href="#collide">Collide</a>
+<ul>
+<li><a href="#简单说一下原理">简单说一下原理</a></li>
+<li><a href="#扩展攻击实现的条件">扩展攻击实现的条件</a></li>
+<li><a href="#结合题目分析">结合题目分析</a></li>
+<li><a href="#操作">操作</a></li>
+<li><a href="#flag">flag</a></li>
+</ul></li>
+<li><a href="#only-admin-can-see-flag">Only admin can see flag</a></li>
+<li><a href="#操作-1">操作</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="前记">前记</h2>
+
+<p>记得第一次参加ISCC线上的时候，做的还是一脸懵逼，今年第二次做的时候感觉就不一样了，不知道是题目的难度变了，还是啥原因(233)。做的时候可以感觉得到很多都是原题，考察的点也很基础，这次碰见的两个有关密码的web题，之前自己都总结过，但是但是换系统的时候忘备份了！！！！心痛，刚好这次两个都碰见了，刚好做一下。然后再记录一下。</p>
+
+<!-- more -->
+
+<h2 id="collide">Collide</h2>
+
+<p>考察的是哈希长度扩展攻击</p>
+
+<h3 id="简单说一下原理">简单说一下原理</h3>
+
+<p>hash的MD5对数据进行加密的时候，是分组进行加密。
+MD5加密的时候会有四个初始向量IV，对第一组数据加密的时候利用的就是四个初始向量，不同的是，在对第二组数据进行加密的时候，使用的并不是四个初始向量，而是将前一组加密后的密文作为下一组的初始向量。
+哈希长度扩展攻击便是利用这个特性来实现的。</p>
+
+<h3 id="扩展攻击实现的条件">扩展攻击实现的条件</h3>
+
+<ul>
+<li>已知MD5($salt.$data)值，</li>
+<li>知道加密的$salt的长度</li>
+<li>知道$data的值</li>
+</ul>
+
+<h3 id="结合题目分析">结合题目分析</h3>
+
+<pre><code>&lt;?php
+include &quot;secret.php&quot;;
+@$username=(string)$_POST['username'];
+function enc($text){
+    global $key;
+    return md5($key.$text);
+}
+if(enc($username) === $_COOKIE['verify']){
+    if(is_numeric(strpos($username, &quot;admin&quot;))){
+        die($flag);
+    }
+    else{
+        die(&quot;you are not admin&quot;);
+    }
+}
+else{
+    setcookie(&quot;verify&quot;, enc(&quot;guest&quot;), time()+60*60*24*7);
+    setcookie(&quot;len&quot;, strlen($key), time()+60*60*24*7);
+}
+show_source(__FILE__);
+
+</code></pre>
+
+<p>从源码我们可以获得以下内容
+- enc(&ldquo;guest&rdquo;)的值为78cfc57d983b4a17e55828c001a3e781
+- $key的长度为46</p>
+
+<p>题目的关键代码</p>
+
+<pre><code>if(enc($username) === $_COOKIE['verify']){
+    if(is_numeric(strpos($username, &quot;admin&quot;))){
+        die($flag);
+    }
+</code></pre>
+
+<p>这段代码要求我们输入的username在经过enc函数加密之后，与$_COOKIE[&lsquo;verify&rsquo;]的值相等，并且username中必须含有admin。</p>
+
+<p>看到这里，我们就可以想到来利用哈希长度扩展来帮我们解决这个问题。</p>
+
+<p>而且题目给予我们的信息，刚好满足哈希长度扩展攻击的要求。</p>
+
+<h3 id="操作">操作</h3>
+
+<p>这里我们使用HashPump这个工具</p>
+
+<p>安装</p>
+
+<pre><code>git clone https://github.com/bwall/HashPump
+apt-get install g++ libssl-dev
+cd HashPump
+make
+make install
+
+</code></pre>
+
+<p>使用说明</p>
+
+<pre><code>Input Signature: 已知的hash值，这里是$_COOKIE['verify']的值
+Input Data: 上面的hash值解密后的字符串，这里是guest。
+Input Key Length: $key的长度
+Input Data to Add: 想要添加的数据，由于题目要求要含有admin，所以这里是admin。
+</code></pre>
+
+<p>使用</p>
+
+<pre><code>➜  HashPump hashpump
+Input Signature: 78cfc57d983b4a17e55828c001a3e781
+Input Data: guest
+Input Key Length: 46
+Input Data to Add: admin
+5f585093a7fe86971766c3d25c43d0eb
+guest\x80\x00\x00\x00\x00\x98\x01\x00\x00\x00\x00\x00\x00admin
+</code></pre>
+
+<p>然后我们将得到的hash值去替换数据包中$_COOKIE[&lsquo;verify&rsquo;]的值，然后post提交username=guest%80%00%00%00%00%98%01%00%00%00%00%00%00admin即可。</p>
+
+<p>最后一步的时候，我直接在抓的包里修改值了，但是忘记把GET修改成POST了，还以为哪里出错了。。。。</p>
+
+<h3 id="flag">flag</h3>
+
+<pre><code>ISCC{MD5_1s_n0t_5afe}
+</code></pre>
+
+<h2 id="only-admin-can-see-flag">Only admin can see flag</h2>
+
+<p>考察的是CBC翻转攻击</p>
+
+<h2 id="操作-1">操作</h2>
+
+<p>腳本1</p>
+
+<pre><code># -*- coding:utf-8 -*-
+
+import base64
+from urllib import unquote
+from urllib import quote_plus
+
+# bs = 'J67IvH4OY9t6QfcCP4Mp88bRfPKdsYszlev3LNbgPQ872VR633trbWfCqhcDYm6c3Eysp36W2SFkx4CPBX9nDQ%3D%3D'
+bs = &quot;IH0KQlnaEHXeG2c7r8%2BnzMZCMfaW%2BPN4yi2eNEGlIA5e%2F78Ceu9%2B8%2Bhs1qQ0Rbrpp5idda1V%2BW0dPSlJEgSjFw%3D%3D&quot;
+         
+#密文cipher，从Chrome的插件EditThisCookie可以很轻松get到
+bs = unquote(bs)
+#url解码
+bs_de = base64.b64decode(bs)
+#base64解码
+
+ch = chr(ord(bs_de[13]) ^ ord('2') ^ ord('n'))
+bs_de=bs_de[0:13]+ch+bs_de[14::]
+#其实就是bs_de[13]=chr(ord(bs_de[13]) ^ ord('2') ^ ord('n'))
+#因为python里面字符串不可变，即你直接bs_de = 'a'这样会报错
+
+rs = base64.b64encode(bs_de)
+#print rs
+print quote_plus(rs)
+
+</code></pre>
+
+<p>腳本2</p>
+
+<pre><code># -*- coding:utf-8 -*-
+
+import base64
+from urllib import unquote
+from urllib import quote_plus
+
+mingwen_de='UHRUCklmLkOojPr4ZN52zm1lIjtzOjU6ImFkbWluIjtzOjg6InBhc3N3b3JkIjtzOjA6IiI7fQ=='
+#base64_decode('这里面的') can't unserialize
+mingwen = base64.b64decode(mingwen_de)
+print mingwen
+
+iv = 'B13APJ%2BCscobPvKj99iNSw%3D%3D'
+#此时cookie里的iv
+iv = unquote(iv)
+iv_de = base64.b64decode(iv)
+new = 'a:2:{s:8:&quot;userna'
+for i in range(16):
+    iv_de = iv_de[:i] + chr(ord(iv_de[i]) ^ ord(mingwen[i]) ^ ord(new[i])) + iv_de[i+1:]
+#iv_de[i]=chr(ord(iv_de[i]) ^ ord(mingwen[i]) ^ ord(new[i]))
+
+print(base64.b64encode(iv_de))
+#用这个结果把原来的iv换掉
+</code></pre>
+
+<p>1.在登录页面输入admi2，然后直接点击登录。
+2.在chrome的EditThisCookie插件里获取cookie中cipher的值，然后将cipher的值复制到脚本1的bs里。
+3.用第二步的输出结果将cookie中的cipher替换掉。然后在地址栏敲下回车，不要点刷新。
+4.然后页面返回了一串base64，然后说反序列化失败。
+5.将第四步返回的base64字符串赋值给脚本2的mingwen_de。在将cookie的iv赋值给脚本2的iv。
+6.用第五步输出的结果替换掉cookie的iv，然后在地址栏敲回车，即可获取flag。</p>
+
+<p><a href="https://rhythmmark.github.io//bugku-web-login4-WP/">详解</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2f2018-iscc%2f - 2018-ISCC "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

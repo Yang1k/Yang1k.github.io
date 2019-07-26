@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="Linux-2"/>
+  <meta name="twitter:description" content="学习&hellip;.
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>Linux-2 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Linux-2
+                    </h1>
+                    <h2 class="headline">
+                    Apr 23, 2018 09:54
+                    · 594 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/linux">Linux</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#目录">目录</a></li>
+<li><a href="#基础">基础</a>
+<ul>
+<li><a href="#特殊符号表">特殊符号表</a></li>
+</ul></li>
+<li><a href="#grep进阶的选项与参数">grep进阶的选项与参数</a>
+<ul>
+<li><a href="#参数详解">参数详解</a></li>
+</ul></li>
+<li><a href="#sed">sed</a>
+<ul>
+<li><a href="#参数详解-1">参数详解</a></li>
+<li><a href="#练习">练习</a>
+<ul>
+<li><a href="#删除">删除</a></li>
+<li><a href="#添加">添加</a></li>
+<li><a href="#以行为单位的取代与显示">以行为单位的取代与显示</a></li>
+<li><a href="#部分数据的搜寻与取代的功能">部分数据的搜寻与取代的功能</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>学习&hellip;.
+<!-- more --></p>
+
+<h2 id="目录">目录</h2>
+
+<ul>
+<li>特殊符号表</li>
+<li>grep参数详解
+
+<ul>
+<li>搜索特定字符串</li>
+<li>利用中括号 [] 来搜寻集合字符</li>
+<li>行首与行尾字符(^ $)</li>
+<li>任意一个字符和重复字符(.和*)</li>
+<li>限定连续搜寻的字符的范围 {}</li>
+</ul></li>
+<li>sed</li>
+</ul>
+
+<h2 id="基础">基础</h2>
+
+<h3 id="特殊符号表">特殊符号表</h3>
+
+<table>
+<thead>
+<tr>
+<th>特殊符号</th>
+<th>代表意义</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>[:alnum:]</td>
+<td>代表英文大小写字符及数字，亦即 0-9, A-Z, a-z</td>
+</tr>
+
+<tr>
+<td>[:alpha:]</td>
+<td>代表任何英文大小写字符，亦即 A-Z, a-z</td>
+</tr>
+
+<tr>
+<td>[:blank:]</td>
+<td>代表空格键不 [Tab] 按键两者</td>
+</tr>
+
+<tr>
+<td>[:cntrl:]</td>
+<td>代表键盘上面的控制按键，亦即包括 CR, LF, Tab, Del.. 等等</td>
+</tr>
+
+<tr>
+<td>[:digit:]</td>
+<td>代表数字而已，亦即 0-9</td>
+</tr>
+
+<tr>
+<td>[:graph:]</td>
+<td>除了空格符 (空格键不 [Tab] 按键) 外的其他所有按键</td>
+</tr>
+
+<tr>
+<td>[:lower:]</td>
+<td>代表小写字符，亦即 a-z</td>
+</tr>
+
+<tr>
+<td>[:print:]</td>
+<td>代表任何可以被打印出来的字符</td>
+</tr>
+
+<tr>
+<td>[:punct:]</td>
+<td>代表标点符号 (punctuation symbol)，亦即：&rdquo; &lsquo; ? ! ; : # $&hellip;</td>
+</tr>
+
+<tr>
+<td>[:upper:]</td>
+<td>代表大写字符，亦即 A-Z</td>
+</tr>
+
+<tr>
+<td>[:space:]</td>
+<td>任何会产生空白的字符，包括空格键, [Tab], CR 等等</td>
+</tr>
+
+<tr>
+<td>[:xdigit:]</td>
+<td>代表 16 进位的数字类型，因此包括： 0-9, A-F, a-f 的数字不字符</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="grep进阶的选项与参数">grep进阶的选项与参数</h2>
+
+<h3 id="参数详解">参数详解</h3>
+
+<pre><code>[root@www ~]# grep [-acinv] [--color=auto] '搜寻字符串' filename
+选项与参数：
+-a ：将 binary 档案以 text 档案的方式搜寻数据
+-c ：计算找到 '搜寻字符串' 的次数
+-i ：忽略大小写的不同，所以大小写视为相同
+-n ：顺便输出行号
+-v ：反向选择，亦即显示出没有 '搜寻字符串' 内容的那一行！
+--color=auto ：可以将找到的关键词部分加上颜色的显示！
+
+
+-A ：后面可加数字，为 after 的意思，除了列出该行外，后续的 n 行也列出来；
+-B ：后面可加数字，为 befer 的意思，除了列出该行外，前面的 n 行也列出
+</code></pre>
+
+<p>练习</p>
+
+<p>1.搜索特定字符串</p>
+
+<pre><code>cat yang.txt| grep -n 'the'
+
+grep -n 'the' yang.txt
+# 才知道grep可以直接获得文件的内容，然后进行分析
+
+grep -vn 'the' yang.txt
+</code></pre>
+
+<p>2.利用中括号 [] 来搜寻集合字符</p>
+
+<pre><code>grep -n 't[ae]st' yang.txt
+
+grep -n '[^g]oo' yang.txt
+
+grep -n '[^a-z]oo' yang.txt
+
+grep -n '[0-9]' yang.txt
+
+grep -n '[^[:lower:]]oo' yang.txt
+
+grep -n '[[:digit:]]' yang.txt
+</code></pre>
+
+<p>3.行首与行尾字符(^ $)</p>
+
+<p>行首(^)</p>
+
+<pre><code>grep -n '^the' yang.txt
+
+grep -n '^[a-z]' yang.txt
+
+grep -n '^[[:lower:]]' yang.txt
+
+grep -n '^[^a-zA-Z]' yang.txt
+
+</code></pre>
+
+<p>^ 符号，在字符集合符号(中括号[])之内与之外是不同的！ 在 [] 内代表『反向选择』，在 [] 之外则代表定位在行首的意义</p>
+
+<p>行尾($)</p>
+
+<pre><code>找出行尾为‘.’的行。
+grep -n '\.$' yang.txt
+找出空白行
+grep -n '^$' yang.txt  
+
+</code></pre>
+
+<p>在一些配置文件中会有一些以‘#’开头的注释内容，还会有一些空白行，那么使用grep配合正则表达式来去除配置文件中注释的内容和空白行</p>
+
+<pre><code>grep -v '^#' sysctl.conf | grep -nv '^$'
+</code></pre>
+
+<p>错误写法</p>
+
+<pre><code>grep -v '^#' sysctl.conf | grep -nv '^$' sysctl.conf
+</code></pre>
+
+<p>这样写的错误之处，在于在管线命令后，我们又使用grep对sysctl.conf文件进行了文件内容的正则匹配。这样就等于说我们对于内容的处理进行了，两次，而且这两次的结果是后者覆盖前者。</p>
+
+<p>然而我们想要的效果是在去除‘#‘之后，在进行去除空白行，所以直接在管线符后添加<code>grep -nv '^$'</code>即可，管线符的作用就是使用管线符后的命令来对前面的命令的输出结果再次进行处理。所以这里在后面的命令又添加一个文件名，就是脑子掉坑了！！！！</p>
+
+<p>4.任意一个字符和重复字符(.和*)</p>
+
+<ul>
+<li>小数点(.)：代表『一定有一个任意字符』的意思；</li>
+
+<li><p>星号(*)：代表『重复前一个 0 到无穷多次』的意思，为组合形态</p>
+
+<pre><code>➜  Linux grep -n 'g..d' yang.txt
+1:&quot;Open Source&quot; is a good mechanism to develop programs.
+9:Oh! The soup taste good.
+16:The world &lt;Happy&gt; is the same with &quot;glad&quot;.
+
+</code></pre></li>
+</ul>
+
+<p><strong><em>* 代表的是『重复 0 个或多个前面的字符(前面的一个字符，不是所有的)』</em></strong>
+因此，『o*』代表的是：『拥有空字符或一个 o 以上的字符』， 特别注意，因为允许空字符(就是有没有字符都可以的意思)，因此，『 grep -n&rsquo;o*&rsquo; regular_express.txt 』将会把所有的数据都打印到屏幕上！</p>
+
+<p>那如果是『oo*』呢？则第一个 o 肯定必须要存在，第二个 o 则是可有可无的多个 o ， 所以，凡是含有 o, oo, ooo, oooo 等等，都可以被列出来～</p>
+
+<p>同理，当我们需要『至少两个 o 以上的字符串』时，就需要 ooo*</p>
+
+<pre><code>#需要两个o以上的字符
+grep 'ooo*' yang.txt
+
+grep 'g.*g' yang.txt
+</code></pre>
+
+<p>5.限定连续 RE 字符范围 {}</p>
+
+<p>这个就是来规定前面字符出现的次数。
+示例
+找到出现两个 o 的字符串</p>
+
+<pre><code>grep 'o\{2\}' yang.txt
+</code></pre>
+
+<p>找出 g 后面接 2 到 5 个 o ，然后再接一个 g的字符串，</p>
+
+<pre><code>grep 'go\{2,5\}g' yang.txt
+</code></pre>
+
+<p>示例内容</p>
+
+<pre><code>&quot;Open Source&quot; is a good mechanism to develop programs.
+apple is my favorite food.
+Football game is not use feet only.
+this dress doesn't fit me.
+However, this dress is about $ 3183 dollars.
+GNU is free air not free beer.
+Her hair is very beauty.
+I can't finish the test.
+Oh! The soup taste good.
+motorcycle is cheap than car.
+This window is clear.
+the symbol '*' is represented as start.
+Oh!	My god!
+The gd software is a library for drafting programs.
+You are the best is mean you are the no. 1.
+The world &lt;Happy&gt; is the same with &quot;glad&quot;.
+I like dog.
+google is the best tools for search keyword.
+goooooogle yes!
+go! go! Let's go.
+# I am VBird
+
+</code></pre>
+
+<h2 id="sed">sed</h2>
+
+<p>作为Linux三剑客之一，这个是要好好练习一下的。</p>
+
+<h3 id="参数详解-1">参数详解</h3>
+
+<pre><code> sed [-nefr] [动作]
+-n ：使用安静(silent)模式。在一般 sed 的用法中，所有来自 STDIN的数据一般都会被列出到屏幕上。但如果加上 -n 参数后，则只有经过sed 特殊处理的那一行(或者动作)才会被列出来。
+-e ：直接在指令列模式上进行 sed 的动作编辑；
+-f ：直接将 sed 的动作写在一个档案内， -f filename 则可以执行 filename 内的
+-r ：sed 的动作支持的是延伸型正规表示法的语法。(预设是基础正规表示法语法)
+-i ：直接修改读取的档案内容，而不是由屏幕输出。
+</code></pre>
+
+<p>动作说明： [n1[,n2]]function</p>
+
+<pre><code>n1, n2 ：不见得会存在，一般代表『选择进行动作的行数』，举例来说，如果我的动作是需要在 10 到 20 行之间进行的，
+则『 10,20[动作行为] 』
+</code></pre>
+
+<p>function有以下选项</p>
+
+<pre><code>a ：新增， a 的后面可以接字符串，而这些字符串会在新的一行出现(目前的下一行)
+i ：插入， i 的后面可以接字符串，而这些字符串会在新的一行出现(目前的上一行)；
+c ：取代， c 的后面可以接字符串，这些字符串可以取代 n1,n2 之间的行！
+d ：删除，因为是删除啊，所以 d 后面通常不接任何东西；
+p ：打印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运作～
+s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g 就是啦！
+
+</code></pre>
+
+<h3 id="练习">练习</h3>
+
+<h4 id="删除">删除</h4>
+
+<pre><code>cat -n yang| sed '2,5d'
+cat -n yang| sed '2d' 
+cat -n yang| sed '3,$d'
+</code></pre>
+
+<h4 id="添加">添加</h4>
+
+<pre><code>cat -n yang| sed '2a yang'
+cat -n yang| sed '2i yang' 
+添加两行
+➜  Linux cat -n yang| sed '2i yang\ 
+pipe quote&gt; hhhhahahah'
+</code></pre>
+
+<h4 id="以行为单位的取代与显示">以行为单位的取代与显示</h4>
+
+<pre><code>cat -n yang| sed '2,5c yang'
+
+cat yang| sed -n '2,5p'
+
+</code></pre>
+
+<h4 id="部分数据的搜寻与取代的功能">部分数据的搜寻与取代的功能</h4>
+
+<p>这里和整行的取代不同，而是具体的数据的搜寻与取代</p>
+
+<pre><code>cat yang | sed 's/root/yang/g'
+
+只将IP取出
+ip add show | grep '119' | sed 's/^.*inet//g'| sed 's/ brd.*$//g'
+
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2flinux%25E5%25AD%25A6%25E4%25B9%25A02%2f - Linux-2 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

