@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>PHP on Yang1k</title>
-    <link>http://yang1k.github.io/tags/php/</link>
+    <link>https://yang1k.github.io/tags/php/</link>
     <description>Recent content in PHP on Yang1k</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Mon, 12 Nov 2018 09:54:35 +0000</lastBuildDate>
     
-	<atom:link href="http://yang1k.github.io/tags/php/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://yang1k.github.io/tags/php/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Phar反序列化</title>
-      <link>http://yang1k.github.io/post/phar/</link>
+      <link>https://yang1k.github.io/post/phar/</link>
       <pubDate>Mon, 12 Nov 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/phar/</guid>
+      <guid>https://yang1k.github.io/post/phar/</guid>
       <description>&lt;h2 id=&#34;前记&#34;&gt;前记&lt;/h2&gt;
 
 &lt;p&gt;大三了 课很多，在加上最近考驾照，感觉每天都过得浑浑噩噩的。
@@ -25,20 +25,20 @@
     
     <item>
       <title>命令执行与代码执行</title>
-      <link>http://yang1k.github.io/post/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8E%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</link>
+      <link>https://yang1k.github.io/post/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8E%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</link>
       <pubDate>Sat, 20 Oct 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8E%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</guid>
+      <guid>https://yang1k.github.io/post/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8E%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</guid>
       <description>&lt;p&gt;总结了一下在ctf里经常遇到的命令执行个代码执行的利用点。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>玄学-assert</title>
-      <link>http://yang1k.github.io/post/%E7%8E%84%E5%AD%A6-assert/</link>
+      <link>https://yang1k.github.io/post/%E7%8E%84%E5%AD%A6-assert/</link>
       <pubDate>Fri, 01 Jun 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E7%8E%84%E5%AD%A6-assert/</guid>
+      <guid>https://yang1k.github.io/post/%E7%8E%84%E5%AD%A6-assert/</guid>
       <description>&lt;h2 id=&#34;前&#34;&gt;前&lt;/h2&gt;
 
 &lt;p&gt;emmmmmm,本来只是一个一句话的函数，但是因为版本的问题，折腾了好久，所以记录一下&lt;/p&gt;
@@ -48,30 +48,30 @@
     
     <item>
       <title>SQL约束攻击</title>
-      <link>http://yang1k.github.io/post/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/</link>
+      <link>https://yang1k.github.io/post/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/</link>
       <pubDate>Wed, 20 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/</guid>
+      <guid>https://yang1k.github.io/post/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/</guid>
       <description>&lt;p&gt;感觉最终的效果和万能密码的差不多。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>南邮CTf writeup(web部分)</title>
-      <link>http://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</link>
+      <link>https://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</link>
       <pubDate>Wed, 13 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</guid>
+      <guid>https://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</guid>
       <description>&lt;p&gt;南邮ctf平台的一些web题解，有几个不能做。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>php弱类型</title>
-      <link>http://yang1k.github.io/post/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</link>
+      <link>https://yang1k.github.io/post/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</link>
       <pubDate>Wed, 08 Nov 2017 09:55:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</guid>
+      <guid>https://yang1k.github.io/post/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</guid>
       <description>&lt;p&gt;php弱类型比较在ctf平台上很常见，这次总结了一下。但感觉还是不全，以后遇到再补吧。。&lt;/p&gt;
 
 &lt;!-- more --&gt;</description>
@@ -79,30 +79,30 @@
     
     <item>
       <title>php-哈希比较缺陷总结</title>
-      <link>http://yang1k.github.io/post/php-md5%E6%AF%94%E8%BE%83%E7%BC%BA%E9%99%B7%E6%80%BB%E7%BB%93/</link>
+      <link>https://yang1k.github.io/post/php-md5%E6%AF%94%E8%BE%83%E7%BC%BA%E9%99%B7%E6%80%BB%E7%BB%93/</link>
       <pubDate>Wed, 08 Nov 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php-md5%E6%AF%94%E8%BE%83%E7%BC%BA%E9%99%B7%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://yang1k.github.io/post/php-md5%E6%AF%94%E8%BE%83%E7%BC%BA%E9%99%B7%E6%80%BB%E7%BB%93/</guid>
       <description>&lt;p&gt;总结一下存在比较缺陷的两个php加密函数sha1()和md5()
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>php的序列化与反序列化</title>
-      <link>http://yang1k.github.io/post/php%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+      <link>https://yang1k.github.io/post/php%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96/</link>
       <pubDate>Tue, 07 Nov 2017 09:50:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
+      <guid>https://yang1k.github.io/post/php%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
       <description>&lt;p&gt;序列化有利于数据的传输和存储，比如说需要将一个对象或者数组存储到数据库，如果是直接将对象或数组存储到数据库，是不能实现的。所以就需要将对象或数组进行序列化操作，使其变为一个字符串，这样就可以很方便的存储到数据库。从数据库取出来的是时候只要将其进行反序列化操作就可以将其还原为原来的样子。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>php全局数组$_SERVER[ ]总结</title>
-      <link>http://yang1k.github.io/post/php%E5%85%A8%E5%B1%80%E6%95%B0%E7%BB%84/</link>
+      <link>https://yang1k.github.io/post/php%E5%85%A8%E5%B1%80%E6%95%B0%E7%BB%84/</link>
       <pubDate>Thu, 07 Sep 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php%E5%85%A8%E5%B1%80%E6%95%B0%E7%BB%84/</guid>
+      <guid>https://yang1k.github.io/post/php%E5%85%A8%E5%B1%80%E6%95%B0%E7%BB%84/</guid>
       <description>&lt;p&gt;$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。这个数组中的项目由 Web 服务器创建。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>

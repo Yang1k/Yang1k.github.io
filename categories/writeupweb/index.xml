@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>writeup(web) on Yang1k</title>
-    <link>http://yang1k.github.io/categories/writeupweb/</link>
+    <link>https://yang1k.github.io/categories/writeupweb/</link>
     <description>Recent content in writeup(web) on Yang1k</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Thu, 30 Aug 2018 09:54:35 +0000</lastBuildDate>
     
-	<atom:link href="http://yang1k.github.io/categories/writeupweb/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://yang1k.github.io/categories/writeupweb/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>upload-labs Pass-16</title>
-      <link>http://yang1k.github.io/post/upload-pass16/</link>
+      <link>https://yang1k.github.io/post/upload-pass16/</link>
       <pubDate>Thu, 30 Aug 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/upload-pass16/</guid>
+      <guid>https://yang1k.github.io/post/upload-pass16/</guid>
       <description>&lt;h2 id=&#34;前记&#34;&gt;前记&lt;/h2&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://github.com/c0ny1/upload-labs&#34;&gt;upload-labs&lt;/a&gt;,是一个关于文件上传的靶场.具体的write-up社区里也都有文章.
@@ -26,10 +26,10 @@
     
     <item>
       <title>upload-labs writeup</title>
-      <link>http://yang1k.github.io/post/upload-labs/</link>
+      <link>https://yang1k.github.io/post/upload-labs/</link>
       <pubDate>Fri, 20 Jul 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/upload-labs/</guid>
+      <guid>https://yang1k.github.io/post/upload-labs/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/c0ny1/upload-labs&#34;&gt;upload-labs链接&lt;/a&gt;&lt;/p&gt;
 
 &lt;!-- more --&gt;</description>
@@ -37,10 +37,10 @@
     
     <item>
       <title>2018-iscc线下</title>
-      <link>http://yang1k.github.io/post/2018-iscc%E7%BA%BF%E4%B8%8B/</link>
+      <link>https://yang1k.github.io/post/2018-iscc%E7%BA%BF%E4%B8%8B/</link>
       <pubDate>Tue, 17 Jul 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2018-iscc%E7%BA%BF%E4%B8%8B/</guid>
+      <guid>https://yang1k.github.io/post/2018-iscc%E7%BA%BF%E4%B8%8B/</guid>
       <description>&lt;h2 id=&#34;前&#34;&gt;前&lt;/h2&gt;
 
 &lt;p&gt;真正意义上第一次打线下ad,比赛结束还是挺遗憾的,比赛过程中很多失误的地方.不然名次会更好一些..不过还是收获了很多.记录一下,继续成长吧.
@@ -49,10 +49,10 @@
     
     <item>
       <title>2018-SUCTF</title>
-      <link>http://yang1k.github.io/post/2018-suctf/</link>
+      <link>https://yang1k.github.io/post/2018-suctf/</link>
       <pubDate>Mon, 28 May 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2018-suctf/</guid>
+      <guid>https://yang1k.github.io/post/2018-suctf/</guid>
       <description>&lt;h2 id=&#34;前&#34;&gt;前&lt;/h2&gt;
 
 &lt;p&gt;赛后复现，趁机学一手docker。
@@ -61,10 +61,10 @@
     
     <item>
       <title>2018-ISCC</title>
-      <link>http://yang1k.github.io/post/2018-iscc/</link>
+      <link>https://yang1k.github.io/post/2018-iscc/</link>
       <pubDate>Mon, 07 May 2018 10:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2018-iscc/</guid>
+      <guid>https://yang1k.github.io/post/2018-iscc/</guid>
       <description>&lt;h2 id=&#34;前记&#34;&gt;前记&lt;/h2&gt;
 
 &lt;p&gt;记得第一次参加ISCC线上的时候，做的还是一脸懵逼，今年第二次做的时候感觉就不一样了，不知道是题目的难度变了，还是啥原因(233)。做的时候可以感觉得到很多都是原题，考察的点也很基础，这次碰见的两个有关密码的web题，之前自己都总结过，但是但是换系统的时候忘备份了！！！！心痛，刚好这次两个都碰见了，刚好做一下。然后再记录一下。&lt;/p&gt;
@@ -74,100 +74,100 @@
     
     <item>
       <title>2018-N1ctf</title>
-      <link>http://yang1k.github.io/post/2018-n1ctf/</link>
+      <link>https://yang1k.github.io/post/2018-n1ctf/</link>
       <pubDate>Sun, 11 Mar 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2018-n1ctf/</guid>
+      <guid>https://yang1k.github.io/post/2018-n1ctf/</guid>
       <description>&lt;p&gt;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>hgame week周</title>
-      <link>http://yang1k.github.io/post/hgame-week%E5%91%A8/</link>
+      <link>https://yang1k.github.io/post/hgame-week%E5%91%A8/</link>
       <pubDate>Thu, 22 Feb 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/hgame-week%E5%91%A8/</guid>
+      <guid>https://yang1k.github.io/post/hgame-week%E5%91%A8/</guid>
       <description>&lt;p&gt;年终于过完了。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>moctf-新春欢乐赛</title>
-      <link>http://yang1k.github.io/post/moctf-%E6%96%B0%E6%98%A5%E6%AC%A2%E4%B9%90%E8%B5%9B/</link>
+      <link>https://yang1k.github.io/post/moctf-%E6%96%B0%E6%98%A5%E6%AC%A2%E4%B9%90%E8%B5%9B/</link>
       <pubDate>Tue, 13 Feb 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/moctf-%E6%96%B0%E6%98%A5%E6%AC%A2%E4%B9%90%E8%B5%9B/</guid>
+      <guid>https://yang1k.github.io/post/moctf-%E6%96%B0%E6%98%A5%E6%AC%A2%E4%B9%90%E8%B5%9B/</guid>
       <description>&lt;p&gt;划水。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>HITCTF2018总结</title>
-      <link>http://yang1k.github.io/post/hitctf/</link>
+      <link>https://yang1k.github.io/post/hitctf/</link>
       <pubDate>Sat, 03 Feb 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/hitctf/</guid>
+      <guid>https://yang1k.github.io/post/hitctf/</guid>
       <description>&lt;p&gt;caidekoujiao..
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>安恒杯一月份月赛</title>
-      <link>http://yang1k.github.io/post/%E5%AE%89%E6%81%92%E6%9D%AF%E4%B8%80%E6%9C%88%E4%BB%BD%E6%9C%88%E8%B5%9B/</link>
+      <link>https://yang1k.github.io/post/%E5%AE%89%E6%81%92%E6%9D%AF%E4%B8%80%E6%9C%88%E4%BB%BD%E6%9C%88%E8%B5%9B/</link>
       <pubDate>Thu, 25 Jan 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%AE%89%E6%81%92%E6%9D%AF%E4%B8%80%E6%9C%88%E4%BB%BD%E6%9C%88%E8%B5%9B/</guid>
+      <guid>https://yang1k.github.io/post/%E5%AE%89%E6%81%92%E6%9D%AF%E4%B8%80%E6%9C%88%E4%BB%BD%E6%9C%88%E8%B5%9B/</guid>
       <description>&lt;p&gt;一月月赛的时候学校有事，整个题目都没有看，虽然看了也不会。。赛后看出题人直播，涨了很多知识，所以记录一下。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Jarvis OJ 平台</title>
-      <link>http://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</link>
+      <link>https://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</link>
       <pubDate>Mon, 15 Jan 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</guid>
+      <guid>https://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</guid>
       <description>&lt;p&gt;考试终于结束了，离散做的爆炸。做点题缓一缓。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>BugKu web部分(二)</title>
-      <link>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</link>
+      <link>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</link>
       <pubDate>Mon, 25 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</guid>
+      <guid>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</guid>
       <description>&lt;p&gt;ctf练习平台-1的后续
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>BugKu web部分(一)</title>
-      <link>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</link>
+      <link>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</link>
       <pubDate>Fri, 15 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</guid>
+      <guid>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</guid>
       <description>&lt;p&gt;偶然发现的练习一个&lt;a href=&#34;http://123.206.31.85&#34;&gt;平台&lt;/a&gt;
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>南邮CTf writeup(web部分)</title>
-      <link>http://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</link>
+      <link>https://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</link>
       <pubDate>Wed, 13 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</guid>
+      <guid>https://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</guid>
       <description>&lt;p&gt;南邮ctf平台的一些web题解，有几个不能做。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>2017高校运维线上赛</title>
-      <link>http://yang1k.github.io/post/2017%E9%AB%98%E6%A0%A1%E8%BF%90%E7%BB%B4/</link>
+      <link>https://yang1k.github.io/post/2017%E9%AB%98%E6%A0%A1%E8%BF%90%E7%BB%B4/</link>
       <pubDate>Mon, 06 Nov 2017 10:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2017%E9%AB%98%E6%A0%A1%E8%BF%90%E7%BB%B4/</guid>
+      <guid>https://yang1k.github.io/post/2017%E9%AB%98%E6%A0%A1%E8%BF%90%E7%BB%B4/</guid>
       <description>&lt;p&gt;日常划水。。。。。&lt;/p&gt;
 
 &lt;!-- more --&gt;</description>

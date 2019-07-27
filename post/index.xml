@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Yang1k</title>
-    <link>http://yang1k.github.io/post/</link>
+    <link>https://yang1k.github.io/post/</link>
     <description>Recent content in Posts on Yang1k</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Mon, 12 Nov 2018 09:54:35 +0000</lastBuildDate>
     
-	<atom:link href="http://yang1k.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://yang1k.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Phar反序列化</title>
-      <link>http://yang1k.github.io/post/phar/</link>
+      <link>https://yang1k.github.io/post/phar/</link>
       <pubDate>Mon, 12 Nov 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/phar/</guid>
+      <guid>https://yang1k.github.io/post/phar/</guid>
       <description>&lt;h2 id=&#34;前记&#34;&gt;前记&lt;/h2&gt;
 
 &lt;p&gt;大三了 课很多，在加上最近考驾照，感觉每天都过得浑浑噩噩的。
@@ -25,10 +25,10 @@
     
     <item>
       <title>Flask-SSTI</title>
-      <link>http://yang1k.github.io/post/flask-sti/</link>
+      <link>https://yang1k.github.io/post/flask-sti/</link>
       <pubDate>Thu, 25 Oct 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/flask-sti/</guid>
+      <guid>https://yang1k.github.io/post/flask-sti/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;前记&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -40,50 +40,50 @@
     
     <item>
       <title>python-mysql</title>
-      <link>http://yang1k.github.io/post/python-mysql/</link>
+      <link>https://yang1k.github.io/post/python-mysql/</link>
       <pubDate>Tue, 23 Oct 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/python-mysql/</guid>
+      <guid>https://yang1k.github.io/post/python-mysql/</guid>
       <description>&lt;p&gt;flask中推荐使用SQLAlchemy来操作数据库，再来看一下python标准数据库接口的使用。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>flask入门</title>
-      <link>http://yang1k.github.io/post/flask%E5%AD%A6%E4%B9%A0/</link>
+      <link>https://yang1k.github.io/post/flask%E5%AD%A6%E4%B9%A0/</link>
       <pubDate>Sun, 21 Oct 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/flask%E5%AD%A6%E4%B9%A0/</guid>
+      <guid>https://yang1k.github.io/post/flask%E5%AD%A6%E4%B9%A0/</guid>
       <description>&lt;p&gt;入门笔记。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>命令执行与代码执行</title>
-      <link>http://yang1k.github.io/post/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8E%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</link>
+      <link>https://yang1k.github.io/post/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8E%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</link>
       <pubDate>Sat, 20 Oct 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8E%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</guid>
+      <guid>https://yang1k.github.io/post/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8E%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</guid>
       <description>&lt;p&gt;总结了一下在ctf里经常遇到的命令执行个代码执行的利用点。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>between and 利用</title>
-      <link>http://yang1k.github.io/post/between-and/</link>
+      <link>https://yang1k.github.io/post/between-and/</link>
       <pubDate>Tue, 04 Sep 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/between-and/</guid>
+      <guid>https://yang1k.github.io/post/between-and/</guid>
       <description>&lt;p&gt;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>upload-labs Pass-16</title>
-      <link>http://yang1k.github.io/post/upload-pass16/</link>
+      <link>https://yang1k.github.io/post/upload-pass16/</link>
       <pubDate>Thu, 30 Aug 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/upload-pass16/</guid>
+      <guid>https://yang1k.github.io/post/upload-pass16/</guid>
       <description>&lt;h2 id=&#34;前记&#34;&gt;前记&lt;/h2&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://github.com/c0ny1/upload-labs&#34;&gt;upload-labs&lt;/a&gt;,是一个关于文件上传的靶场.具体的write-up社区里也都有文章.
@@ -93,10 +93,10 @@
     
     <item>
       <title>dockerfile-&gt;LAMP</title>
-      <link>http://yang1k.github.io/post/dockerfile-lamp/</link>
+      <link>https://yang1k.github.io/post/dockerfile-lamp/</link>
       <pubDate>Sun, 12 Aug 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/dockerfile-lamp/</guid>
+      <guid>https://yang1k.github.io/post/dockerfile-lamp/</guid>
       <description>&lt;h2 id=&#34;简述&#34;&gt;简述&lt;/h2&gt;
 
 &lt;p&gt;dockerfiel可以说是一个用来生成指定image的脚本,可以很方便的迁移,生成新的image.&lt;/p&gt;
@@ -107,10 +107,10 @@
     
     <item>
       <title>upload-labs writeup</title>
-      <link>http://yang1k.github.io/post/upload-labs/</link>
+      <link>https://yang1k.github.io/post/upload-labs/</link>
       <pubDate>Fri, 20 Jul 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/upload-labs/</guid>
+      <guid>https://yang1k.github.io/post/upload-labs/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/c0ny1/upload-labs&#34;&gt;upload-labs链接&lt;/a&gt;&lt;/p&gt;
 
 &lt;!-- more --&gt;</description>
@@ -118,10 +118,10 @@
     
     <item>
       <title>2018-iscc线下</title>
-      <link>http://yang1k.github.io/post/2018-iscc%E7%BA%BF%E4%B8%8B/</link>
+      <link>https://yang1k.github.io/post/2018-iscc%E7%BA%BF%E4%B8%8B/</link>
       <pubDate>Tue, 17 Jul 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2018-iscc%E7%BA%BF%E4%B8%8B/</guid>
+      <guid>https://yang1k.github.io/post/2018-iscc%E7%BA%BF%E4%B8%8B/</guid>
       <description>&lt;h2 id=&#34;前&#34;&gt;前&lt;/h2&gt;
 
 &lt;p&gt;真正意义上第一次打线下ad,比赛结束还是挺遗憾的,比赛过程中很多失误的地方.不然名次会更好一些..不过还是收获了很多.记录一下,继续成长吧.
@@ -130,20 +130,20 @@
     
     <item>
       <title>phpwind复现</title>
-      <link>http://yang1k.github.io/post/7phpwind-get%E5%9E%8Bcsrf%E4%BB%BB%E6%84%8F%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</link>
+      <link>https://yang1k.github.io/post/7phpwind-get%E5%9E%8Bcsrf%E4%BB%BB%E6%84%8F%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</link>
       <pubDate>Tue, 12 Jun 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/7phpwind-get%E5%9E%8Bcsrf%E4%BB%BB%E6%84%8F%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</guid>
+      <guid>https://yang1k.github.io/post/7phpwind-get%E5%9E%8Bcsrf%E4%BB%BB%E6%84%8F%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</guid>
       <description>&lt;p&gt;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>贷乐高注入复现</title>
-      <link>http://yang1k.github.io/post/6%E8%B4%B7%E4%B9%90%E9%AB%98%E6%B3%A8%E5%85%A5/</link>
+      <link>https://yang1k.github.io/post/6%E8%B4%B7%E4%B9%90%E9%AB%98%E6%B3%A8%E5%85%A5/</link>
       <pubDate>Mon, 11 Jun 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/6%E8%B4%B7%E4%B9%90%E9%AB%98%E6%B3%A8%E5%85%A5/</guid>
+      <guid>https://yang1k.github.io/post/6%E8%B4%B7%E4%B9%90%E9%AB%98%E6%B3%A8%E5%85%A5/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;这篇文章主要介绍了一种绕过waf的思路技巧。在于拓展思维。由于没有找到源码，所以就记录一下这个思路技巧。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -153,30 +153,30 @@
     
     <item>
       <title>XXE学习</title>
-      <link>http://yang1k.github.io/post/xee/</link>
+      <link>https://yang1k.github.io/post/xee/</link>
       <pubDate>Fri, 08 Jun 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/xee/</guid>
+      <guid>https://yang1k.github.io/post/xee/</guid>
       <description>&lt;p&gt;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>齐博sql注入复现</title>
-      <link>http://yang1k.github.io/post/4%E9%BD%90%E5%8D%9Asql%E6%B3%A8%E5%85%A5/</link>
+      <link>https://yang1k.github.io/post/4%E9%BD%90%E5%8D%9Asql%E6%B3%A8%E5%85%A5/</link>
       <pubDate>Wed, 06 Jun 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/4%E9%BD%90%E5%8D%9Asql%E6%B3%A8%E5%85%A5/</guid>
+      <guid>https://yang1k.github.io/post/4%E9%BD%90%E5%8D%9Asql%E6%B3%A8%E5%85%A5/</guid>
       <description>&lt;p&gt;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>玄学-assert</title>
-      <link>http://yang1k.github.io/post/%E7%8E%84%E5%AD%A6-assert/</link>
+      <link>https://yang1k.github.io/post/%E7%8E%84%E5%AD%A6-assert/</link>
       <pubDate>Fri, 01 Jun 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E7%8E%84%E5%AD%A6-assert/</guid>
+      <guid>https://yang1k.github.io/post/%E7%8E%84%E5%AD%A6-assert/</guid>
       <description>&lt;h2 id=&#34;前&#34;&gt;前&lt;/h2&gt;
 
 &lt;p&gt;emmmmmm,本来只是一个一句话的函数，但是因为版本的问题，折腾了好久，所以记录一下&lt;/p&gt;
@@ -186,20 +186,20 @@
     
     <item>
       <title>变量覆盖导致的sql注入</title>
-      <link>http://yang1k.github.io/post/3%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84sql%E6%B3%A8%E5%85%A5/</link>
+      <link>https://yang1k.github.io/post/3%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84sql%E6%B3%A8%E5%85%A5/</link>
       <pubDate>Wed, 30 May 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/3%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84sql%E6%B3%A8%E5%85%A5/</guid>
+      <guid>https://yang1k.github.io/post/3%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84sql%E6%B3%A8%E5%85%A5/</guid>
       <description>&lt;p&gt;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>2018-SUCTF</title>
-      <link>http://yang1k.github.io/post/2018-suctf/</link>
+      <link>https://yang1k.github.io/post/2018-suctf/</link>
       <pubDate>Mon, 28 May 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2018-suctf/</guid>
+      <guid>https://yang1k.github.io/post/2018-suctf/</guid>
       <description>&lt;h2 id=&#34;前&#34;&gt;前&lt;/h2&gt;
 
 &lt;p&gt;赛后复现，趁机学一手docker。
@@ -208,20 +208,20 @@
     
     <item>
       <title>redis未授权登录漏洞</title>
-      <link>http://yang1k.github.io/post/2redis%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E/</link>
+      <link>https://yang1k.github.io/post/2redis%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E/</link>
       <pubDate>Sun, 20 May 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2redis%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E/</guid>
+      <guid>https://yang1k.github.io/post/2redis%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E/</guid>
       <description>&lt;p&gt;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>2018-ISCC</title>
-      <link>http://yang1k.github.io/post/2018-iscc/</link>
+      <link>https://yang1k.github.io/post/2018-iscc/</link>
       <pubDate>Mon, 07 May 2018 10:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2018-iscc/</guid>
+      <guid>https://yang1k.github.io/post/2018-iscc/</guid>
       <description>&lt;h2 id=&#34;前记&#34;&gt;前记&lt;/h2&gt;
 
 &lt;p&gt;记得第一次参加ISCC线上的时候，做的还是一脸懵逼，今年第二次做的时候感觉就不一样了，不知道是题目的难度变了，还是啥原因(233)。做的时候可以感觉得到很多都是原题，考察的点也很基础，这次碰见的两个有关密码的web题，之前自己都总结过，但是但是换系统的时候忘备份了！！！！心痛，刚好这次两个都碰见了，刚好做一下。然后再记录一下。&lt;/p&gt;
@@ -231,80 +231,80 @@
     
     <item>
       <title>Linux-2</title>
-      <link>http://yang1k.github.io/post/linux%E5%AD%A6%E4%B9%A02/</link>
+      <link>https://yang1k.github.io/post/linux%E5%AD%A6%E4%B9%A02/</link>
       <pubDate>Mon, 23 Apr 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/linux%E5%AD%A6%E4%B9%A02/</guid>
+      <guid>https://yang1k.github.io/post/linux%E5%AD%A6%E4%B9%A02/</guid>
       <description>&lt;p&gt;学习&amp;hellip;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>2018-N1ctf</title>
-      <link>http://yang1k.github.io/post/2018-n1ctf/</link>
+      <link>https://yang1k.github.io/post/2018-n1ctf/</link>
       <pubDate>Sun, 11 Mar 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2018-n1ctf/</guid>
+      <guid>https://yang1k.github.io/post/2018-n1ctf/</guid>
       <description>&lt;p&gt;.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>hgame week周</title>
-      <link>http://yang1k.github.io/post/hgame-week%E5%91%A8/</link>
+      <link>https://yang1k.github.io/post/hgame-week%E5%91%A8/</link>
       <pubDate>Thu, 22 Feb 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/hgame-week%E5%91%A8/</guid>
+      <guid>https://yang1k.github.io/post/hgame-week%E5%91%A8/</guid>
       <description>&lt;p&gt;年终于过完了。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>moctf-新春欢乐赛</title>
-      <link>http://yang1k.github.io/post/moctf-%E6%96%B0%E6%98%A5%E6%AC%A2%E4%B9%90%E8%B5%9B/</link>
+      <link>https://yang1k.github.io/post/moctf-%E6%96%B0%E6%98%A5%E6%AC%A2%E4%B9%90%E8%B5%9B/</link>
       <pubDate>Tue, 13 Feb 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/moctf-%E6%96%B0%E6%98%A5%E6%AC%A2%E4%B9%90%E8%B5%9B/</guid>
+      <guid>https://yang1k.github.io/post/moctf-%E6%96%B0%E6%98%A5%E6%AC%A2%E4%B9%90%E8%B5%9B/</guid>
       <description>&lt;p&gt;划水。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>HITCTF2018总结</title>
-      <link>http://yang1k.github.io/post/hitctf/</link>
+      <link>https://yang1k.github.io/post/hitctf/</link>
       <pubDate>Sat, 03 Feb 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/hitctf/</guid>
+      <guid>https://yang1k.github.io/post/hitctf/</guid>
       <description>&lt;p&gt;caidekoujiao..
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>安恒杯一月份月赛</title>
-      <link>http://yang1k.github.io/post/%E5%AE%89%E6%81%92%E6%9D%AF%E4%B8%80%E6%9C%88%E4%BB%BD%E6%9C%88%E8%B5%9B/</link>
+      <link>https://yang1k.github.io/post/%E5%AE%89%E6%81%92%E6%9D%AF%E4%B8%80%E6%9C%88%E4%BB%BD%E6%9C%88%E8%B5%9B/</link>
       <pubDate>Thu, 25 Jan 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%AE%89%E6%81%92%E6%9D%AF%E4%B8%80%E6%9C%88%E4%BB%BD%E6%9C%88%E8%B5%9B/</guid>
+      <guid>https://yang1k.github.io/post/%E5%AE%89%E6%81%92%E6%9D%AF%E4%B8%80%E6%9C%88%E4%BB%BD%E6%9C%88%E8%B5%9B/</guid>
       <description>&lt;p&gt;一月月赛的时候学校有事，整个题目都没有看，虽然看了也不会。。赛后看出题人直播，涨了很多知识，所以记录一下。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Jarvis OJ 平台</title>
-      <link>http://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</link>
+      <link>https://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</link>
       <pubDate>Mon, 15 Jan 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</guid>
+      <guid>https://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</guid>
       <description>&lt;p&gt;考试终于结束了，离散做的爆炸。做点题缓一缓。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>文件泄露小结</title>
-      <link>http://yang1k.github.io/post/%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2/</link>
+      <link>https://yang1k.github.io/post/%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2/</link>
       <pubDate>Tue, 26 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2/</guid>
+      <guid>https://yang1k.github.io/post/%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2/</guid>
       <description>&lt;p&gt;17年暑假在学校训练营的的时候老师讲过文件泄露，什么git文件啦，还做过示例，但是之后自己没有再去尝试，想想真的是有点过分。这次好好总结一波。&lt;/p&gt;
 
 &lt;!-- more --&gt;</description>
@@ -312,90 +312,90 @@
     
     <item>
       <title>BugKu web部分(二)</title>
-      <link>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</link>
+      <link>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</link>
       <pubDate>Mon, 25 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</guid>
+      <guid>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</guid>
       <description>&lt;p&gt;ctf练习平台-1的后续
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SQL约束攻击</title>
-      <link>http://yang1k.github.io/post/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/</link>
+      <link>https://yang1k.github.io/post/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/</link>
       <pubDate>Wed, 20 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/</guid>
+      <guid>https://yang1k.github.io/post/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/</guid>
       <description>&lt;p&gt;感觉最终的效果和万能密码的差不多。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>BugKu web部分(一)</title>
-      <link>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</link>
+      <link>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</link>
       <pubDate>Fri, 15 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</guid>
+      <guid>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</guid>
       <description>&lt;p&gt;偶然发现的练习一个&lt;a href=&#34;http://123.206.31.85&#34;&gt;平台&lt;/a&gt;
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>南邮CTf writeup(web部分)</title>
-      <link>http://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</link>
+      <link>https://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</link>
       <pubDate>Wed, 13 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</guid>
+      <guid>https://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</guid>
       <description>&lt;p&gt;南邮ctf平台的一些web题解，有几个不能做。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>PHP格式化字符串的漏洞</title>
-      <link>http://yang1k.github.io/post/php%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%BC%8F%E6%B4%9E/</link>
+      <link>https://yang1k.github.io/post/php%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%BC%8F%E6%B4%9E/</link>
       <pubDate>Thu, 23 Nov 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%BC%8F%E6%B4%9E/</guid>
+      <guid>https://yang1k.github.io/post/php%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%BC%8F%E6%B4%9E/</guid>
       <description>&lt;p&gt;这是WordPress爆出的一个SQL漏洞，漏洞发生在WP的后台上传图片的位置，通过修改图片在数据库中的参数，以及利用php的sprintf函数的特性，在删除图片时，导致&amp;rsquo;单引号的逃逸。漏洞利用较为困难。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>初识Padding Oracle Attack</title>
-      <link>http://yang1k.github.io/post/cbc%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB/</link>
+      <link>https://yang1k.github.io/post/cbc%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB/</link>
       <pubDate>Wed, 22 Nov 2017 23:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/cbc%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB/</guid>
+      <guid>https://yang1k.github.io/post/cbc%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB/</guid>
       <description>&lt;p&gt;Lctf见到了这种攻击方式，学习学习。。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>python序列切片操作</title>
-      <link>http://yang1k.github.io/post/python%E5%BA%8F%E5%88%97%E5%88%87%E7%89%87%E6%93%8D%E4%BD%9C/</link>
+      <link>https://yang1k.github.io/post/python%E5%BA%8F%E5%88%97%E5%88%87%E7%89%87%E6%93%8D%E4%BD%9C/</link>
       <pubDate>Wed, 15 Nov 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/python%E5%BA%8F%E5%88%97%E5%88%87%E7%89%87%E6%93%8D%E4%BD%9C/</guid>
+      <guid>https://yang1k.github.io/post/python%E5%BA%8F%E5%88%97%E5%88%87%E7%89%87%E6%93%8D%E4%BD%9C/</guid>
       <description>&lt;p&gt;Life is short， Use Python.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>python基础语法</title>
-      <link>http://yang1k.github.io/post/python%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</link>
+      <link>https://yang1k.github.io/post/python%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</link>
       <pubDate>Fri, 10 Nov 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/python%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</guid>
+      <guid>https://yang1k.github.io/post/python%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</guid>
       <description>&lt;p&gt;Life is short， Use Python.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>php弱类型</title>
-      <link>http://yang1k.github.io/post/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</link>
+      <link>https://yang1k.github.io/post/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</link>
       <pubDate>Wed, 08 Nov 2017 09:55:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</guid>
+      <guid>https://yang1k.github.io/post/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/</guid>
       <description>&lt;p&gt;php弱类型比较在ctf平台上很常见，这次总结了一下。但感觉还是不全，以后遇到再补吧。。&lt;/p&gt;
 
 &lt;!-- more --&gt;</description>
@@ -403,30 +403,30 @@
     
     <item>
       <title>php-哈希比较缺陷总结</title>
-      <link>http://yang1k.github.io/post/php-md5%E6%AF%94%E8%BE%83%E7%BC%BA%E9%99%B7%E6%80%BB%E7%BB%93/</link>
+      <link>https://yang1k.github.io/post/php-md5%E6%AF%94%E8%BE%83%E7%BC%BA%E9%99%B7%E6%80%BB%E7%BB%93/</link>
       <pubDate>Wed, 08 Nov 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php-md5%E6%AF%94%E8%BE%83%E7%BC%BA%E9%99%B7%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://yang1k.github.io/post/php-md5%E6%AF%94%E8%BE%83%E7%BC%BA%E9%99%B7%E6%80%BB%E7%BB%93/</guid>
       <description>&lt;p&gt;总结一下存在比较缺陷的两个php加密函数sha1()和md5()
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>php的序列化与反序列化</title>
-      <link>http://yang1k.github.io/post/php%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+      <link>https://yang1k.github.io/post/php%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96/</link>
       <pubDate>Tue, 07 Nov 2017 09:50:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
+      <guid>https://yang1k.github.io/post/php%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
       <description>&lt;p&gt;序列化有利于数据的传输和存储，比如说需要将一个对象或者数组存储到数据库，如果是直接将对象或数组存储到数据库，是不能实现的。所以就需要将对象或数组进行序列化操作，使其变为一个字符串，这样就可以很方便的存储到数据库。从数据库取出来的是时候只要将其进行反序列化操作就可以将其还原为原来的样子。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>2017高校运维线上赛</title>
-      <link>http://yang1k.github.io/post/2017%E9%AB%98%E6%A0%A1%E8%BF%90%E7%BB%B4/</link>
+      <link>https://yang1k.github.io/post/2017%E9%AB%98%E6%A0%A1%E8%BF%90%E7%BB%B4/</link>
       <pubDate>Mon, 06 Nov 2017 10:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/2017%E9%AB%98%E6%A0%A1%E8%BF%90%E7%BB%B4/</guid>
+      <guid>https://yang1k.github.io/post/2017%E9%AB%98%E6%A0%A1%E8%BF%90%E7%BB%B4/</guid>
       <description>&lt;p&gt;日常划水。。。。。&lt;/p&gt;
 
 &lt;!-- more --&gt;</description>
@@ -434,90 +434,90 @@
     
     <item>
       <title>ftp的搭建与使用</title>
-      <link>http://yang1k.github.io/post/%E6%90%AD%E5%BB%BAftp%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
+      <link>https://yang1k.github.io/post/%E6%90%AD%E5%BB%BAftp%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
       <pubDate>Wed, 01 Nov 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E6%90%AD%E5%BB%BAftp%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
+      <guid>https://yang1k.github.io/post/%E6%90%AD%E5%BB%BAftp%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
       <description>&lt;p&gt;尝试在linux上搭建了一个ftp服务
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>php全局数组$_SERVER[ ]总结</title>
-      <link>http://yang1k.github.io/post/php%E5%85%A8%E5%B1%80%E6%95%B0%E7%BB%84/</link>
+      <link>https://yang1k.github.io/post/php%E5%85%A8%E5%B1%80%E6%95%B0%E7%BB%84/</link>
       <pubDate>Thu, 07 Sep 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/php%E5%85%A8%E5%B1%80%E6%95%B0%E7%BB%84/</guid>
+      <guid>https://yang1k.github.io/post/php%E5%85%A8%E5%B1%80%E6%95%B0%E7%BB%84/</guid>
       <description>&lt;p&gt;$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。这个数组中的项目由 Web 服务器创建。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>ssh免密码登录</title>
-      <link>http://yang1k.github.io/post/ssh%E5%85%8D%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/</link>
+      <link>https://yang1k.github.io/post/ssh%E5%85%8D%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/</link>
       <pubDate>Tue, 11 Jul 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/ssh%E5%85%8D%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/</guid>
+      <guid>https://yang1k.github.io/post/ssh%E5%85%8D%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/</guid>
       <description>&lt;p&gt;ssh免密码登录的配置
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Linux-1</title>
-      <link>http://yang1k.github.io/post/linux%E5%AD%A6%E4%B9%A0/</link>
+      <link>https://yang1k.github.io/post/linux%E5%AD%A6%E4%B9%A0/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/linux%E5%AD%A6%E4%B9%A0/</guid>
+      <guid>https://yang1k.github.io/post/linux%E5%AD%A6%E4%B9%A0/</guid>
       <description>&lt;p&gt;学习..
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Linux快捷键</title>
-      <link>http://yang1k.github.io/post/linux%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <link>https://yang1k.github.io/post/linux%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/linux%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <guid>https://yang1k.github.io/post/linux%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
       <description>&lt;p&gt;学习..
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>RPO（Relative Path Overwrite）</title>
-      <link>http://yang1k.github.io/post/rpo/</link>
+      <link>https://yang1k.github.io/post/rpo/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/rpo/</guid>
+      <guid>https://yang1k.github.io/post/rpo/</guid>
       <description>&lt;p&gt;越来越懒了，一篇总结断断续续写了好几天。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SQL注入绕过过滤总结</title>
-      <link>http://yang1k.github.io/post/sql%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/</link>
+      <link>https://yang1k.github.io/post/sql%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/sql%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://yang1k.github.io/post/sql%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/</guid>
       <description>&lt;p&gt;对sql注入的一些绕过技巧和绕过技巧的原理的总结。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>sql注入之order by注入</title>
-      <link>http://yang1k.github.io/post/sql%E6%B3%A8%E5%85%A5%E4%B9%8Border-by%E6%B3%A8%E5%85%A5/</link>
+      <link>https://yang1k.github.io/post/sql%E6%B3%A8%E5%85%A5%E4%B9%8Border-by%E6%B3%A8%E5%85%A5/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/sql%E6%B3%A8%E5%85%A5%E4%B9%8Border-by%E6%B3%A8%E5%85%A5/</guid>
+      <guid>https://yang1k.github.io/post/sql%E6%B3%A8%E5%85%A5%E4%B9%8Border-by%E6%B3%A8%E5%85%A5/</guid>
       <description>&lt;p&gt;在安恒杯看到了利用order by进行盲注，记得自己之前好像总结过order by后的注入方法，翻笔记发现确实是有一篇标题为order by注入的笔记，然而里面什么都没写。看了下详细信息，发现是17年8月11号创建的。真的是拖延症拖到忘记啊。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>博客诞生记</title>
-      <link>http://yang1k.github.io/post/%E5%8D%9A%E5%AE%A2%E8%AF%9E%E7%94%9F%E8%AE%B0/</link>
+      <link>https://yang1k.github.io/post/%E5%8D%9A%E5%AE%A2%E8%AF%9E%E7%94%9F%E8%AE%B0/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%8D%9A%E5%AE%A2%E8%AF%9E%E7%94%9F%E8%AE%B0/</guid>
+      <guid>https://yang1k.github.io/post/%E5%8D%9A%E5%AE%A2%E8%AF%9E%E7%94%9F%E8%AE%B0/</guid>
       <description>&lt;h2 id=&#34;序&#34;&gt;序&lt;/h2&gt;
 
 &lt;p&gt;搭博客的想法被搁置了很久，主要是害怕以后服务器更换之类的迁移博客很麻烦。但是今天发现可以将博客搭建在github上，就来尝试一把。毕竟大网站不会说倒就倒。哈哈&lt;/p&gt;
@@ -527,10 +527,10 @@
     
     <item>
       <title>无回显的RCE</title>
-      <link>http://yang1k.github.io/post/%E6%B2%A1%E6%9C%89%E5%9B%9E%E6%98%BE%E7%9A%84rce/</link>
+      <link>https://yang1k.github.io/post/%E6%B2%A1%E6%9C%89%E5%9B%9E%E6%98%BE%E7%9A%84rce/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E6%B2%A1%E6%9C%89%E5%9B%9E%E6%98%BE%E7%9A%84rce/</guid>
+      <guid>https://yang1k.github.io/post/%E6%B2%A1%E6%9C%89%E5%9B%9E%E6%98%BE%E7%9A%84rce/</guid>
       <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
 
 &lt;p&gt;遇到一个题目，是一个命令执行，但是并没有回显，也就是说看不到命令执行的结果。在这种时候就需要利用dnslog来查看命令执行的结果。自己本身对于盲打rce就不太会，这次做一个总结。

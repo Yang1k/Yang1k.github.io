@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>python on Yang1k</title>
-    <link>http://yang1k.github.io/tags/python/</link>
+    <link>https://yang1k.github.io/tags/python/</link>
     <description>Recent content in python on Yang1k</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Thu, 25 Oct 2018 09:54:35 +0000</lastBuildDate>
     
-	<atom:link href="http://yang1k.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://yang1k.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Flask-SSTI</title>
-      <link>http://yang1k.github.io/post/flask-sti/</link>
+      <link>https://yang1k.github.io/post/flask-sti/</link>
       <pubDate>Thu, 25 Oct 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/flask-sti/</guid>
+      <guid>https://yang1k.github.io/post/flask-sti/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;前记&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -28,80 +28,80 @@
     
     <item>
       <title>python-mysql</title>
-      <link>http://yang1k.github.io/post/python-mysql/</link>
+      <link>https://yang1k.github.io/post/python-mysql/</link>
       <pubDate>Tue, 23 Oct 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/python-mysql/</guid>
+      <guid>https://yang1k.github.io/post/python-mysql/</guid>
       <description>&lt;p&gt;flask中推荐使用SQLAlchemy来操作数据库，再来看一下python标准数据库接口的使用。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>flask入门</title>
-      <link>http://yang1k.github.io/post/flask%E5%AD%A6%E4%B9%A0/</link>
+      <link>https://yang1k.github.io/post/flask%E5%AD%A6%E4%B9%A0/</link>
       <pubDate>Sun, 21 Oct 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/flask%E5%AD%A6%E4%B9%A0/</guid>
+      <guid>https://yang1k.github.io/post/flask%E5%AD%A6%E4%B9%A0/</guid>
       <description>&lt;p&gt;入门笔记。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Jarvis OJ 平台</title>
-      <link>http://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</link>
+      <link>https://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</link>
       <pubDate>Mon, 15 Jan 2018 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</guid>
+      <guid>https://yang1k.github.io/post/jarvis-oj%E5%B9%B3%E5%8F%B0/</guid>
       <description>&lt;p&gt;考试终于结束了，离散做的爆炸。做点题缓一缓。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>BugKu web部分(二)</title>
-      <link>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</link>
+      <link>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</link>
       <pubDate>Mon, 25 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</guid>
+      <guid>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-2/</guid>
       <description>&lt;p&gt;ctf练习平台-1的后续
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>BugKu web部分(一)</title>
-      <link>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</link>
+      <link>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</link>
       <pubDate>Fri, 15 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</guid>
+      <guid>https://yang1k.github.io/post/ctf%E7%BB%83%E4%B9%A0%E5%B9%B3%E5%8F%B0-1/</guid>
       <description>&lt;p&gt;偶然发现的练习一个&lt;a href=&#34;http://123.206.31.85&#34;&gt;平台&lt;/a&gt;
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>南邮CTf writeup(web部分)</title>
-      <link>http://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</link>
+      <link>https://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</link>
       <pubDate>Wed, 13 Dec 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</guid>
+      <guid>https://yang1k.github.io/post/%E5%8D%97%E9%82%AEctf-web/</guid>
       <description>&lt;p&gt;南邮ctf平台的一些web题解，有几个不能做。
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>python序列切片操作</title>
-      <link>http://yang1k.github.io/post/python%E5%BA%8F%E5%88%97%E5%88%87%E7%89%87%E6%93%8D%E4%BD%9C/</link>
+      <link>https://yang1k.github.io/post/python%E5%BA%8F%E5%88%97%E5%88%87%E7%89%87%E6%93%8D%E4%BD%9C/</link>
       <pubDate>Wed, 15 Nov 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/python%E5%BA%8F%E5%88%97%E5%88%87%E7%89%87%E6%93%8D%E4%BD%9C/</guid>
+      <guid>https://yang1k.github.io/post/python%E5%BA%8F%E5%88%97%E5%88%87%E7%89%87%E6%93%8D%E4%BD%9C/</guid>
       <description>&lt;p&gt;Life is short， Use Python.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>python基础语法</title>
-      <link>http://yang1k.github.io/post/python%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</link>
+      <link>https://yang1k.github.io/post/python%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</link>
       <pubDate>Fri, 10 Nov 2017 09:54:35 +0000</pubDate>
       
-      <guid>http://yang1k.github.io/post/python%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</guid>
+      <guid>https://yang1k.github.io/post/python%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</guid>
       <description>&lt;p&gt;Life is short， Use Python.
 &lt;!-- more --&gt;&lt;/p&gt;</description>
     </item>
