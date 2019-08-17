@@ -6,10 +6,19 @@
     <description>Recent content in Categories on Yang1k</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 12 Nov 2018 09:54:35 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 17 Aug 2019 09:54:35 +0000</lastBuildDate>
     
 	<atom:link href="https://yang1k.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>writeup(web)</title>
+      <link>https://yang1k.github.io/categories/writeupweb/</link>
+      <pubDate>Sat, 17 Aug 2019 09:54:35 +0000</pubDate>
+      
+      <guid>https://yang1k.github.io/categories/writeupweb/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Web安全</title>
@@ -26,15 +35,6 @@
       <pubDate>Tue, 23 Oct 2018 09:54:35 +0000</pubDate>
       
       <guid>https://yang1k.github.io/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>writeup(web)</title>
-      <link>https://yang1k.github.io/categories/writeupweb/</link>
-      <pubDate>Thu, 30 Aug 2018 09:54:35 +0000</pubDate>
-      
-      <guid>https://yang1k.github.io/categories/writeupweb/</guid>
       <description></description>
     </item>
     
