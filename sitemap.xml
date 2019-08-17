@@ -9,6 +9,18 @@
   </url>
   
   <url>
+    <loc>https://yang1k.github.io/tags/php/</loc>
+    <lastmod>2019-08-17T09:54:35+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://yang1k.github.io/categories/php/</loc>
+    <lastmod>2019-08-17T09:54:35+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://yang1k.github.io/post/</loc>
     <lastmod>2019-08-17T09:54:35+00:00</lastmod>
     <priority>0</priority>
@@ -27,26 +39,8 @@
   </url>
   
   <url>
-    <loc>https://yang1k.github.io/tags/ctf/</loc>
-    <lastmod>2019-08-17T09:54:35+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://yang1k.github.io/post/include%E5%8C%85%E5%90%AB%E8%B7%AF%E5%BE%84%E5%A7%BF%E5%8A%BF/</loc>
     <lastmod>2019-08-17T09:54:35+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://yang1k.github.io/categories/writeupweb/</loc>
-    <lastmod>2019-08-17T09:54:35+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://yang1k.github.io/tags/php/</loc>
-    <lastmod>2018-11-12T09:54:35+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -56,6 +50,12 @@
   
   <url>
     <loc>https://yang1k.github.io/categories/web%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2018-11-12T09:54:35+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://yang1k.github.io/tags/ctf/</loc>
     <lastmod>2018-11-12T09:54:35+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -100,6 +100,12 @@
   <url>
     <loc>https://yang1k.github.io/post/upload-pass16/</loc>
     <lastmod>2018-08-30T09:54:35+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://yang1k.github.io/categories/writeupweb/</loc>
+    <lastmod>2018-08-30T09:54:35+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
