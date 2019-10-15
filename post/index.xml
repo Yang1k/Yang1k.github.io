@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Yang1k</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 17 Aug 2019 09:54:35 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Oct 2019 09:54:35 +0000</lastBuildDate>
     
 	<atom:link href="https://yang1k.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Pbootcms审计</title>
+      <link>https://yang1k.github.io/post/pbootcmsv2.0.2%E5%AE%A1%E8%AE%A1/</link>
+      <pubDate>Tue, 15 Oct 2019 09:54:35 +0000</pubDate>
+      
+      <guid>https://yang1k.github.io/post/pbootcmsv2.0.2%E5%AE%A1%E8%AE%A1/</guid>
+      <description>&lt;p&gt;&amp;hellip;
+&lt;!-- more --&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>include-&gt;php对于文件路径的处理</title>

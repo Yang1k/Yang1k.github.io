@@ -6,10 +6,19 @@
     <description>Recent content in Categories on Yang1k</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 17 Aug 2019 09:54:35 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 15 Oct 2019 09:54:35 +0000</lastBuildDate>
     
 	<atom:link href="https://yang1k.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Web安全</title>
+      <link>https://yang1k.github.io/categories/web%E5%AE%89%E5%85%A8/</link>
+      <pubDate>Tue, 15 Oct 2019 09:54:35 +0000</pubDate>
+      
+      <guid>https://yang1k.github.io/categories/web%E5%AE%89%E5%85%A8/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>PHP</title>
@@ -17,15 +26,6 @@
       <pubDate>Sat, 17 Aug 2019 09:54:35 +0000</pubDate>
       
       <guid>https://yang1k.github.io/categories/php/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Web安全</title>
-      <link>https://yang1k.github.io/categories/web%E5%AE%89%E5%85%A8/</link>
-      <pubDate>Mon, 12 Nov 2018 09:54:35 +0000</pubDate>
-      
-      <guid>https://yang1k.github.io/categories/web%E5%AE%89%E5%85%A8/</guid>
       <description></description>
     </item>
     
