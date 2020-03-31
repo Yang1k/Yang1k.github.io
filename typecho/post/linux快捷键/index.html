@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="Linux快捷键"/>
+  <meta name="twitter:description" content="学习..
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>Linux快捷键 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Linux快捷键
+                    </h1>
+                    <h2 class="headline">
+                    Jan 1, 0001 00:00
+                    · 260 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/linux">Linux</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#vi的使用">vi的使用</a>
+<ul>
+<li><a href="#快捷键">快捷键</a>
+<ul>
+<li><a href="#vim的环境参数设定">vim的环境参数设定</a></li>
+<li><a href="#移动快捷键">移动快捷键</a></li>
+<li><a href="#查找替换快捷键">查找替换快捷键</a></li>
+<li><a href="#删除">删除</a></li>
+<li><a href="#复制粘贴">复制粘贴</a></li>
+<li><a href="#撤销与反撤销">撤销与反撤销</a></li>
+</ul></li>
+<li><a href="#多文档编辑">多文档编辑</a></li>
+<li><a href="#vim分割窗口">vim分割窗口</a></li>
+<li><a href="#在vim中使用sudo命令">在vim中使用sudo命令</a></li>
+<li><a href="#vim以16进制打开文件">vim以16进制打开文件</a></li>
+</ul></li>
+<li><a href="#bash快捷键">bash快捷键</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>学习..
+<!-- more --></p>
+
+<h2 id="vi的使用">vi的使用</h2>
+
+<h3 id="快捷键">快捷键</h3>
+
+<h4 id="vim的环境参数设定">vim的环境参数设定</h4>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>:set nu</td>
+<td>显示行号，设定之后，会在每一行的前缀显示该行的行号</td>
+</tr>
+
+<tr>
+<td>:set nonu</td>
+<td>和 set nu 相反，为取消行号！</td>
+</tr>
+</tbody>
+</table>
+
+<p>这只是其中的两个选项，还有一些其他参数的设置。如果想永久更改这些参数可以在/etc/vimrc中修改，不过最好是修改~/.vimrc文件(本身并不存在，需要自己创建)。</p>
+
+<h4 id="移动快捷键">移动快捷键</h4>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>[Ctrl] + [f]</td>
+<td>屏幕『向下』移动一页，相当于 [Page Down]按键</td>
+</tr>
+
+<tr>
+<td>[Ctrl] + [b]</td>
+<td>屏幕『向上』移动一页，相当于 [Page Up] 按键</td>
+</tr>
+
+<tr>
+<td>0 或功能键[Home]</td>
+<td>这是数字『 0 』：移动到这一行的最前面字符处</td>
+</tr>
+
+<tr>
+<td>\$ 或功能键[End]</td>
+<td>移动到这一行的最后面字符处</td>
+</tr>
+
+<tr>
+<td>H</td>
+<td>光标移动到这个屏幕的最上方那一行的第一个字符</td>
+</tr>
+
+<tr>
+<td>M</td>
+<td>光标移动到这个屏幕的中央那一行的第一个字符</td>
+</tr>
+
+<tr>
+<td>L</td>
+<td>光标移动到这个屏幕的最下方那一行的第一个字符</td>
+</tr>
+
+<tr>
+<td>G</td>
+<td>移动到这个档案的最后一行</td>
+</tr>
+
+<tr>
+<td>nG</td>
+<td>n 为数字。移动到这个档案的第 n 行。例如 20G 则会移动到这个档案的第 20 行(可配合 :set nu)</td>
+</tr>
+
+<tr>
+<td>gg</td>
+<td>移动到这个档案的第一行，相当亍 1G 啊！ (常用)</td>
+</tr>
+
+<tr>
+<td>n&lt;\Enter&gt;</td>
+<td>n 为数字。光标向下移动 n 行(常用)</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="查找替换快捷键">查找替换快捷键</h4>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>/word</td>
+<td>向光标之下寻找一个名称为 word 的字符串。例如要在档案内搜寻vbird 这个字符串，就输入 /vbird 即可！ (常用)</td>
+</tr>
+
+<tr>
+<td>?word</td>
+<td>向光标之上寻找一个字符串名称为 word 的字符串</td>
+</tr>
+
+<tr>
+<td>n</td>
+<td>这个 n 是英文按键。代表『重复前一个搜寻的劢作』。举例来说， 如果刚刚我们执行 /vbird 去向下搜寻 vbird 这个字符串，则按下 n后，会向下继续搜寻下一个名称为 vbird 的字符串。如果是执行 ?vbird 的话，那么按下 n 则会向上继续搜寻名称为 vbird 的字符串！</td>
+</tr>
+
+<tr>
+<td>N</td>
+<td>与n相反，例如 /vbird 后，按下 N 则表示『向上』搜寻 vbird 。</td>
+</tr>
+
+<tr>
+<td>:n1,n2s/word1/word2/g</td>
+<td>n1 不 n2 为数字。在第 n1 不 n2 行之间寻找 word1 这个字符串，并将该字符串取代为 word2 ！举例来说，在 100 到 200 行之间搜寻vbird 并取代为 VBIRD 则：『:100,200s/vbird/VBIRD/g』。(常用)</td>
+</tr>
+
+<tr>
+<td>:1,\$s/word1/word2/g</td>
+<td>从第一行到最后一行寻找 word1 字符串，并将该字符串取代为word2 ！(常用)</td>
+</tr>
+
+<tr>
+<td>:1,\$s/word1/word2/gc</td>
+<td>从第一行到最后一行寻找 word1 字符串，并将该字符串取代为word2 ！且在取代前显示提示字符给用户确讣 (confirm) 是否需要取代！(常用)</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="删除">删除</h4>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>x, X</td>
+<td>在一行字当中，x 为向后删除一个字符     (相当于 [del] 按键)， X 为向前删除一个字符(相当于 [backspace] 亦即是退格键) (常用)</td>
+</tr>
+
+<tr>
+<td>dd</td>
+<td>删除游标所在的那一整列</td>
+</tr>
+
+<tr>
+<td>dG</td>
+<td>删除光标所在到最后一行的所有数据</td>
+</tr>
+
+<tr>
+<td>D</td>
+<td>删除游标所在处，到该行的最后一个字符</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="复制粘贴">复制粘贴</h4>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>yy</td>
+<td>复制游标所在的那一行(常用)</td>
+</tr>
+
+<tr>
+<td>p,P</td>
+<td>p 为将已复制的数据在光标下一行贴上，P 则为贴在游标上一行！</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="撤销与反撤销">撤销与反撤销</h4>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>u</td>
+<td>撤销(相当于sublime的ctrl+z)</td>
+</tr>
+
+<tr>
+<td>[Ctrl]+r</td>
+<td>反撤销。(相当于sublime的ctrl+y)</td>
+</tr>
+
+<tr>
+<td>ZZ</td>
+<td>这是大写的 Z ！若档案没有更改，则不储存离开，若档案已经被更改过，则储存后离开！</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="多文档编辑">多文档编辑</h3>
+
+<p>多文档编辑对于整合多个文件内容很方便。</p>
+
+<p>多文档编辑的按键</p>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>:n</td>
+<td>编辑下一个档案</td>
+</tr>
+
+<tr>
+<td>:N</td>
+<td>编辑上一个档案</td>
+</tr>
+
+<tr>
+<td>:files</td>
+<td>列出目前这个 vim 的开启的所有档案</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="vim分割窗口">vim分割窗口</h3>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>:sp [filename]</td>
+<td>开启一个新窗口，如果有加 filename， 表示在新窗口开启一个新档案，否则表示两个窗口为同一个档案内容(同步显示)。</td>
+</tr>
+
+<tr>
+<td>[ctrl]+w+ j [ctrl]+w+↓</td>
+<td>按键的作用市将光标移动到下方的窗口。</td>
+</tr>
+
+<tr>
+<td>[ctrl]+w+ k [ctrl]+w+↑</td>
+<td>同上，不过光标移动到上面的窗口。</td>
+</tr>
+</tbody>
+</table>
+
+<p>想在哪个窗口离开，就在哪个窗口使用：wq即可。</p>
+
+<h3 id="在vim中使用sudo命令">在vim中使用sudo命令</h3>
+
+<pre><code>：w !sudo tee %
+</code></pre>
+
+<dl>
+<dd>表示我们处于vim的退出模式
+！ 表示我们正在运行shell命令
+sudo和tee都是shell命令
+% 表示从当前行的开始的所有行</dd>
+</dl>
+
+<h3 id="vim以16进制打开文件">vim以16进制打开文件</h3>
+
+<pre><code>vim -b filename
+
+//命令行模式输入
+:%!xxd
+
+//保存退出
+:%!xxd -r
+</code></pre>
+
+<h2 id="bash快捷键">bash快捷键</h2>
+
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Ctrl+a</td>
+<td>将光标定位到命令的开头</td>
+</tr>
+
+<tr>
+<td>Ctrl+e</td>
+<td>将光标定位到命令的结尾</td>
+</tr>
+
+<tr>
+<td>alt+d</td>
+<td>从光标处删除至字尾。可以使用Ctrl+y粘贴回来</td>
+</tr>
+
+<tr>
+<td>Ctrl+w</td>
+<td>删除光标左边的参数或内容</td>
+</tr>
+
+<tr>
+<td>Ctrl+→或alt+f</td>
+<td>以单词为单位向右移</td>
+</tr>
+
+<tr>
+<td>Ctrl+←或alt+b</td>
+<td>以单词为单位向左移</td>
+</tr>
+
+<tr>
+<td>Ctrl+y</td>
+<td>粘贴剪切的内容</td>
+</tr>
+
+<tr>
+<td>Ctrl+l</td>
+<td>清除屏幕</td>
+</tr>
+
+<tr>
+<td>Ctrl+u</td>
+<td>剪切光标之前的内容</td>
+</tr>
+
+<tr>
+<td>Ctrl+k</td>
+<td>剪切光标之后的内容</td>
+</tr>
+
+<tr>
+<td>Ctrl+/</td>
+<td>撤销</td>
+</tr>
+
+<tr>
+<td>Ctrl+r</td>
+<td>搜索使用过的命令</td>
+</tr>
+</tbody>
+</table>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2flinux%25E5%25BF%25AB%25E6%258D%25B7%25E9%2594%25AE%2f - Linux%e5%bf%ab%e6%8d%b7%e9%94%ae "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

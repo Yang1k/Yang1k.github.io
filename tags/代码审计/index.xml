@@ -6,10 +6,20 @@
     <description>Recent content in 代码审计 on Yang1k</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 15 Oct 2019 09:54:35 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 30 Mar 2020 09:54:35 +0000</lastBuildDate>
     
 	<atom:link href="https://yang1k.github.io/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>搬家</title>
+      <link>https://yang1k.github.io/post/%E6%90%AC%E5%AE%B6/</link>
+      <pubDate>Mon, 30 Mar 2020 09:54:35 +0000</pubDate>
+      
+      <guid>https://yang1k.github.io/post/%E6%90%AC%E5%AE%B6/</guid>
+      <description>&lt;p&gt;搬家 新家：&lt;a href=&#34;http://yang1k.me&#34;&gt;http://yang1k.me&lt;/a&gt;
+&lt;!-- more --&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Pbootcms审计</title>

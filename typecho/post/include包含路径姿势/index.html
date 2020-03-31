@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="include-&gt;php对于文件路径的处理"/>
+  <meta name="twitter:description" content="除草&hellip;."/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>include-&gt;php对于文件路径的处理 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        include-&gt;php对于文件路径的处理
+                    </h1>
+                    <h2 class="headline">
+                    Aug 17, 2019 09:54
+                    · 782 words
+                    · 4 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/php">PHP</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#结论">结论</a></li>
+<li><a href="#环境搭建">环境搭建</a></li>
+<li><a href="#调试">调试</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#链接">链接</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>除草&hellip;.</p>
+
+<h3 id="结论">结论</h3>
+
+<p>在看phpmyadmin4.8.1文件包含漏洞时看到了图中的文件包含姿势。
+<img src="https://yang1k.github.io/images/include/0B59FF12-EA91-4B13-A542-A1A7ABC472D4.png" alt="439a6a9b1bab58565162b48a501f76ed" /></p>
+
+<p>自己也做了测试如下</p>
+
+<p><img src="https://yang1k.github.io/images/include/BE7A618C-62F0-4313-BA8F-5B3C0C067B9C.png" alt="79c25f654343cb2bb4ed72dbd5177d80" /></p>
+
+<p>很好奇<code>include</code>为什么可以成功包含到同目录下的a.txt。</p>
+
+<p>这里先放下结论，因为自己一开始没有找到相关的文章，但是随着调试php源码找资料，在最后找到php处理文件路径函数<code>tsrm_realpath_r</code>后，找到了很多师傅的分析文章。</p>
+
+<p>出现这种情况是因为php在文件路径处理上有一定的缺陷，上图的主要原因就是<code>tsrm_realpath_r</code>函数会对于传入的路径做规范化处理。会删除掉<code>2.php%3f/../</code>,只剩下来一个a.txt。</p>
+
+<p>下面是我调试跟踪的一些过程，比较基础。师傅轻喷。</p>
+
+<h3 id="环境搭建">环境搭建</h3>
+
+<h3 id="调试">调试</h3>
+
+<p>这里的php版本是的7.1.31</p>
+
+<p>先找到include函数的入口，在<code>php-src/Zend/zend_execute.c</code>文件的zend_include_or_eval函数处下断点，找到传入的文件名，</p>
+
+<pre><code>Breakpoint 1, zend_include_or_eval (inc_filename=0x7ffff6813080, type=0x2) at /home/yang1k/Desktop/php/php-src/Zend/zend_execute.c:2783
+2783		zend_op_array *new_op_array = NULL;
+gdb-peda$ p *inc_filename.value.str.val@20
+$8 = &quot;2.php%3f/../a.txt\000ph&quot;
+
+</code></pre>
+
+<p>在这里文件名还是传入的内容，单步跟进，发现在2845行的<code>compile_filename</code>处理后，new_op_array发生变化如下</p>
+
+<pre><code>gdb-peda$ p *new_op_array.filename.val@50
+$12 = &quot;/home/yang1k/Desktop/php/myphp/bin/test/a.txt\000\000\000\000&quot;
+</code></pre>
+
+<p>接下来就是找到<code>new_op_array.filename.val@50</code>是哪里来的。</p>
+
+<p>跟进<code>compile_filename</code>函数，其定义在<code>Zend/zend_language_scanner.l</code>643行，继续跟进能看到在<code>zend_compile_file</code>函数处理后发生变化，继续跟进该函数。就这样一步步跟进，经过几个函数最终定位到
+<code>php-src/Zend/zend_compile.c</code>383行的<code>zend_get_compiled_filename</code>函数。</p>
+
+<pre><code class="language-c">ZEND_API zend_string *zend_get_compiled_filename(void) /* {{{ */
+{
+	return CG(compiled_filename);
+}
+</code></pre>
+
+<p><code>CG</code>是一个宏，会在PHP转换为Opcode过程中保存一些信息。接下来需要找到赋值给<code>CG(compiled_filename)</code>的地方。</p>
+
+<p>就在<code>zend_get_compiled_filename</code>上面几行的<code>zend_set_compiled_filename</code>，就可以看到<code>CG(compiled_filename)</code>被赋值，代码如下。</p>
+
+<pre><code class="language-c">ZEND_API zend_string *zend_set_compiled_filename(zend_string *new_compiled_filename) /* {{{ */
+{
+	zval *p, rv;
+
+	if ((p = zend_hash_find(&amp;CG(filenames_table), new_compiled_filename))) {
+		ZEND_ASSERT(Z_TYPE_P(p) == IS_STRING);
+		CG(compiled_filename) = Z_STR_P(p);
+		return Z_STR_P(p);
+	}
+
+	ZVAL_STR_COPY(&amp;rv, new_compiled_filename);
+	zend_hash_update(&amp;CG(filenames_table), new_compiled_filename, &amp;rv);
+
+	CG(compiled_filename) = new_compiled_filename;
+	return new_compiled_filename;
+}
+</code></pre>
+
+<p>通过在<code>zend_set_compiled_filename</code>函数下断点，通过一步步调试可以知道<code>zend_set_compiled_filename</code>函数在<code>zend_get_compiled_filename</code>函数之前执行，并且将new_compiled_filename的值返回给CG(compiled_filename)。</p>
+
+<p>接下来就看哪里调用了<code>zend_set_compiled_filename</code>函数。</p>
+
+<p>通过全局搜索找到了位于<code>Zend/zend_language_scanner.c</code>的<code>open_file_for_scanning</code>函数的第562行处执行了<code>zend_set_compiled_filename</code>函数,传入<code>compiled_filename</code>变量，这里的<code>compiled_filename</code>变量已经变为<code>/home/yang1k/Desktop/php/myphp/bin/test/a.txt</code>。</p>
+
+<p><code>open_file_for_scanning</code>部分代码</p>
+
+<pre><code class="language-c">ZEND_API int open_file_for_scanning(zend_file_handle *file_handle)
+{
+…………
+if (file_handle-&gt;opened_path) {
+	compiled_filename = zend_string_copy(file_handle-&gt;opened_path);
+} else {
+    compiled_filename = zend_string_init(file_handle-&gt;filename, strlen(file_handle-&gt;filename), 0);
+	}
+	zend_set_compiled_filename(compiled_filename);
+…………
+</code></pre>
+
+<p>在函数中可以看到<code>compiled_filename</code>的值是来自于<code>zend_string_copy(file_handle-&gt;opened_path);</code></p>
+
+<p>接下来就查看<code>file_handle-&gt;opened_path</code>的值。<code>file_handle-&gt;opened_path</code>是<code>file_handle</code>结构体中的值，<code>file_handle</code>是 <code>open_file_for_scanning</code>函数的参数，在此函数下断点，可以看到<code>file_handle</code>在刚进入函数时的内容如下</p>
+
+<pre><code>gdb-peda$ p*file_handle
+$54 = {
+  handle = {
+    fd = 0x0, 
+    fp = 0x0, 
+    stream = {
+      handle = 0x0, 
+      isatty = 0xf6813080, 
+      mmap = {
+        len = 0x7ffff68591e0, 
+        pos = 0x800000017c9c2442, 
+        map = 0x7fff00000007, 
+        buf = 0x555555da9210 &lt;executor_globals+304&gt; &quot;\001&quot;, 
+        old_handle = 0x7fffffffa6b0, 
+        old_closer = 0x555555819539 &lt;zend_compile+388&gt;
+      }, 
+      reader = 0x7ffff68591e0, 
+      fsizer = 0x0, 
+      closer = 0x555555a6c5b8
+    }
+  }, 
+  filename = 0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, 
+  opened_path = 0x0, 
+  type = ZEND_HANDLE_FILENAME, 
+  free_filename = 0x0
+}
+</code></pre>
+
+<p>可以看到<code>file_handle-&gt;opened_path</code>在一开始为空，接下来就寻找<code>file_handle-&gt;opened_path</code>的值何时发生变化。
+排查能找到在513行处执行<code>zend_stream_fixup</code>函数后<code>file_handle-&gt;opened_path</code>的值发生变化。</p>
+
+<pre><code class="language-c">if (zend_stream_fixup(file_handle, &amp;buf, &amp;size) == FAILURE) {
+	return FAILURE;
+}
+
+</code></pre>
+
+<p><code>zend_stream_fixup</code>函数定义在<code>php-src/Zend/zend_stream.c</code>，继续又在186行调用了<code>zend_stream_open</code>函数，这里是将<code>file_handle-&gt;filename</code>传入了函数，此时<code>file_handle-&gt;filename</code>的值为<code>2.php%3f/../a.txt</code>.</p>
+
+<pre><code>if (zend_stream_open(file_handle-&gt;filename, file_handle) == FAILURE) 
+</code></pre>
+
+<p><code>zend_stream_open</code>定义在<code>php-src/Zend/zend_stream.c</code>的128行。</p>
+
+<p>继续调试可知在131行<code>zend_stream_open_function</code>函数处理后<code>*handle.opened_path</code>变为<code>/home/yang1k/Desktop/php/myphp/bin/test/a.txt</code>
+继续跟进来到<code>php-src/main/main.c</code>的1412行</p>
+
+<pre><code class="language-c">static int php_stream_open_for_zend(const char *filename, zend_file_handle *handle) /* {{{ */
+{
+	return php_stream_open_for_zend_ex(filename, handle, USE_PATH|REPORT_ERRORS|STREAM_OPEN_FOR_INCLUDE);
+}
+</code></pre>
+
+<p>跟进到<code>php_stream_open_for_zend_ex</code>函数的1420行，再继续跟进该处的<code>php_stream_open_wrapper</code>函数，来到<code>main/streams/streams.c</code>2010行的<code>_php_stream_open_wrapper_ex</code>函数处，继续看到2055行的<code>wrapper-&gt;wops-&gt;stream_opener</code>,跟进这个方法到<code>php-src/main/streams/plain_wrapper.c</code>的1076行,然后定位到1080行的<code>php_stream_fopen_rel</code>函数。然后跟
+进到该函数的定义到该文件的957行
+继续跟进到1029行的代码如下</p>
+
+<pre><code class="language-c">*opened_path = zend_string_init(realpath, strlen(realpath), 0);
+</code></pre>
+
+<p>将这里的realpath打印出来是</p>
+
+<pre><code>home/yang1k/Desktop/php/myphp/bin/test/a.txt\000
+</code></pre>
+
+<p>所以接下来跟进realpath变量，该变量为_php_stream_fopen函数中的变量，在第994行经过<code>expand_filepath</code>函数处理后值发生变化。</p>
+
+<p>跟进该函数到<code>main/fopen_wrappers.c</code>的750行，代码如下</p>
+
+<pre><code>PHPAPI char *expand_filepath(const char *filepath, char *real_path)
+{
+	return expand_filepath_ex(filepath, real_path, NULL, 0);
+}
+</code></pre>
+
+<p>继续跟进<code>expand_filepath_ex</code>函数到该文件的758行</p>
+
+<pre><code>PHPAPI char *expand_filepath_ex(const char *filepath, char *real_path, const char *relative_to, size_t relative_to_len)
+{
+	return expand_filepath_with_mode(filepath, real_path, relative_to, relative_to_len, CWD_FILEPATH);
+}
+</code></pre>
+
+<p>再继续跟进<code>expand_filepath_with_mode</code>函数，就在764行，分析该函数定位到827行的memcpy函数。
+在<code>memcpy</code>函数处打印出传入的变量</p>
+
+<pre><code class="language-c">827			memcpy(real_path, new_state.cwd, copy_len);
+gdb-peda$ p real_path
+$54 = 0x7fffffff91c0 &quot;&quot;
+gdb-peda$ p new_state.cwd
+$55 = 0x7ffff6801f50 &quot;/home/yang1k/Desktop/php/myphp/bin/test/a.txt&quot;
+</code></pre>
+
+<p>memcpy指的是c和c++使用的内存拷贝函数，memcpy函数的功能是从源src所指的内存地址的起始位置开始拷贝n个字节到目标dest所指的内存地址的起始位置中。</p>
+
+<p>所以接下来要跟踪<code>new_state</code>，可发现在817行<code>new_state</code>赋值为<code>/home/yang1k/Desktop/php/myphp/bin/test</code>.</p>
+
+<p>继续定位到820行的<code>virtual_file_ex</code>函数</p>
+
+<pre><code>if (virtual_file_ex(&amp;new_state, filepath, NULL, realpath_mode)) {
+</code></pre>
+
+<p>此处函数的参数值如下</p>
+
+<pre><code>gdb-peda$ p new_state
+$69 = {
+  cwd = 0x7ffff6801f50 &quot;/home/yang1k/Desktop/php/myphp/bin/test&quot;, 
+  cwd_length = 0x27
+}
+gdb-peda$ p filepath
+$70 = 0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;
+gdb-peda$ p realpath_mode
+$71 = 0x1
+</code></pre>
+
+<p>继续跟进 <code>virtual_file_ex</code>函数，来到<code>zend/zend_virtual_cwd.c</code>的1277行，定义如下</p>
+
+<pre><code>CWD_API int virtual_file_ex(cwd_state *state, const char *path, verify_path_func verify_path, int use_realpath) /* {{{ */
+</code></pre>
+
+<p>然后跟进到1471行，代码如下</p>
+
+<pre><code class="language-c">memcpy(state-&gt;cwd, resolved_path, state-&gt;cwd_length+1);
+</code></pre>
+
+<p>这里的<code>state</code>便是上个函数中的<code>new_state</code>,这里的state-&gt;cwd和resolved_path的值如下</p>
+
+<pre><code>gdb-peda$ p state-&gt;cwd
+$83 = 0x7ffff6801f50 &quot;/home/yang1k/Desktop/php/myphp/bin/test&quot;
+gdb-peda$ p resolved_path
+$82 = &quot;/home/yang1k/Desktop/php/myphp/bin/test/a.txt\000\063f\000../a.txt\000\a\000\000\000\000\000\360p\377\377\377\177\000\000\267{\203UUU&quot;, '\000' &lt;repeats 14 times&gt;, &quot;\021\b\000\000\030\236\246UUU\000\000x \207\366\377\177\000\000\060\201\377\377\377\177\000\000\305ȊUUU\000\000\000\222\377\377\377\177\000\000\000\202\377\377\377\177\000\000/home/yang1k/Desktop/php/myphp/bin/test&quot;, '\000' &lt;repeats 3657 times&gt;...
+</code></pre>
+
+<p>接下来重新运行程序,来看<code>resolved_path</code>的变化情况。</p>
+
+<p>在1414行代码执行后，resolved_path变为</p>
+
+<pre><code>$106 = &quot;/home/yang1k/Desktop/php/myphp/bin/test/a.txt\000\063f\000../a.txt\000\a\000\000\000\000\000\360p\377\377\377\177\000\000\267{\203UUU&quot;, '\000' &lt;repeats 14 times&gt;, &quot;\021\b\000\000\030\236\246UUU\000\000x \207\366\377\177\000\000\060\201\377\377\377\177\000\000\305ȊUUU\000\000\000\222\377\377\377\177\000\000\000\202\377\377\377\177\000\000/home/yang1k/Desktop/php/myphp/bin/test&quot;, '\000' &lt;repeats 3657 times&gt;...
+</code></pre>
+
+<p>1414行代码如下</p>
+
+<pre><code class="language-c">path_length = tsrm_realpath_r(resolved_path, start, path_length, &amp;ll, &amp;t, use_realpath, 0, NULL);
+</code></pre>
+
+<p>到这里就定位到<code>tsrm_realpath_r</code>函数了。</p>
+
+<p>整个调用栈如下</p>
+
+<pre><code>gdb-peda$ bt
+#0  tsrm_realpath_r (path=0x7fffffff7080 &quot;/home/yang1k/Desktop/php/myphp/bin/test/a.txt&quot;, start=0x1, len=0x39, ll=0x7fffffff707c, t=0x7fffffff7070, use_realpath=0x1, is_dir=0x0, 
+    link_is_dir=0x0) at /home/yang1k/Desktop/php/php-src/Zend/zend_virtual_cwd.c:1260
+#1  0x00005555558aae8a in virtual_file_ex (state=0x7fffffff90e0, path=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, verify_path=0x0, use_realpath=0x1)
+    at /home/yang1k/Desktop/php/php-src/Zend/zend_virtual_cwd.c:1414
+#2  0x00005555557ea815 in expand_filepath_with_mode (filepath=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, real_path=0x7fffffff91c0 &quot;&quot;, relative_to=0x0, relative_to_len=0x0, realpath_mode=0x1)
+    at /home/yang1k/Desktop/php/php-src/main/fopen_wrappers.c:820
+#3  0x00005555557ea5d5 in expand_filepath_ex (filepath=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, real_path=0x7fffffff91c0 &quot;&quot;, relative_to=0x0, relative_to_len=0x0)
+    at /home/yang1k/Desktop/php/php-src/main/fopen_wrappers.c:758
+#4  0x00005555557ea59d in expand_filepath (filepath=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, real_path=0x7fffffff91c0 &quot;&quot;) at /home/yang1k/Desktop/php/php-src/main/fopen_wrappers.c:750
+#5  0x00005555558082a5 in _php_stream_fopen (filename=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, mode=0x555555a4b7b9 &quot;rb&quot;, opened_path=0x7fffffffa620, options=0x81, 
+    __php_stream_call_depth=0x2, __zend_filename=0x555555a4f0b0 &quot;/home/yang1k/Desktop/php/php-src/main/streams/plain_wrapper.c&quot;, __zend_lineno=0x438, 
+    __zend_orig_filename=0x555555a4adf8 &quot;/home/yang1k/Desktop/php/php-src/main/main.c&quot;, __zend_orig_lineno=0x58c) at /home/yang1k/Desktop/php/php-src/main/streams/plain_wrapper.c:994
+#6  0x00005555558086a9 in php_plain_files_stream_opener (wrapper=0x555555d82220 &lt;php_plain_files_wrapper&gt;, path=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, mode=0x555555a4b7b9 &quot;rb&quot;, 
+    options=0x81, opened_path=0x7fffffffa620, context=0x0, __php_stream_call_depth=0x1, __zend_filename=0x555555a4e4d8 &quot;/home/yang1k/Desktop/php/php-src/main/streams/streams.c&quot;, 
+    __zend_lineno=0x809, __zend_orig_filename=0x555555a4adf8 &quot;/home/yang1k/Desktop/php/php-src/main/main.c&quot;, __zend_orig_lineno=0x58c)
+    at /home/yang1k/Desktop/php/php-src/main/streams/plain_wrapper.c:1080
+#7  0x0000555555801c32 in _php_stream_open_wrapper_ex (path=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, mode=0x555555a4b7b9 &quot;rb&quot;, options=0x89, opened_path=0x7fffffffa620, context=0x0, 
+    __php_stream_call_depth=0x0, __zend_filename=0x555555a4adf8 &quot;/home/yang1k/Desktop/php/php-src/main/main.c&quot;, __zend_lineno=0x58c, __zend_orig_filename=0x0, __zend_orig_lineno=0x0)
+    at /home/yang1k/Desktop/php/php-src/main/streams/streams.c:2055
+#8  0x00005555557e095e in php_stream_open_for_zend_ex (filename=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, handle=0x7fffffffa5c0, mode=0x89)
+    at /home/yang1k/Desktop/php/php-src/main/main.c:1420
+#9  0x00005555557e090b in php_stream_open_for_zend (filename=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, handle=0x7fffffffa5c0) at /home/yang1k/Desktop/php/php-src/main/main.c:1412
+#10 0x00005555558927af in zend_stream_open (filename=0x7ffff6801f18 &quot;2.php%3f/../a.txt&quot;, handle=0x7fffffffa5c0) at /home/yang1k/Desktop/php/php-src/Zend/zend_stream.c:131
+#11 0x0000555555892968 in zend_stream_fixup (file_handle=0x7fffffffa5c0, buf=0x7fffffffa458, len=0x7fffffffa450) at /home/yang1k/Desktop/php/php-src/Zend/zend_stream.c:186
+#12 0x000055555581913d in open_file_for_scanning (file_handle=0x7fffffffa5c0) at Zend/zend_language_scanner.l:513
+#13 0x0000555555819587 in compile_file (file_handle=0x7fffffffa5c0, type=0x2) at Zend/zend_language_scanner.l:627
+#14 0x00005555558196e8 in compile_filename (type=0x2, filename=0x7ffff6813080) at Zend/zend_language_scanner.l:662
+#15 0x00005555558ca5ee in zend_include_or_eval (inc_filename=0x7ffff6813080, type=0x2) at /home/yang1k/Desktop/php/php-src/Zend/zend_execute.c:2845
+#16 0x0000555555912f8a in ZEND_INCLUDE_OR_EVAL_SPEC_CV_HANDLER () at /home/yang1k/Desktop/php/php-src/Zend/zend_vm_execute.h:35499
+#17 0x00005555558ca818 in execute_ex (ex=0x7ffff6813030) at /home/yang1k/Desktop/php/php-src/Zend/zend_vm_execute.h:429
+#18 0x00005555558ca8fc in zend_execute (op_array=0x7ffff6880000, return_value=0x0) at /home/yang1k/Desktop/php/php-src/Zend/zend_vm_execute.h:474
+#19 0x000055555586d149 in zend_execute_scripts (type=0x8, retval=0x0, file_count=0x3) at /home/yang1k/Desktop/php/php-src/Zend/zend.c:1482
+#20 0x00005555557e2a28 in php_execute_script (primary_file=0x7fffffffddc0) at /home/yang1k/Desktop/php/php-src/main/main.c:2577
+#21 0x000055555594a6da in do_cli (argc=0x2, argv=0x555555dae1b0) at /home/yang1k/Desktop/php/php-src/sapi/cli/php_cli.c:993
+#22 0x000055555594b5e7 in main (argc=0x2, argv=0x555555dae1b0) at /home/yang1k/Desktop/php/php-src/sapi/cli/php_cli.c:1381
+#23 0x00007ffff6ce32e1 in __libc_start_main (main=0x55555594af83 &lt;main&gt;, argc=0x2, argv=0x7fffffffe168, init=&lt;optimized out&gt;, fini=&lt;optimized out&gt;, rtld_fini=&lt;optimized out&gt;, 
+    stack_end=0x7fffffffe158) at ../csu/libc-start.c:291
+#24 0x000055555563df6a in _start ()
+</code></pre>
+
+<p>也就是找到<code>tsrm_realpath_r</code>函数之后，然后才找到了师傅们的分析，这里贴一下<a href="http://wonderkun.cc/index.html/?p=626">wonderkun师傅</a>的代码</p>
+
+<pre><code class="language-c">i = len;  
+// i的初始值为字符串的长度
+ while (i &gt; start &amp;&amp; !IS_SLASH(path[i-1])) {
+     i--;   
+   // 把i定位到第一个/的后面
+ }
+ if (i == len ||
+     (i == len - 1 &amp;&amp; path[i] == '.')) {
+     len = i - 1;  
+    //  删除路径中最后的 /. , 也就是 /path/test.php/. 会变为 /path/test.php  
+     is_dir = 1;
+     continue;
+ } else if (i == len - 2 &amp;&amp; path[i] == '.' &amp;&amp; path[i+1] == '.') {
+     //删除路径结尾的 /.. 
+     is_dir = 1;
+     if (link_is_dir) {
+         *link_is_dir = 1;
+     }
+     if (i - 1 &lt;= start) {
+         return start ? start : len;
+     }
+     j = tsrm_realpath_r(path, start, i-1, ll, t, use_realpath, 1, NULL TSRMLS_CC);
+    // 进行递归调用的时候，这里把strlen设置为了i-1，
+    
+</code></pre>
+
+<h3 id="小结">小结</h3>
+
+<p>其实之前看过一些类似的分析文章，不过分析的函数一般都是<code>file_put_content,move_uploaded_file,fopen,fwrite,fclose</code>这类文件操作函数，其实<code>include</code>也是文件操作函数，但是一开始就没想到这边，还是太菜了。</p>
+
+<h3 id="链接">链接</h3>
+
+<p><a href="https://gywbd.github.io/posts/2016/2/debug-php-source-code.html">https://gywbd.github.io/posts/2016/2/debug-php-source-code.html</a>
+<a href="https://segmentfault.com/a/1190000019782678">https://segmentfault.com/a/1190000019782678</a>
+<a href="http://wonderkun.cc/index.html/?p=626">http://wonderkun.cc/index.html/?p=626</a>
+<a href="http://d1iv3.me/2018/04/15/%E4%BB%8EPHP%E6%BA%90%E7%A0%81%E7%9C%8BPHP%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%BC%BA%E9%99%B7%E4%B8%8E%E5%88%A9%E7%94%A8%E6%8A%80%E5%B7%A7/">http://d1iv3.me/2018/04/15/%E4%BB%8EPHP%E6%BA%90%E7%A0%81%E7%9C%8BPHP%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%BC%BA%E9%99%B7%E4%B8%8E%E5%88%A9%E7%94%A8%E6%8A%80%E5%B7%A7/</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2finclude%25E5%258C%2585%25E5%2590%25AB%25E8%25B7%25AF%25E5%25BE%2584%25E5%25A7%25BF%25E5%258A%25BF%2f - include-%3ephp%e5%af%b9%e4%ba%8e%e6%96%87%e4%bb%b6%e8%b7%af%e5%be%84%e7%9a%84%e5%a4%84%e7%90%86 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

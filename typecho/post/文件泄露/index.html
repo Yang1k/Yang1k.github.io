@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="文件泄露小结"/>
+  <meta name="twitter:description" content="文件泄漏
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>文件泄露小结 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        文件泄露小结
+                    </h1>
+                    <h2 class="headline">
+                    Dec 26, 2017 09:54
+                    · 60 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#ds-store文件泄漏">.DS_Store文件泄漏</a>
+<ul>
+<li><a href="#原因">原因</a></li>
+</ul></li>
+<li><a href="#git源码泄漏">.git源码泄漏</a>
+<ul>
+<li><a href="#原因-1">原因</a></li>
+</ul></li>
+<li><a href="#hg源码泄漏">.hg源码泄漏</a>
+<ul>
+<li><a href="#原因-2">原因</a></li>
+</ul></li>
+<li><a href="#编辑器临时文件泄露">编辑器临时文件泄露</a>
+<ul>
+<li><a href="#vim编辑器">vim编辑器</a>
+<ul>
+<li><a href="#vim临时文件">vim临时文件</a></li>
+<li><a href="#vim备份文件">vim备份文件</a></li>
+</ul></li>
+<li><a href="#ultrleditor">UltrlEditor</a></li>
+<li><a href="#phpstorm">PHPSTORM</a></li>
+</ul></li>
+<li><a href="#版本管理系统文件信息泄露">版本管理系统文件信息泄露</a>
+<ul>
+<li><a href="#原因-3">原因</a></li>
+<li><a href="#svn泄露">svn泄露</a>
+<ul>
+<li><a href="#检测方法">检测方法</a></li>
+</ul></li>
+<li><a href="#cvs泄漏">CVS泄漏</a>
+<ul>
+<li><a href="#检测方法-1">检测方法</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#网站源码备份文件泄露">网站源码备份文件泄露</a></li>
+<li><a href="#参考">参考</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>文件泄漏
+<!-- more --></p>
+
+<h3 id="ds-store文件泄漏">.DS_Store文件泄漏</h3>
+
+<h4 id="原因">原因</h4>
+
+<p>.DS_Store是Mac下Finder用来保存如何展示 文件/文件夹 的数据文件，每个文件夹下对应一个。
+如果开发/设计人员将.DS_Store上传部署到线上环境，可能造成文件目录结构泄漏，特别是备份文件、源代码文件。</p>
+
+<blockquote>
+<p><a href="https://github.com/lijiejie/ds_store_exp">工具链接</a></p>
+</blockquote>
+
+<p>ctf练习平台有一个题就是利用.DS_Store文件泄漏，也正是这个题才有了这篇总结。哈哈</p>
+
+<h3 id="git源码泄漏">.git源码泄漏</h3>
+
+<h4 id="原因-1">原因</h4>
+
+<p>在运行git init初始化代码库的时候，会在当前目录下面产生一个.git的隐藏文件，用来记录代码的变更记录等等。在发布代码的时候，把.git这个目录没有删除，直接发布了。使用这个文件，可以用来恢复源代码。</p>
+
+<blockquote>
+<p><a href="https://github.com/lijiejie/GitHack">工具链接</a></p>
+</blockquote>
+
+<h3 id="hg源码泄漏">.hg源码泄漏</h3>
+
+<h4 id="原因-2">原因</h4>
+
+<p>hg是类似于git的一种分布式管理，hg初始化的时候会生成hg文件，</p>
+
+<blockquote>
+<p><a href="https://github.com/kost/dvcs-ripper">工具链接</a></p>
+</blockquote>
+
+<h3 id="编辑器临时文件泄露">编辑器临时文件泄露</h3>
+
+<h4 id="vim编辑器">vim编辑器</h4>
+
+<h5 id="vim临时文件">vim临时文件</h5>
+
+<p>程序员使用vim编辑器编写index.php文件时，会有一个.index.php.swp文件，如果文件正常退出，则该文件被删除，如果异常退出，该文件则会保存下来，该文件可以用来恢复异常退出的index.php。</p>
+
+<h5 id="vim备份文件">vim备份文件</h5>
+
+<p>默认情况下使用Vim编程，在修改文件后系统会自动生成一个带~的备份文件，某些情况下可以对其下载进行查看；
+例如：
+index.php的备份文件则为index.php~</p>
+
+<h4 id="ultrleditor">UltrlEditor</h4>
+
+<p>UltrlEditor自动保存为.bak后缀。</p>
+
+<h4 id="phpstorm">PHPSTORM</h4>
+
+<p>使用phpstorm新建项目时，会生成一个.idea文件夹，这个文件夹有一个workspace.xml，访问可以得到一些信息。</p>
+
+<p>2017LCTF出了关于phpstorm文件泄露的题目。</p>
+
+<h3 id="版本管理系统文件信息泄露">版本管理系统文件信息泄露</h3>
+
+<h4 id="原因-3">原因</h4>
+
+<p>版本管理工具svn和cvs会在所有目录添加特殊文件，如果这些文件同步到web目录后就会泄露路径等信息。</p>
+
+<h4 id="svn泄露">svn泄露</h4>
+
+<h5 id="检测方法">检测方法</h5>
+
+<p>访问 <a href="http://ip/.svn/entriesp看是否成功。">http://ip/.svn/entriesp看是否成功。</a></p>
+
+<blockquote>
+<p><a href="https://pan.baidu.com/s/1mrNpB">工具链接1</a> seay的</p>
+
+<p><a href="https://github.com/kost/dvcs-ripper">工具链接2</a></p>
+</blockquote>
+
+<pre><code>工具2使用命令
+rip-svn.pl -v -u http://www.example.com/.svn/
+</code></pre>
+
+<h4 id="cvs泄漏">CVS泄漏</h4>
+
+<h5 id="检测方法-1">检测方法</h5>
+
+<p>访问 http://[ip]/CVS/Entriesp 或者<a href="http://url/CVS/Root">http://url/CVS/Root</a> 看是否成功</p>
+
+<pre><code>http://url/CVS/Root 返回根信息
+http://url/CVS/Entries 返回所有文件的结构
+</code></pre>
+
+<h3 id="网站源码备份文件泄露">网站源码备份文件泄露</h3>
+
+<p>www.rar/nyist.tar.gz/web.zip等压缩文件名</p>
+
+<h3 id="参考">参考</h3>
+
+<p><a href="http://www.s2.sshz.org/post/source-code-leak/">http://www.s2.sshz.org/post/source-code-leak/</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2f%25E6%2596%2587%25E4%25BB%25B6%25E6%25B3%2584%25E9%259C%25B2%2f - %e6%96%87%e4%bb%b6%e6%b3%84%e9%9c%b2%e5%b0%8f%e7%bb%93 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

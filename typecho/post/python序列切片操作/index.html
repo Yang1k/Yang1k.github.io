@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="python序列切片操作"/>
+  <meta name="twitter:description" content="Life is short， Use Python.
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>python序列切片操作 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        python序列切片操作
+                    </h1>
+                    <h2 class="headline">
+                    Nov 15, 2017 09:54
+                    · 105 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/python">python</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#序列切片操作详解">序列切片操作详解</a></li>
+<li><a href="#索引详解">索引详解</a></li>
+<li><a href="#示例">示例</a>
+<ul>
+<li><a href="#倒序输出序列">倒序输出序列</a></li>
+<li><a href="#如果开始索引值或者结束索引值没有指定-则分别以字符串的第一个和最后一个作为默认值">如果开始索引值或者结束索引值没有指定，则分别以字符串的第一个和最后一个作为默认值。</a></li>
+<li><a href="#从第二个开始输出到第五个截止">从第二个开始输出到第五个截止</a></li>
+<li><a href="#从倒数第三个开始输出到倒数第一个截止">从倒数第三个开始输出到倒数第一个截止</a></li>
+<li><a href="#前6个数-每两个取一个">前6个数，每两个取一个：</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>Life is short， Use Python.
+<!-- more --></p>
+
+<h2 id="序列切片操作详解">序列切片操作详解</h2>
+
+<p>切片操作的方法是：consequence[start_index: end_index: step]</p>
+
+<ul>
+<li>start_index：表示是第一个元素对象，正索引位置默认为0；负索引位置默认为 -len(consequence)</li>
+<li>end_index：表示是最后一个元素对象，正索引位置默认为 len(consequence)－1；负索引位置默认为 -1。</li>
+
+<li><p>step：表示取值的步长，默认为1，步长值不能为0。</p></li>
+
+<li><p>对于序列结构数据来说，索引和步长都具有正负两个值，分别表示左右两个方向取值。索引的正方向从左往右取值，起始位置为0；负方向从右往左取值，起始位置为-1。因此任意一个序列结构数据的索引范围为 -len(consequence) 到 len(consequence)-1 范围内的连续整数。</p></li>
+
+<li><p>在切片运算中，步长为正，表示从左至右，按照索引值与起始位置索引之差可以被步长整除的规律取值；当步长为负，则表示从右至左，按照按照索引值与起始位置索引之差可以被步长整除的规律取值。</p></li>
+</ul>
+
+<h2 id="索引详解">索引详解</h2>
+
+<ul>
+<li>索引值</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th>序列</th>
+<th>a</th>
+<th>b</th>
+<th>c</th>
+<th>d</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>正向索引值</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+
+<tr>
+<td>反向索引值</td>
+<td>-4</td>
+<td>-3</td>
+<td>-2</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><p>假设x是[start:end]中的一个值，那么有：start&lt;=x&lt;end.即包含start不包括end。</p>
+
+<pre><code>a = [1,2,3,4,5,6,7,8,9,10]
+print a[2:3] #输出3
+
+print a[-3:-2] # 输出8 
+</code></pre></li>
+</ul>
+
+<h2 id="示例">示例</h2>
+
+<p>示例序列a</p>
+
+<pre><code>a = [1,2,3,4,5,6,7,8,9,10]
+</code></pre>
+
+<h3 id="倒序输出序列">倒序输出序列</h3>
+
+<pre><code>&gt;&gt;&gt; a[::-1]
+[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+</code></pre>
+
+<h3 id="如果开始索引值或者结束索引值没有指定-则分别以字符串的第一个和最后一个作为默认值">如果开始索引值或者结束索引值没有指定，则分别以字符串的第一个和最后一个作为默认值。</h3>
+
+<pre><code>print a[:2] #等价于print a[0:2]
+[1, 2]
+</code></pre>
+
+<h3 id="从第二个开始输出到第五个截止">从第二个开始输出到第五个截止</h3>
+
+<pre><code>&gt;&gt;&gt; a[2:5]
+[3, 4, 5.6]
+</code></pre>
+
+<h3 id="从倒数第三个开始输出到倒数第一个截止">从倒数第三个开始输出到倒数第一个截止</h3>
+
+<pre><code>&gt;&gt;&gt; a[-3:-1]
+[8, 9]
+&gt;&gt;&gt; a[-3:]
+[8, 9, 10]
+
+</code></pre>
+
+<h3 id="前6个数-每两个取一个">前6个数，每两个取一个：</h3>
+
+<pre><code>&gt;&gt;&gt; a[:6] #前6个数
+[1, 2, 3, 4, 5, 6]
+&gt;&gt;&gt; a[:6:2]
+[1, 3, 5]
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2fpython%25E5%25BA%258F%25E5%2588%2597%25E5%2588%2587%25E7%2589%2587%25E6%2593%258D%25E4%25BD%259C%2f - python%e5%ba%8f%e5%88%97%e5%88%87%e7%89%87%e6%93%8d%e4%bd%9c "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

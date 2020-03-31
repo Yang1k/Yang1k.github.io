@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="php-哈希比较缺陷总结"/>
+  <meta name="twitter:description" content="总结一下存在比较缺陷的两个php加密函数sha1()和md5()
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>php-哈希比较缺陷总结 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        php-哈希比较缺陷总结
+                    </h1>
+                    <h2 class="headline">
+                    Nov 8, 2017 09:54
+                    · 95 words
+                    · 1 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/php">PHP</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#sha1比较缺陷">sha1比较缺陷</a></li>
+<li><a href="#md5比较缺陷">MD5比较缺陷</a>
+<ul>
+<li><a href="#0e开头的md5值总结">0e开头的md5值总结</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>总结一下存在比较缺陷的两个php加密函数sha1()和md5()
+<!-- more --></p>
+
+<h3 id="sha1比较缺陷">sha1比较缺陷</h3>
+
+<p>由于sha1()函数无法处理数组类型，将报错并返回false。</p>
+
+<pre><code>$a = $_GET['a'];
+$b = $_GET['b'];
+if(sha1($a)===sha1($b)&amp;&amp;$a!=$b){
+	echo &quot;yes&quot;
+}else{
+	echo &quot;no&quot;;
+}
+</code></pre>
+
+<p>构造payload</p>
+
+<pre><code>?a[]=1&amp;b[]=2
+</code></pre>
+
+<h3 id="md5比较缺陷">MD5比较缺陷</h3>
+
+<p>sha1函数的比较缺陷也适用于md5.</p>
+
+<p>PHP在处理哈希字符串时，会利用”!=”或”==”来对哈希值进行比较，它把每一个以”0E”开头的哈希值都解释为0，所以如果两个不同的密码经过哈希以后，其哈希值都是以”0E”开头的，那么PHP将会认为他们相同，都是0。
+攻击者可以利用这一漏洞，通过输入一个经过哈希后以”0E”开头的字符串，即会被PHP解释为0，如果数据库中存在这种哈希值以”0E”开头的密码的话，他就可以以这个用户的身份登录进去，尽管并没有真正的密码。</p>
+
+<h4 id="0e开头的md5值总结">0e开头的md5值总结</h4>
+
+<pre><code>QNKCDZO
+0e830400451993494058024219903391
+  
+s878926199a
+0e545993274517709034328855841020
+  
+s155964671a
+0e342768416822451524974117254469
+  
+s214587387a
+0e848240448830537924465865611904
+  
+s214587387a
+0e848240448830537924465865611904
+  
+s878926199a
+0e545993274517709034328855841020
+  
+s1091221200a
+0e940624217856561557816327384675
+  
+s1885207154a
+0e509367213418206700842008763514
+  
+s1502113478a
+0e861580163291561247404381396064
+  
+s1885207154a
+0e509367213418206700842008763514
+  
+s1836677006a
+0e481036490867661113260034900752
+  
+s155964671a
+0e342768416822451524974117254469
+  
+s1184209335a
+0e072485820392773389523109082030
+  
+s1665632922a
+0e731198061491163073197128363787
+  
+s1502113478a
+0e861580163291561247404381396064
+  
+s1836677006a
+0e481036490867661113260034900752
+  
+s1091221200a
+0e940624217856561557816327384675
+  
+s155964671a
+0e342768416822451524974117254469
+  
+s1502113478a
+0e861580163291561247404381396064
+  
+s155964671a
+0e342768416822451524974117254469
+  
+s1665632922a
+0e731198061491163073197128363787
+  
+s155964671a
+0e342768416822451524974117254469
+  
+s1091221200a
+0e940624217856561557816327384675
+  
+s1836677006a
+0e481036490867661113260034900752
+  
+s1885207154a
+0e509367213418206700842008763514
+  
+s532378020a
+0e220463095855511507588041205815
+  
+s878926199a
+0e545993274517709034328855841020
+  
+s1091221200a
+0e940624217856561557816327384675
+  
+s214587387a
+0e848240448830537924465865611904
+  
+s1502113478a
+0e861580163291561247404381396064
+  
+s1091221200a
+0e940624217856561557816327384675
+  
+s1665632922a
+0e731198061491163073197128363787
+  
+s1885207154a
+0e509367213418206700842008763514
+  
+s1836677006a
+0e481036490867661113260034900752
+  
+s1665632922a
+0e731198061491163073197128363787
+  
+s878926199a
+0e545993274517709034328855841020
+
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2fphp-md5%25E6%25AF%2594%25E8%25BE%2583%25E7%25BC%25BA%25E9%2599%25B7%25E6%2580%25BB%25E7%25BB%2593%2f - php-%e5%93%88%e5%b8%8c%e6%af%94%e8%be%83%e7%bc%ba%e9%99%b7%e6%80%bb%e7%bb%93 "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>

